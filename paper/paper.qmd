@@ -1,0 +1,143 @@
+---
+title: "Inicio y persistencia de la violencia juvenil: un análisis de importancia de variables sobre la Encuesta Nacional Longitudinal de la Juventud de 1997"
+author: "[Nombres del equipo]"
+date: "2026-05-25"
+lang: es
+bibliography: referencias.bib
+csl: apsa.csl
+format:
+  pdf:
+    pdf-engine: xelatex
+    documentclass: article
+    geometry: margin=2.5cm
+    fontsize: 12pt
+    linestretch: 2
+    number-sections: true
+    fig-pos: "H"
+    keep-tex: false
+abstract: |
+  Este trabajo investiga qué factores de la adolescencia predicen la conducta
+  agresiva en la adultez joven y si los determinantes del inicio de la violencia
+  difieren de los de su persistencia. Con los datos de la Encuesta Nacional
+  Longitudinal de la Juventud de 1997 (estudio ICPSR 34562), construimos un
+  indicador de agresión autorreportada entre los 18 y 23 años y lo modelamos a
+  partir de características medidas entre los 14 y 17 años mediante bosques
+  aleatorios e importancia de variables, complementados con análisis de
+  componentes principales. Encontramos que la agresión temprana es, por mucho,
+  el mejor predictor de la violencia posterior, y que las conductas antisociales
+  forman un único factor general. Al separar la muestra, el inicio de la
+  violencia resulta razonablemente predecible a partir del contexto social,
+  mientras que la persistencia es casi impredecible. Estos hallazgos respaldan
+  la prevención temprana y advierten contra la predicción actuarial del riesgo.
+---
+
+# Mérito intelectual del proyecto
+
+La violencia interpersonal entre jóvenes es uno de los problemas de política pública con consecuencias más duraderas, pues afecta tanto a las víctimas como las trayectorias de vida de quienes la ejercen. La criminología del curso de vida ha documentado de manera consistente que la conducta antisocial exhibe una estabilidad notable a lo largo del tiempo, de modo que quienes muestran problemas de conducta en la infancia tienden a presentar mayores tasas de delito en la adultez [@moffitt1993; @sampsonlaub1993]. La teoría general del crimen de @gottfredsonhirschi1990 atribuye esta continuidad a un rasgo estable de bajo autocontrol que se manifiesta en una amplia variedad de conductas problema, mientras que la teoría de los vínculos sociales de @hirschi1969 enfatiza el debilitamiento de los lazos con la familia, la escuela y el trabajo. Estas perspectivas han sido enormemente influyentes, pero conviven con una tensión que importa para el diseño de intervenciones: no es lo mismo explicar quién inicia una conducta violenta que explicar quién la mantiene a lo largo del tiempo.
+
+La pregunta central de este trabajo es doble. Primero, nos preguntamos qué características medibles durante la adolescencia predicen mejor la agresión violenta en la adultez joven. Segundo, y de manera más novedosa, indagamos si los factores que anticipan el inicio de la violencia entre quienes no tenían historial agresivo coinciden con los que predicen su persistencia entre quienes ya lo tenían. La distinción no es menor, pues la política pública dispone de recursos limitados y necesita saber si conviene concentrar la prevención en marcadores sociales tempranos o en el seguimiento de quienes ya delinquen.
+
+La contribución del estudio es metodológica y sustantiva. En lo metodológico, aplicamos técnicas de aprendizaje automático, en particular la importancia de variables derivada de bosques aleatorios y el análisis de componentes principales, sobre una cohorte nacional representativa de Estados Unidos, en lugar de las muestras clínicas o regionales sobre las que descansa buena parte de la literatura clásica [@lipseyderzon1998]. En lo sustantivo, al separar empíricamente el inicio de la persistencia ofrecemos evidencia sobre una asimetría que las teorías predicen pero que rara vez se cuantifica de manera directa. Con ello buscamos dialogar con la síntesis de predictores de violencia de @lipseyderzon1998 y con la noción de heterogeneidad poblacional frente a dependencia de estado planteada por @nagin1991.
+
+# Variables y datos
+
+Los datos provienen del estudio ICPSR 34562, una extracción del Bureau of Justice Statistics sobre la Encuesta Nacional Longitudinal de la Juventud de 1997, conocida como NLSY97 [@icpsr34562]. La encuesta siguió a una muestra representativa de 8,984 residentes de Estados Unidos nacidos entre 1980 y 1984, entrevistados de manera anual desde 1997. El archivo organiza las variables por edad del entrevistado, de modo que cada columna indica la situación de la persona en el año en que tenía determinada edad. Una consecuencia importante de este diseño es que las edades más tempranas solo están bien observadas para la cohorte más joven, ya que las personas nacidas en 1980 tenían más de catorce años cuando comenzó la encuesta.
+
+La variable dependiente principal es un indicador binario que toma el valor de uno cuando la persona reportó haber agredido físicamente a alguien con intención de herir en al menos uno de los años entre los 18 y 23 años de edad, y cero en caso contrario. Definimos la ventana adulta en ese rango porque la cobertura del autorreporte de agresión es alta entre los 18 y 20 años y porque las edades de 24 y 25 provienen de una submuestra de personas encarceladas, cuya inclusión sesgaría la medición. De las 8,984 personas originales, 8,609 cuentan con al menos una observación válida de agresión en la ventana adulta, y entre ellas la prevalencia de la conducta es de 16.9 por ciento.
+
+Las variables explicativas se midieron todas antes de la ventana del resultado, ya sea como parte del perfil de origen levantado en 1997 o como conductas observadas entre los 14 y 17 años. Este orden temporal estricto evita la circularidad que surgiría si predijéramos la agresión con conductas registradas en el mismo periodo. El perfil de origen incluye el sexo, la raza o etnicidad autodeclarada, la estructura familiar, la escolaridad y el empleo de los padres, el número de hermanos, la razón entre el ingreso familiar y la línea de pobreza, la edad de la madre al nacimiento y el percentil en la batería de aptitud ASVAB, que funciona como una aproximación a la habilidad cognitiva. Las conductas adolescentes incluyen indicadores de haber agredido, destruido propiedad, robado, vendido drogas, portado un arma o pertenecido a una pandilla, así como el consumo de alcohol, tabaco, marihuana y drogas duras, y el contacto temprano con el sistema de justicia medido como haber sido arrestado o encarcelado antes de los 17 años. La Figura 1 del anexo muestra la conocida curva edad-crimen en estos datos, con un ascenso de la agresión autorreportada en la adolescencia media y un descenso posterior, en línea con el patrón documentado por @hirschigottfredson1983.
+
+Como es habitual en encuestas longitudinales, varias variables presentan valores faltantes, en parte por la estructura de edades descrita y en parte por la pérdida de seguimiento. Tratamos todos los códigos especiales del NLSY97 como datos faltantes e imputamos las variables explicativas con la mediana. Reconocemos que algunas variables socioeconómicas, como el empleo del padre y el ingreso del hogar, tienen una cobertura cercana a dos tercios de la muestra, por lo que su importancia estimada debe leerse con cautela.
+
+# Diseño empírico general
+
+El objetivo del análisis es predictivo, no causal, de modo que la pregunta no es qué efecto tiene cada variable sino qué tan útil resulta para anticipar la conducta violenta. Para ello estimamos modelos de bosques aleatorios, un método de conjunto que promedia un gran número de árboles de decisión construidos sobre muestras remuestreadas de los datos y sobre subconjuntos aleatorios de variables en cada partición [@breiman2001]. La predicción del bosque para una persona se obtiene promediando la probabilidad estimada por los $B$ árboles, de manera que $\hat{p}(x) = \frac{1}{B} \sum_{b=1}^{B} \hat{p}_b(x)$, donde $\hat{p}_b(x)$ es la proporción de casos positivos en la hoja del árbol $b$ a la que llega la observación $x$.
+
+Cada árbol divide los datos buscando reducir la impureza de Gini de un nodo, definida como $G = 1 - \sum_{k} p_k^2$, donde $p_k$ es la proporción de la clase $k$ en el nodo. La importancia de una variable por reducción de impureza acumula, para todas las particiones que utilizan esa variable, la disminución de impureza ponderada por la fracción de observaciones que pasan por el nodo, y luego promedia el resultado entre los árboles. Esta medida es informativa pero tiende a favorecer variables con muchos valores distintos [@strobl2007], por lo que la complementamos con la importancia por permutación. Esta segunda medida estima cuánto se deteriora el desempeño del modelo cuando se rompe aleatoriamente la relación entre una variable y el resultado, de modo que $PI_j = A - \frac{1}{R} \sum_{r=1}^{R} A_{\pi_j^{(r)}}$, donde $A$ es el área bajo la curva ROC del modelo y $A_{\pi_j^{(r)}}$ es la misma área cuando la variable $j$ ha sido permutada en la repetición $r$. Una variable es robustamente importante cuando aparece alta en ambas medidas.
+
+Validamos el desempeño dividiendo los datos en un 80 por ciento para entrenamiento y un 20 por ciento para prueba, y además mediante validación cruzada de cinco pliegues, reportando en ambos casos el área bajo la curva ROC, que mide la capacidad del modelo para ordenar correctamente a una persona violenta por encima de una no violenta. Dado que la clase positiva es minoritaria, ponderamos las clases de manera inversa a su frecuencia para que el modelo no ignore a la minoría. Como herramienta descriptiva complementaria aplicamos un análisis de componentes principales sobre las variables conductuales y socioeconómicas estandarizadas. El primer componente se define como la combinación lineal $w_1 = \arg\max_{\lVert w \rVert = 1} \operatorname{Var}(Xw)$, es decir, la dirección de máxima varianza, y los componentes sucesivos se obtienen como los vectores propios siguientes de la matriz de covarianzas. Esta técnica nos permite examinar si las conductas problema se agrupan en una sola dimensión latente.
+
+El diseño contempla tres modelos. El primero utiliza la muestra completa y todas las variables explicativas. Los otros dos parten ese conjunto según la agresión temprana y excluyen ese indicador como predictor: el modelo de inicio se estima entre quienes no agredieron a los 14 a 17 años y pregunta qué anticipa que comiencen a hacerlo, mientras que el modelo de persistencia se estima entre quienes sí agredieron temprano y pregunta qué anticipa que continúen. Esperamos que, si la conducta antisocial responde a un rasgo estable como sostienen @gottfredsonhirschi1990, la agresión temprana domine el modelo global; y si el inicio y la persistencia obedecen a procesos distintos, los predictores de ambos modelos deberían diferir de manera apreciable.
+
+# Resultados
+
+El modelo global confirma con claridad la hipótesis de continuidad conductual. Como se observa en la Tabla 2 y en la Figura 2 del anexo, la agresión temprana es el predictor más importante por un margen amplio, tanto por reducción de impureza como por permutación, muy por encima de cualquier variable socioeconómica o demográfica. La magnitud sustantiva es contundente: entre quienes reportaron agresión en la adolescencia, el 37.4 por ciento volvió a reportarla en la adultez joven, frente a apenas el 10.6 por ciento de quienes no lo habían hecho. El modelo alcanza un área bajo la curva de 0.80 en la muestra de prueba y de 0.76 en validación cruzada, un desempeño razonable para predecir conducta humana con datos de encuesta. Detrás de la agresión temprana aparecen, con importancia mucho menor, la habilidad cognitiva, el ingreso del hogar, la venta temprana de drogas, el sexo y la pertenencia a pandillas.
+
+El análisis de componentes principales, resumido en la Figura 3 del anexo, refuerza esta lectura. El primer componente explica cerca del 20 por ciento de la varianza y carga de manera positiva sobre todas las conductas antisociales tempranas a la vez, desde la venta de drogas y el consumo de marihuana hasta la destrucción de propiedad, el robo, la agresión y la portación de armas. Este componente se correlaciona en 0.30 con la violencia adulta. El hallazgo respalda de manera directa la idea del síndrome de conducta problema de @jessor1977 y la noción de un factor general subyacente sugerida por @gottfredsonhirschi1990, pues indica que las distintas conductas de riesgo no son fenómenos independientes sino expresiones de una misma propensión.
+
+La separación entre inicio y persistencia revela una asimetría que constituye el aporte central del trabajo y que se sintetiza en la Tabla 3 y en la Figura 4 del anexo. Entre las 6,568 personas sin agresión temprana, el modelo de inicio anticipa razonablemente quién comenzará a ser violento, con un área bajo la curva de 0.71. Lo notable es qué variables impulsan esa predicción, pues no son indicadores criminales sino marcadores del contexto social: el sexo, el consumo temprano de alcohol y tabaco, la pertenencia a pandillas, la habilidad cognitiva baja, la edad de la madre al nacimiento y el ingreso del hogar. En contraste, entre las 2,029 personas que sí habían agredido temprano, el modelo de persistencia apenas supera el azar, con un área bajo la curva de 0.58. Las variables disponibles no logran distinguir quién continuará siendo violento, y las únicas señales débiles que emergen apuntan a la desventaja socioeconómica, medida por la razón de pobreza y el ingreso del hogar, y al arraigo en actividades delictivas, como la venta de drogas, la portación de armas y los arrestos previos.
+
+Los contrastes descriptivos de la Tabla 4 del anexo son coherentes con esta historia y con la literatura. La tasa de agresión adulta es casi el doble entre hombres que entre mujeres, 21.7 frente a 11.9 por ciento, y es más alta entre quienes crecieron en estructuras familiares distintas a la de dos padres biológicos, lo que concuerda con los hallazgos de @loeber1986 sobre el papel de los factores familiares. Sin embargo, la estructura familiar y la escolaridad de los padres, pese a su asociación bivariada, ocupan posiciones bajas en la importancia de los modelos, lo que sugiere que su influencia opera de manera indirecta a través de las conductas tempranas, tal como anticipa la perspectiva del curso de vida [@sampsonlaub1993].
+
+# Conclusión
+
+Los resultados de este trabajo confirman, sobre una cohorte nacional y con métodos de aprendizaje automático, la tesis central de la criminología del desarrollo: la conducta agresiva es notablemente estable y su mejor predictor es la propia conducta agresiva previa [@moffitt1993; @farrington2003]. Más allá de esta confirmación, la contribución distintiva del estudio reside en la asimetría documentada entre el inicio y la persistencia de la violencia. El inicio resulta predecible a partir de marcadores sociales que están presentes antes de cualquier acto violento, mientras que la persistencia, una vez establecida la conducta, se vuelve casi impredecible con la información disponible. Esta asimetría dialoga con el debate entre heterogeneidad poblacional y dependencia de estado planteado por @nagin1991, y sugiere que la propensión latente que distingue a los individuos pesa más en el momento del inicio que en el de la continuación.
+
+Las implicaciones para la política pública son directas. Que el inicio de la violencia se anticipe a partir del entorno socioeconómico, el consumo de sustancias y la habilidad cognitiva respalda la inversión en prevención temprana de amplio alcance, en la línea de la evidencia económica sobre el rendimiento de invertir en la primera infancia y la adolescencia de poblaciones desfavorecidas [@heckman2006]. En cambio, la baja capacidad para predecir la persistencia debe leerse como una advertencia frente a las herramientas actuariales que pretenden clasificar a jóvenes ya señalados como de alto riesgo, pues un modelo que apenas supera el azar produciría un número elevado de clasificaciones erróneas con consecuencias graves para personas concretas. El hecho de que la desventaja socioeconómica gane peso justamente en el grupo que ya delinque sugiere además que las condiciones estructurales sostienen las trayectorias delictivas, lo que apunta a intervenciones que reduzcan la pobreza y amplíen oportunidades en lugar de limitarse a la vigilancia.
+
+El trabajo tiene limitaciones que conviene reconocer. La variable de agresión es autorreportada y no distingue la agresión simple de la agravada, por lo que captura un fenómeno más amplio que el delito violento grave. La pérdida de seguimiento y la imputación de variables socioeconómicas con cobertura parcial pueden atenuar la importancia estimada de algunos factores. Finalmente, los datos corresponden a una cohorte estadounidense nacida entre 1980 y 1984, de modo que la generalización a otros contextos, y en particular a México, debe hacerse con prudencia. Como pasos futuros, sería valioso replicar el análisis con definiciones más finas de violencia grave, incorporar trayectorias dinámicas mediante modelos de grupos latentes y explorar la heterogeneidad de los predictores entre subgrupos sociales. Aun con estas salvedades, el estudio ofrece evidencia clara de que prevenir el inicio de la violencia es una meta más alcanzable que predecir su persistencia, y que la política pública haría bien en orientar sus recursos en consecuencia.
+
+# Anexo: tablas y figuras {.appendix}
+
+| Modelo | Muestra | Prevalencia | AUC prueba | AUC validación cruzada |
+|:-------|:-------:|:-----------:|:----------:|:----------------------:|
+| Global (14-17 a 18-23) | 8,609 | 16.9 % | 0.80 | 0.76 (±0.03) |
+| Inicio (sin agresión temprana) | 6,568 | 10.6 % | 0.71 | 0.70 (±0.04) |
+| Persistencia (con agresión temprana) | 2,029 | 37.4 % | 0.58 | 0.62 (±0.04) |
+
+: Desempeño de los tres modelos de bosque aleatorio. {#tbl-desempeno}
+
+| Variable | Importancia de Gini | Importancia por permutación |
+|:---------|:-------------------:|:---------------------------:|
+| Agresión temprana (14-17) | 0.228 | 0.079 |
+| Habilidad cognitiva (ASVAB) | 0.080 | 0.007 |
+| Ingreso del hogar (14-17) | 0.064 | bajo |
+| Venta de drogas temprana | 0.059 | 0.003 |
+| Razón de pobreza (1997) | 0.055 | bajo |
+| Edad de la madre al nacer | 0.055 | 0.005 |
+| Destrucción de propiedad temprana | 0.053 | 0.003 |
+| Sexo (hombre) | 0.049 | 0.014 |
+| Pandilla temprana | 0.044 | 0.010 |
+| Alcohol temprano | 0.041 | 0.014 |
+
+: Importancia de variables en el modelo global. {#tbl-global}
+
+| Modelo de inicio | Importancia | | Modelo de persistencia | Importancia |
+|:-----------------|:-----------:|:-:|:-----------------------|:-----------:|
+| Habilidad cognitiva | 0.142 | | Razón de pobreza | 0.116 |
+| Edad de la madre | 0.091 | | Habilidad cognitiva | 0.098 |
+| Pandilla temprana | 0.087 | | Ingreso del hogar | 0.098 |
+| Ingreso del hogar | 0.084 | | Edad de la madre | 0.091 |
+| Alcohol temprano | 0.081 | | Venta de drogas temprana | 0.084 |
+| Sexo (hombre) | 0.079 | | Portación de arma temprana | 0.055 |
+| Razón de pobreza | 0.075 | | Arresto antes de los 17 | 0.046 |
+
+: Importancia de Gini en los modelos de inicio y persistencia. {#tbl-inicio-persistencia}
+
+| Grupo | Categoría | Tasa de agresión 18-23 |
+|:------|:----------|:----------------------:|
+| Sexo | Hombre | 21.7 % |
+| Sexo | Mujer | 11.9 % |
+| Raza o etnicidad | Afroamericano | 21.5 % |
+| Raza o etnicidad | Hispano | 16.8 % |
+| Raza o etnicidad | Blanco u otro | 14.5 % |
+| Estructura familiar | Dos padres biológicos | 13.5 % |
+| Estructura familiar | Un solo padre | 18.4 % |
+| Estructura familiar | Otra estructura | 22.9 % |
+
+: Tasas de agresión adulta por subgrupo. {#tbl-bivariado}
+
+![Curva edad-agresión en la NLSY97. La prevalencia del autorreporte de agresión asciende en la adolescencia media y desciende en la adultez joven, replicando el patrón clásico edad-crimen.](../analisis/figuras/curva_edad_crimen.png){#fig-edad width=85%}
+
+![Importancia de variables en el modelo global de bosque aleatorio. La agresión temprana domina sobre todas las demás variables.](../analisis/figuras/pred_gini.png){#fig-gini width=85%}
+
+![Análisis de componentes principales de los factores de riesgo medidos entre los 14 y 17 años. El primer componente carga sobre todas las conductas antisociales a la vez, lo que evidencia un factor general de delincuencia.](../analisis/figuras/pred_pca_biplot.png){#fig-pca width=85%}
+
+![Importancia de variables en el modelo de inicio (izquierda) y en el de persistencia (derecha). Los predictores del inicio son marcadores del contexto social, mientras que la persistencia se explica débilmente por la desventaja socioeconómica y el arraigo delictivo.](../analisis/figuras/modelo_inicio.png){#fig-inicio width=70%}
+
+![Importancia de variables en el modelo de persistencia.](../analisis/figuras/modelo_persistencia.png){#fig-persistencia width=70%}
+
+# Referencias {.unnumbered}
+
+::: {#refs}
+:::

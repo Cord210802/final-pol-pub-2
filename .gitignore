@@ -1,0 +1,16 @@
+# Microdatos de ICPSR 34562: NO redistribuibles (términos de uso de ICPSR)
+data/ICPSR_34562/
+data/ICPSR_34562-V1.zip
+data/*.parquet
+
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Quarto / LaTeX
+paper/*.aux
+paper/*.log
+paper/*.out
+paper/.quarto/
+paper/paper_files/

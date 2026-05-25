@@ -1,0 +1,249 @@
+{
+  "target": {
+    "n_total": 8984,
+    "n_con_observacion_assault": 8958,
+    "n_sin_asalto": 6140,
+    "n_con_asalto": 2818,
+    "prevalencia_asalto_%": 31.46
+  },
+  "modelo": {
+    "n_train": 7166,
+    "n_test": 1792,
+    "n_features": 25,
+    "auc_test": 0.8135,
+    "auc_cv_mean": 0.8215,
+    "auc_cv_std": 0.0242
+  },
+  "classification_report": {
+    "Sin asalto": {
+      "precision": 0.8442256042972247,
+      "recall": 0.7679153094462541,
+      "f1-score": 0.8042643923240939,
+      "support": 1228.0
+    },
+    "Con asalto": {
+      "precision": 0.5777777777777777,
+      "recall": 0.6914893617021277,
+      "f1-score": 0.6295399515738499,
+      "support": 564.0
+    },
+    "accuracy": 0.7438616071428571,
+    "macro avg": {
+      "precision": 0.7110016910375012,
+      "recall": 0.729702335574191,
+      "f1-score": 0.7169021719489719,
+      "support": 1792.0
+    },
+    "weighted avg": {
+      "precision": 0.7603659088971308,
+      "recall": 0.7438616071428571,
+      "f1-score": 0.7492729946772537,
+      "support": 1792.0
+    }
+  },
+  "gini_importance": {
+    "TOTAL_ARRESTS": 0.1722,
+    "TOTAL_DESTROY": 0.1299,
+    "TOTAL_SELL_DRUGS": 0.0761,
+    "TOTAL_CARR_GUN": 0.0713,
+    "AGE_FIRST_ARREST": 0.0698,
+    "ASVAB_SCORE": 0.0552,
+    "TOTAL_SMOKING": 0.0521,
+    "TOTAL_GANG": 0.0418,
+    "TOTAL_MARIJUANA": 0.0385,
+    "AVG_HHINC": 0.0369,
+    "TOTAL_STEAL_HI": 0.0326,
+    "AVG_RINC": 0.0306,
+    "POVRATIO97": 0.0296,
+    "BIOMOMAGE": 0.0279,
+    "RACE_ETHNICITY": 0.0229,
+    "TOTAL_STEAL_LO": 0.0218,
+    "FMSTRC97": 0.0174,
+    "TOTAL_ALCOHOL": 0.0173,
+    "TOTAL_HARD_DRUGS": 0.014,
+    "RESPARED": 0.0127,
+    "SEX": 0.0102,
+    "NUMSIBS": 0.0087,
+    "TOTAL_INCARC": 0.0062,
+    "MOMEMP97": 0.0039,
+    "DADEMP97": 0.0004
+  },
+  "perm_importance": {
+    "TOTAL_DESTROY": 0.03647,
+    "TOTAL_ARRESTS": 0.03023,
+    "TOTAL_SELL_DRUGS": 0.00947,
+    "TOTAL_CARR_GUN": 0.00834,
+    "ASVAB_SCORE": 0.00715,
+    "TOTAL_GANG": 0.00707,
+    "RACE_ETHNICITY": 0.00368,
+    "TOTAL_MARIJUANA": 0.0034,
+    "TOTAL_SMOKING": 0.00261,
+    "TOTAL_STEAL_HI": 0.00239,
+    "RESPARED": 0.00131,
+    "TOTAL_STEAL_LO": 0.00114,
+    "FMSTRC97": 0.00086,
+    "AGE_FIRST_ARREST": 0.00076,
+    "TOTAL_HARD_DRUGS": 0.00067,
+    "BIOMOMAGE": 0.00046,
+    "AVG_HHINC": 0.00032,
+    "AVG_RINC": 0.00031,
+    "MOMEMP97": 0.00028,
+    "NUMSIBS": 0.00026,
+    "TOTAL_INCARC": 0.0002,
+    "TOTAL_ALCOHOL": 8e-05,
+    "SEX": 6e-05,
+    "DADEMP97": 4e-05,
+    "POVRATIO97": -0.00013
+  },
+  "pca_explained_variance_ratio": [
+    0.2268,
+    0.1283,
+    0.0708,
+    0.0685,
+    0.0588,
+    0.0523,
+    0.0509,
+    0.0455,
+    0.0432,
+    0.0408
+  ],
+  "pca_cumulative": [
+    0.2268,
+    0.3552,
+    0.426,
+    0.4945,
+    0.5533,
+    0.6056,
+    0.6565,
+    0.702,
+    0.7452,
+    0.786
+  ],
+  "pca_loadings": {
+    "PC1": {
+      "TOTAL_DESTROY": 0.321,
+      "TOTAL_STEAL_LO": 0.332,
+      "TOTAL_STEAL_HI": 0.299,
+      "TOTAL_SELL_DRUGS": 0.369,
+      "TOTAL_CARR_GUN": 0.198,
+      "TOTAL_GANG": 0.147,
+      "TOTAL_ALCOHOL": 0.24,
+      "TOTAL_MARIJUANA": 0.369,
+      "TOTAL_HARD_DRUGS": 0.342,
+      "TOTAL_SMOKING": 0.305,
+      "TOTAL_ARRESTS": 0.248,
+      "TOTAL_INCARC": 0.174,
+      "AVG_HHINC": 0.018,
+      "AVG_RINC": 0.024,
+      "ASVAB_SCORE": 0.029,
+      "POVRATIO97": 0.03,
+      "NUMSIBS": -0.045,
+      "BIOMOMAGE": 0.008
+    },
+    "PC2": {
+      "TOTAL_DESTROY": -0.032,
+      "TOTAL_STEAL_LO": 0.03,
+      "TOTAL_STEAL_HI": -0.168,
+      "TOTAL_SELL_DRUGS": -0.026,
+      "TOTAL_CARR_GUN": -0.128,
+      "TOTAL_GANG": -0.168,
+      "TOTAL_ALCOHOL": 0.323,
+      "TOTAL_MARIJUANA": 0.138,
+      "TOTAL_HARD_DRUGS": 0.096,
+      "TOTAL_SMOKING": 0.058,
+      "TOTAL_ARRESTS": -0.283,
+      "TOTAL_INCARC": -0.261,
+      "AVG_HHINC": 0.404,
+      "AVG_RINC": 0.144,
+      "ASVAB_SCORE": 0.416,
+      "POVRATIO97": 0.418,
+      "NUMSIBS": -0.201,
+      "BIOMOMAGE": 0.262
+    },
+    "PC3": {
+      "TOTAL_DESTROY": 0.144,
+      "TOTAL_STEAL_LO": 0.05,
+      "TOTAL_STEAL_HI": 0.297,
+      "TOTAL_SELL_DRUGS": -0.001,
+      "TOTAL_CARR_GUN": 0.206,
+      "TOTAL_GANG": -0.056,
+      "TOTAL_ALCOHOL": -0.295,
+      "TOTAL_MARIJUANA": -0.288,
+      "TOTAL_HARD_DRUGS": -0.186,
+      "TOTAL_SMOKING": -0.336,
+      "TOTAL_ARRESTS": 0.298,
+      "TOTAL_INCARC": 0.32,
+      "AVG_HHINC": 0.303,
+      "AVG_RINC": 0.034,
+      "ASVAB_SCORE": 0.057,
+      "POVRATIO97": 0.377,
+      "NUMSIBS": -0.197,
+      "BIOMOMAGE": 0.236
+    },
+    "PC4": {
+      "TOTAL_DESTROY": 0.058,
+      "TOTAL_STEAL_LO": -0.038,
+      "TOTAL_STEAL_HI": 0.023,
+      "TOTAL_SELL_DRUGS": -0.055,
+      "TOTAL_CARR_GUN": 0.404,
+      "TOTAL_GANG": 0.331,
+      "TOTAL_ALCOHOL": 0.139,
+      "TOTAL_MARIJUANA": -0.103,
+      "TOTAL_HARD_DRUGS": -0.154,
+      "TOTAL_SMOKING": -0.05,
+      "TOTAL_ARRESTS": -0.087,
+      "TOTAL_INCARC": -0.166,
+      "AVG_HHINC": 0.259,
+      "AVG_RINC": 0.662,
+      "ASVAB_SCORE": -0.069,
+      "POVRATIO97": -0.102,
+      "NUMSIBS": 0.295,
+      "BIOMOMAGE": -0.142
+    }
+  },
+  "pca_corr_target": {
+    "PC1": 0.4196,
+    "PC2": -0.2299,
+    "PC3": 0.0318,
+    "PC4": 0.076
+  },
+  "tasa_por_sexo": {
+    "Hombre": 38.7,
+    "Mujer": 23.8
+  },
+  "tasa_por_raza": {
+    "Negro": 39.8,
+    "Hispano": 31.0,
+    "Mixto": 36.1,
+    "Blanco/Otro": 27.4
+  },
+  "tasa_por_familia": {
+    "Ambos biologicos": 24.5,
+    "Un padre soltero": 35.0,
+    "Uno bio + padrastro": 36.3,
+    "Dos adoptivos": 38.9,
+    "Otro": 42.9
+  },
+  "medias_por_target": {
+    "ASVAB_SCORE": {
+      "0.0": 49.02000045776367,
+      "1.0": 37.099998474121094
+    },
+    "POVRATIO97": {
+      "0.0": 3.049999952316284,
+      "1.0": 2.369999885559082
+    },
+    "NUMSIBS": {
+      "0.0": 1.55,
+      "1.0": 1.54
+    },
+    "BIOMOMAGE": {
+      "0.0": 25.79,
+      "1.0": 24.79
+    },
+    "TOTARRESTS": {
+      "0.0": 0.47,
+      "1.0": 2.61
+    }
+  }
+}
