@@ -1,5 +1,5 @@
 ---
-title: "Qué nos dice la adolescencia sobre la violencia en la adultez joven"
+title: "Análisis de importancia de variables con modelos de aprendizaje de máquina para la agresión física en la adultez joven"
 author: "Jerónimo Deli Larios y Juan Pablo Cordero Mayorga"
 date: "2026-05-25"
 lang: es
