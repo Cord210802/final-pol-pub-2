@@ -1,6 +1,6 @@
 ---
-title: "Inicio y persistencia de la violencia juvenil: un análisis de importancia de variables sobre la Encuesta Nacional Longitudinal de la Juventud de 1997"
-author: "[Nombres del equipo]"
+title: "Qué nos dice la adolescencia sobre la violencia en la adultez joven"
+author: "Jerónimo Deli Larios y Juan Pablo Cordero Mayorga"
 date: "2026-05-25"
 lang: es
 bibliography: referencias.bib
