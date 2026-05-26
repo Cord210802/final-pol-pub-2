@@ -157,8 +157,8 @@ class_weight     = "balanced"
 random_state     = 42
 ```
 
-*(Árbol más superficial y hoja más grande que el Modelo A — mayor
-regularización para un problema predictivo más difícil con más desbalance)*
+*(Árbol más superficial y hoja más grande que el análisis exploratorio —
+mayor regularización para un problema predictivo más difícil con más desbalance)*
 
 **Resultados:**
 
@@ -224,26 +224,22 @@ es más confiable.
 
 ---
 
-### Modelo C — Inicio vs Persistencia (modelo_inicio_persistencia.py)
+### Modelo 2 — Inicio (modelo_inicio_persistencia.py, EARLY_ASSAULT == 0)
 
-**Pregunta:** ¿Son los mismos factores los que llevan a alguien a *iniciar*
-la violencia en la adultez que los que explican que la *continúe*?
+**Pregunta:** ¿Qué variables predicen que una persona que **no** fue violenta
+en la adolescencia empiece a reportar agresión entre los 18 y los 23 años?
 
-**Diseño:** Se parte la muestra del Modelo B en dos submuestras según
-`EARLY_ASSAULT`. La variable `EARLY_ASSAULT` se excluye de los predictores
-en ambos modelos (sería definitorio por construcción de la submuestra).
+**Diseño:** Se toma solo la submuestra sin agresión temprana. `EARLY_ASSAULT`
+se excluye de los predictores porque ya define la submuestra.
 
-| Submuestra | Definición | n | Prevalencia target |
-|---|---|---|---|
-| **Inicio** | EARLY_ASSAULT == 0 | 6 568 | 10.57% |
-| **Persistencia** | EARLY_ASSAULT == 1 | 2 029 | 37.41% |
+**Target:** `ASSAULT_18_23`  
+**Muestra:** 6 568 individuos (EARLY_ASSAULT == 0)  
+**Prevalencia:** 10.57% (694 positivos, 5 874 negativos)  
+**Features:** 23 (conducta temprana 14–17 + perfil base 1997, sin EARLY_ASSAULT)
 
-**Features:** 23 (los mismos del Modelo B menos `EARLY_ASSAULT`)
+**Split:** 75/25 estratificado (`random_state=42`)
 
-**Split:** 75/25 estratificado (`random_state=42`)  
-*(Se redujo el test a 25% porque las submuestras son más pequeñas)*
-
-**Random Forest (idéntico en ambos):**
+**Random Forest:**
 ```
 n_estimators     = 400
 max_depth        = 9
@@ -252,8 +248,6 @@ max_features     = "sqrt"
 class_weight     = "balanced"
 random_state     = 42
 ```
-
-#### Submodelo INICIO
 
 **Resultados:**
 
@@ -280,12 +274,29 @@ random_state     = 42
 **Top 5 por permutación:** SEX (0.0365), EARLY_ALCOHOL (0.0343),
 ASVAB_SCORE (0.0183), EARLY_SMOKING (0.0137), BIOMOMAGE (0.0117)
 
-**Interpretación:** En personas sin antecedentes de violencia, lo que predice
-que inicien la agresión en la adultez son principalmente factores de contexto
-y perfil (sexo, capacidad cognitiva, ingreso del hogar, estructura familiar),
-más que conductas delictivas específicas durante la adolescencia.
+**Interpretación:** El inicio de la agresión se asocia con factores de
+contexto y perfil (sexo, capacidad cognitiva, ingreso del hogar, estructura
+familiar), más que con conductas delictivas específicas durante la adolescencia.
 
-#### Submodelo PERSISTENCIA
+---
+
+### Modelo 3 — Persistencia (modelo_inicio_persistencia.py, EARLY_ASSAULT == 1)
+
+**Pregunta:** ¿Qué variables predicen que una persona que **sí** fue violenta
+en la adolescencia continúe reportando agresión entre los 18 y los 23 años?
+
+**Diseño:** Se toma solo la submuestra con agresión temprana. `EARLY_ASSAULT`
+se excluye de los predictores porque ya define la submuestra.
+
+**Target:** `ASSAULT_18_23`  
+**Muestra:** 2 029 individuos (EARLY_ASSAULT == 1)  
+**Prevalencia:** 37.41% (759 positivos, 1 270 negativos)  
+**Features:** 23 (los mismos del Modelo 2)
+
+**Split:** 75/25 estratificado (`random_state=42`)
+
+**Random Forest:** idéntico al Modelo 2 (n_estimators=400, max_depth=9,
+min_samples_leaf=20, max_features="sqrt", class_weight="balanced")
 
 **Resultados:**
 
@@ -294,8 +305,7 @@ más que conductas delictivas específicas durante la adolescencia.
 | AUC test | **0.5840** |
 | AUC CV (5-fold) | 0.6171 ± 0.0366 |
 
-*(AUC más bajo: la violencia persistente resulta más difícil de predecir
-con las variables disponibles — posible heterogeneidad no capturada)*
+*(AUC cercano a 0.5: el modelo apenas mejora una clasificación aleatoria)*
 
 **Top 10 importancia Gini:**
 
@@ -315,11 +325,10 @@ con las variables disponibles — posible heterogeneidad no capturada)*
 **Top 5 por permutación:** EARLY_SELL_DRUGS (0.0129), ARR_BY17 (0.0110),
 EARLY_CARR_GUN (0.0087), BIOMOMAGE (0.0067), POVRATIO97 (0.0064)
 
-**Interpretación:** En personas ya violentas durante la adolescencia, lo que
-predice que continúen siéndolo en la adultez son conductas delictivas más
-graves (venta de drogas, portación de arma, arrestos previos) junto con
-condiciones de pobreza — a diferencia del modelo de Inicio, la capacidad
-cognitiva (ASVAB) no aparece en permutación como señal independiente.
+**Interpretación:** En personas ya violentas durante la adolescencia, las
+variables disponibles no permiten distinguir bien quién continuará agrediendo.
+Las señales más robustas por permutación son conductas delictivas graves
+(venta de drogas, portación de arma, arrestos) y condiciones de pobreza.
 
 ---
 
@@ -350,12 +359,16 @@ con señal predictiva genuina, usando el Gini como corroboración del orden.
 
 ## 7. Resumen de desempeño
 
-| Modelo | Target | n train | n test | AUC test | AUC CV |
-|---|---|---|---|---|---|
-| A — Global | EVER_ASSAULT (14–25) | 7 166 | 1 792 | **0.8135** | 0.8215 ± 0.024 |
-| B — Predictivo | ASSAULT_18_23 | 6 887 | 1 722 | **0.7987** | 0.7637 ± 0.030 |
-| C — Inicio | ASSAULT_18_23 (sin violencia temprana) | ~4 926 | ~1 642 | **0.7098** | 0.6980 ± 0.039 |
-| C — Persistencia | ASSAULT_18_23 (con violencia temprana) | ~1 522 | ~507 | **0.5840** | 0.6171 ± 0.037 |
+Los tres modelos del paper usan el mismo target (`ASSAULT_18_23`).
+El análisis exploratorio (`feature_importance.py`) usa `EVER_ASSAULT` y
+**no** aparece en el paper; se incluye solo como referencia.
+
+| # | Modelo | Target | n train | n test | AUC test | AUC CV |
+|---|---|---|---|---|---|---|
+| — | Exploratorio (feature_importance.py) | EVER_ASSAULT (14–25) | 7 166 | 1 792 | 0.8135 | 0.8215 ± 0.024 |
+| 1 | Global (modelo_predictivo.py) | ASSAULT_18_23 | 6 887 | 1 722 | **0.7987** | 0.7637 ± 0.030 |
+| 2 | Inicio (modelo_inicio_persistencia.py) | ASSAULT_18_23 | ~4 926 | ~1 642 | **0.7098** | 0.6980 ± 0.039 |
+| 3 | Persistencia (modelo_inicio_persistencia.py) | ASSAULT_18_23 | ~1 522 | ~507 | **0.5840** | 0.6171 ± 0.037 |
 
 ---
 
@@ -363,15 +376,15 @@ con señal predictiva genuina, usando el Gini como corroboración del orden.
 
 | Archivo | Contenido |
 |---|---|
-| `analisis/resultados.json` | Modelo A: AUC, Gini, permutación, PCA, contrastes bivariados |
-| `analisis/resultados_predictivo.json` | Modelo B: AUC, Gini, permutación, PCA, coberturas |
-| `analisis/resultados_inicio_persistencia.json` | Modelos C: Inicio y Persistencia |
-| `analisis/figuras/gini_importance.png` | Importancia Gini, Modelo A |
-| `analisis/figuras/pred_gini.png` | Importancia Gini, Modelo B |
-| `analisis/figuras/modelo_inicio.png` | Importancia Gini, submodelo Inicio |
-| `analisis/figuras/modelo_persistencia.png` | Importancia Gini, submodelo Persistencia |
-| `analisis/figuras/pca_biplot.png` | Biplot PC1 vs PC2, Modelo A |
-| `analisis/figuras/pred_pca_biplot.png` | Biplot PC1 vs PC2, Modelo B |
+| `analisis/resultados.json` | Exploratorio (EVER_ASSAULT): AUC, Gini, permutación, PCA |
+| `analisis/resultados_predictivo.json` | Modelo 1 Global: AUC, Gini, permutación, PCA, coberturas |
+| `analisis/resultados_inicio_persistencia.json` | Modelos 2 y 3: Inicio y Persistencia |
+| `analisis/figuras/gini_importance.png` | Importancia Gini, exploratorio (EVER_ASSAULT) |
+| `analisis/figuras/pred_gini.png` | Importancia Gini, Modelo 1 Global |
+| `analisis/figuras/modelo_inicio.png` | Importancia Gini, Modelo 2 Inicio |
+| `analisis/figuras/modelo_persistencia.png` | Importancia Gini, Modelo 3 Persistencia |
+| `analisis/figuras/pca_biplot.png` | Biplot PC1 vs PC2, exploratorio (EVER_ASSAULT) |
+| `analisis/figuras/pred_pca_biplot.png` | Biplot PC1 vs PC2, Modelo 1 Global |
 | `analisis/figuras/pca_scree.png` / `pred_pca_scree.png` | Varianza explicada PCA |
 
 ---
@@ -381,7 +394,7 @@ con señal predictiva genuina, usando el Gini como corroboración del orden.
 | Script | Qué hace |
 |---|---|
 | `analisis/construir_dataset.py` | Limpia y une DS0001+DS0002, construye todas las variables de ingeniería, guarda `data/nlsy97_analisis_final.parquet` |
-| `analisis/feature_importance.py` | Modelo A — target EVER_ASSAULT (toda la vida) |
-| `analisis/modelo_predictivo.py` | Modelo B — target ASSAULT_18_23, predictores 14–17 |
-| `analisis/modelo_inicio_persistencia.py` | Modelo C — divide por EARLY_ASSAULT para Inicio vs Persistencia |
+| `analisis/feature_importance.py` | Exploratorio — target EVER_ASSAULT (toda la vida, no está en el paper) |
+| `analisis/modelo_predictivo.py` | Modelo 1 Global — target ASSAULT_18_23, predictores 14–17 |
+| `analisis/modelo_inicio_persistencia.py` | Modelos 2 y 3 — divide por EARLY_ASSAULT para Inicio y Persistencia |
 | `analisis/figuras_paper.py` | Genera las figuras definitivas que van al paper |
