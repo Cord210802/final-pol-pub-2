@@ -105,83 +105,33 @@ ajustado **solo** sobre el set de entrenamiento.
 
 ---
 
-## 4. Los tres modelos
+## 4. Análisis exploratorio previo (feature_importance.py) — NO está en el paper
 
-### Modelo A — Global (feature_importance.py)
+Este script fue un primer análisis exploratorio antes de definir el diseño
+final. Usa un target y features distintos a los tres modelos del paper.
 
-**Pregunta:** ¿Qué variables están más asociadas con haber agredido a alguien en
-cualquier momento de la vida (14–25)?
+**Target:** `EVER_ASSAULT` (agresión alguna vez en **toda la vida**, 14–25 años)  
+**Muestra:** 8 958 individuos  
+**Prevalencia:** 31.46% — diferente al 16.9% del paper porque el target incluye
+agresión en toda la vida, no solo en la adultez (18–23)  
+**Features:** totales acumulados de por vida (sin separación temporal); **incluye**
+`TOTAL_ARRESTS` y `AGE_FIRST_ARREST`, que son contemporáneos al target — por
+eso **no** es un diseño predictivo limpio  
+**Hiperparámetros RF:** n_estimators=300, max_depth=12, min_samples_leaf=15  
+**AUC test:** 0.8135 | AUC CV: 0.8215 ± 0.024
 
-**Target:** `EVER_ASSAULT` (agresión alguna vez entre los 14 y 25 años)  
-**Muestra:** 8 958 individuos con al menos una observación de agresión  
-**Prevalencia:** 31.46% (2 818 positivos, 6 140 negativos)  
-**Features:** 25 (totales de por vida + perfil base 1997; **incluye** `TOTAL_ARRESTS`)
-
-**Nota:** Este modelo no tiene separación temporal entre predictores y target —
-es un análisis de importancia contemporáneo/asociativo, no predictivo puro.
-
-**Split:** 80/20 estratificado (`random_state=42`)
-- Train: 7 166 | Test: 1 792
-
-**Random Forest:**
-```
-n_estimators     = 300
-max_depth        = 12
-min_samples_leaf = 15
-max_features     = "sqrt"
-class_weight     = "balanced"
-random_state     = 42
-```
-
-**Resultados:**
-
-| Métrica | Valor |
-|---|---|
-| AUC test | **0.8135** |
-| AUC CV (5-fold) | 0.8215 ± 0.0242 |
-| Accuracy | 0.744 |
-| Precision (con asalto) | 0.578 |
-| Recall (con asalto) | 0.691 |
-
-**Top 10 importancia Gini:**
-
-| Variable | Gini |
-|---|---|
-| TOTAL_ARRESTS | 0.1722 |
-| TOTAL_DESTROY | 0.1299 |
-| TOTAL_SELL_DRUGS | 0.0761 |
-| TOTAL_CARR_GUN | 0.0713 |
-| AGE_FIRST_ARREST | 0.0698 |
-| ASVAB_SCORE | 0.0552 |
-| TOTAL_SMOKING | 0.0521 |
-| TOTAL_GANG | 0.0418 |
-| TOTAL_MARIJUANA | 0.0385 |
-| AVG_HHINC | 0.0369 |
-
-**Top 10 importancia por permutación (20 repeticiones, scoring=roc_auc):**
-
-| Variable | Delta AUC |
-|---|---|
-| TOTAL_DESTROY | 0.03647 |
-| TOTAL_ARRESTS | 0.03023 |
-| TOTAL_SELL_DRUGS | 0.00947 |
-| TOTAL_CARR_GUN | 0.00834 |
-| ASVAB_SCORE | 0.00715 |
-| TOTAL_GANG | 0.00707 |
-| RACE_ETHNICITY | 0.00368 |
-| TOTAL_MARIJUANA | 0.00340 |
-| TOTAL_SMOKING | 0.00261 |
-| TOTAL_STEAL_HI | 0.00239 |
-
-**PCA (18 variables continuas/ordinales, sin categóricas nominales):**
-- PC1 explica 22.7%, PC2 12.8%, acumulado primeros 5 = 55.3%
-- PC1 carga positivamente sobre todas las conductas delictivas (factor "actividad criminal general")
-- PC2 distingue conductas delictivas graves (arresto/encarcelamiento) de indicadores socioeconómicos positivos (ASVAB, HHINC, POVRATIO97)
-- Correlación PC1 con target: r = 0.420 | PC2: r = -0.230
+Este script generó el archivo `resultados.json`. Sus números **no** coinciden
+con las tablas del paper porque el target y las features son distintos.
 
 ---
 
-### Modelo B — Predictivo temporal (modelo_predictivo.py)
+## 5. Los tres modelos del paper
+
+Los tres modelos que aparecen en el paper usan **el mismo target**: agresión
+física autorreportada entre los 18 y los 23 años (`ASSAULT_18_23`). La
+diferencia entre ellos es la submuestra sobre la que se estiman.
+
+### Modelo 1 — Global (modelo_predictivo.py, muestra completa)
 
 **Pregunta:** ¿Podemos predecir la violencia adulta (18–23) usando solo
 información de la adolescencia (14–17) y el perfil de 1997?
