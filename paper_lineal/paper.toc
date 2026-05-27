@@ -1,0 +1,19 @@
+\contentsline {section}{\numberline {1}Introducción al problema}{3}{section.1}%
+\contentsline {section}{\numberline {2}Resumen del análisis estadístico}{3}{section.2}%
+\contentsline {section}{\numberline {3}Marco teórico}{4}{section.3}%
+\contentsline {section}{\numberline {4}Análisis de datos}{5}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Descripción de la base}{5}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Variables utilizadas}{6}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Estadísticas descriptivas numéricas}{7}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Estadísticas descriptivas categóricas}{7}{subsection.4.4}%
+\contentsline {subsection}{\numberline {4.5}Análisis exploratorio}{8}{subsection.4.5}%
+\contentsline {section}{\numberline {5}Pruebas ANOVA}{10}{section.5}%
+\contentsline {section}{\numberline {6}Ajuste de modelos}{10}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Coeficientes estimados}{13}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Comparación de ajuste}{14}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}ANOVA incremental}{15}{subsection.6.3}%
+\contentsline {section}{\numberline {7}Especificación del modelo base}{16}{section.7}%
+\contentsline {section}{\numberline {8}Validación fuera de muestra (85/15)}{16}{section.8}%
+\contentsline {section}{\numberline {9}Diagnóstico}{17}{section.9}%
+\contentsline {section}{\numberline {10}Conclusión}{19}{section.10}%
+\contentsline {section}{\numberline {11}Referencias}{20}{section.11}%

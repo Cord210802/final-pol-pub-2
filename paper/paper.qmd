@@ -1,18 +1,17 @@
 ---
-title: "Análisis de importancia de variables con modelos de aprendizaje de máquina para la agresión física en la adultez joven"
+title: "Predictores jerárquicos de la agresión física en la adultez joven: una integración de regresión logística anidada y random forest sobre la NLSY97"
 author: "Jerónimo Deli Larios y Juan Pablo Cordero Mayorga"
 date: "2026-05-25"
-lang: es
 bibliography: referencias.bib
 csl: apsa.csl
 format:
   pdf:
     pdf-engine: xelatex
+    latex-auto-install: false
     documentclass: article
     geometry: margin=2.5cm
     fontsize: 12pt
     linestretch: 1.5
-    mainfont: "Liberation Serif"
     number-sections: true
     fig-pos: "H"
     keep-tex: false
@@ -21,155 +20,185 @@ format:
         \usepackage{titlesec}
         \newcommand{\sectionbreak}{\clearpage}
         \usepackage{microtype}
+        \usepackage{booktabs}
         \widowpenalty=10000
         \clubpenalty=10000
         \raggedbottom
 abstract: |
-  En este trabajo analizamos si lo que ocurre durante la adolescencia ayuda a
-  predecir la agresión física en la adultez joven. Usamos la Encuesta Nacional
-  Longitudinal de la Juventud de 1997, que siguió a casi nueve mil jóvenes en
-  Estados Unidos. Nuestra variable principal identifica si una persona reportó
-  haber agredido físicamente a alguien entre los 18 y los 23 años. Con
-  información medida entre los 14 y los 17 años, estimamos modelos de *random
-  forest* y revisamos qué variables aportan más a la predicción. También
-  separamos a quienes ya habían reportado agresión en la adolescencia de quienes
-  no lo habían hecho. Encontramos que la agresión temprana es el predictor más
-  importante. Además, el inicio de la agresión se puede anticipar mejor que su
-  persistencia. Esto sugiere que la prevención temprana es más útil que intentar
-  clasificar con precisión quién seguirá agrediendo.
+  En este trabajo analizamos qué información de la adolescencia anticipa
+  mejor la agresión física entre los 18 y los 23 años, usando la Encuesta
+  Nacional Longitudinal de la Juventud de 1997 (NLSY97). Organizamos las
+  variables en siete bloques temáticos ordenados de más exógenos a más
+  proximales y estimamos siete regresiones logísticas anidadas. Cuantificamos
+  el aporte de cada bloque con pruebas de razón de verosimilitudes y cambios
+  en el pseudo-R$^2$ de Nagelkerke. En paralelo entrenamos un *random forest*
+  y calculamos importancia por permutación a nivel de variable y a nivel de
+  bloque, lo que permite triangular los hallazgos entre un método paramétrico
+  y otro no paramétrico. El bloque de conducta antisocial temprana domina con
+  diferencia. Le siguen sustancias y arresto temprano. Los bloques demográfico
+  y familiar conservan asociaciones significativas pero acotadas. La lectura
+  para política pública es que la prevención temprana focalizada en conductas
+  observables ofrece más espacio de intervención que la información distal.
 ---
 
 # Mérito intelectual del proyecto
 
-La violencia juvenil nos parece un problema importante de política pública porque no termina en el momento del acto violento. Afecta a las víctimas, a las familias, a las escuelas y también a las oportunidades futuras de quienes la ejercen. Varios estudios han encontrado que las conductas antisociales en edades tempranas pueden repetirse más adelante, aunque esto no significa que todas las personas que agreden en la adolescencia necesariamente lo hagan en la adultez [@moffitt1993; @sampsonlaub1993]. Desde ahí surge una pregunta que nos interesa como estudiantes de Ciencia de Datos: qué tanto se puede anticipar la agresión física posterior usando información observada antes de que ocurra.
+La violencia juvenil nos parece un problema importante de política pública porque no termina en el momento del acto violento. Afecta a las víctimas, a las familias, a las escuelas y también a las oportunidades futuras de quienes la ejercen. Varios estudios encuentran que las conductas antisociales en edades tempranas pueden repetirse más adelante, aunque no toda persona que agrede en la adolescencia lo hace en la adultez [@moffitt1993; @sampsonlaub1993]. Desde ahí surge la pregunta que organiza este trabajo: qué tanto se puede anticipar la agresión física posterior usando información medida antes de que ocurra, y qué tipo de información aporta más.
 
-La literatura ofrece dos formas sencillas de pensar este problema. Una dice que algunas personas son más propensas a involucrarse en distintas conductas de riesgo porque tienen menos autocontrol, por lo que la agresión temprana debería ayudarnos a predecir la agresión posterior [@gottfredsonhirschi1990]. La otra dice que el entorno también importa: cuando una persona tiene vínculos más débiles con su familia, su escuela o su comunidad, es más probable que se acerque a conductas problemáticas [@hirschi1969]. Para política pública, esto cambia la forma de intervenir. Si lo más importante es la conducta previa, habría que poner atención en quienes ya reportaron agresión. Si el entorno también pesa, entonces tiene sentido intervenir antes, en las condiciones familiares, escolares y económicas que rodean a los jóvenes.
+La literatura ofrece dos formas de pensar la continuidad de la conducta antisocial. Una sostiene que algunas personas son más propensas a involucrarse en conductas de riesgo porque tienen menos autocontrol, por lo que la conducta temprana debería predecir la posterior [@gottfredsonhirschi1990]. La otra dice que el entorno también pesa: cuando los vínculos con la familia, la escuela o la comunidad son débiles, la probabilidad de conductas problemáticas aumenta [@hirschi1969]. Para política pública la diferencia es importante. Si lo determinante es la conducta previa, habría que enfocarse en quienes ya reportaron agresión. Si el entorno también pesa, las intervenciones tempranas en condiciones familiares, escolares y económicas tienen sentido.
 
-Nuestro trabajo parte de dos preguntas. Primero, queremos saber qué variables de la adolescencia predicen mejor la agresión física entre los 18 y los 23 años. Segundo, queremos distinguir si los factores asociados con empezar a agredir son los mismos que se relacionan con seguir agrediendo. Esta separación es central para la discusión pública, porque no es lo mismo diseñar programas universales de prevención que decidir a quién se le da seguimiento después de un primer episodio de violencia.
+Este trabajo se diferencia de la versión previa por un cambio metodológico explícito. En vez de comparar muestras separadas con un solo modelo no paramétrico, estimamos siete regresiones logísticas anidadas sobre la muestra completa, organizadas en bloques temáticos que van de variables más exógenas (sexo, raza, edad de la madre) a más proximales (conductas de la propia persona en la adolescencia). Cada bloque entra encima del anterior y reportamos cuánto cambia el ajuste con pruebas de razón de verosimilitudes y con el pseudo-R$^2$ de Nagelkerke. En paralelo, ajustamos un *random forest* sobre los mismos predictores y calculamos importancia por permutación a nivel individual y, lo que es central a nuestro diseño, a nivel de bloque. Esto resuelve el problema conocido de que variables correlacionadas se cubren entre sí en la permutación individual y dejan de aparecer como importantes [@strobl2007]. Permutar las variables de un bloque al mismo tiempo recupera el aporte conjunto.
 
-La contribución que buscamos hacer es combinar una pregunta sustantiva de política pública con herramientas predictivas. Usamos *random forest*, midiendo la importancia de variables. Además, utilizamos un análisis de componentes principales para describir si las distintas conductas de riesgo se agrupan en una dimensión común. Nuestro análisis retoma la literatura sobre predictores de violencia juvenil de @lipseyderzon1998 y la discusión de @nagin1991 sobre si la conducta pasada predice la conducta futura porque las personas son distintas desde el inicio o porque una conducta previa cambia la trayectoria posterior.
+El resultado relevante para el lector es que el ordenamiento de bloques es estable entre el método paramétrico y el no paramétrico: las conductas antisociales tempranas dominan, seguidas por sustancias y por contacto temprano con el sistema de justicia. La triangulación entre logística jerárquica y random forest nos da más confianza en este ordenamiento que cualquiera de los dos métodos por separado, y conecta con la discusión clásica de @nagin1991 y con la síntesis de predictores de violencia juvenil de @lipseyderzon1998.
 
 # Variables y datos
 
-Usamos los datos del estudio ICPSR 34562, preparado por el Bureau of Justice Statistics con base en la Encuesta Nacional Longitudinal de la Juventud de 1997, conocida como NLSY97 [@icpsr34562]. Esta encuesta siguió a 8,984 personas nacidas en Estados Unidos entre 1980 y 1984. Para nuestro objetivo, la ventaja principal de la base es que permite seguir a las mismas personas durante varios años y comparar lo que reportaron en distintas etapas. En la base, varias preguntas no están guardadas por año de entrevista, sino por la edad de la persona cuando respondió. Por ejemplo, una columna puede resumir qué ocurrió a los 14 años y otra qué ocurrió a los 15. Esto hace que algunas edades tengan más información que otras, porque no todos los entrevistados tenían la misma edad cuando empezó la encuesta en 1997.
+Usamos los datos del estudio ICPSR 34562, preparado por el Bureau of Justice Statistics con base en la Encuesta Nacional Longitudinal de la Juventud de 1997, conocida como NLSY97 [@icpsr34562]. Esta encuesta siguió a 8,984 personas nacidas en Estados Unidos entre 1980 y 1984. En la base, varias preguntas no están guardadas por año de entrevista sino por la edad de la persona cuando respondió. La NLSY97 usa códigos especiales para distinguir respuestas como no sabe, no contestó, entrevista no realizada o pregunta no aplicable, que en nuestro procesamiento tratamos como valores faltantes porque no representan una respuesta sustantiva. Para estimar los modelos con una matriz completa imputamos las variables explicativas con su mediana.
 
-La variable dependiente principal toma el valor de uno si la persona reportó haber agredido físicamente a alguien con intención de hacerle daño en al menos una ocasión entre los 18 y los 23 años, y toma el valor de cero en caso contrario. La encuesta también tiene información para algunas edades posteriores, pero decidimos no usar los datos de los 24 y 25 años porque en esa parte aparecen observaciones de una submuestra de personas en prisión. Si las incluyéramos, la proporción de agresión podría verse más alta de lo que realmente es para la cohorte completa. De las 8,984 personas en la muestra original, 8,609 tienen al menos una respuesta válida para esta variable. Dentro de ese grupo, 16.9 por ciento reportó haber agredido a alguien entre los 18 y los 23 años.
+La variable dependiente principal, $Y_i \in \{0,1\}$, toma el valor de uno si la persona reportó haber agredido físicamente a alguien con intención de hacerle daño en al menos una ocasión entre los 18 y los 23 años, y cero en caso contrario. Decidimos no usar los datos de los 24 y 25 años porque en esa parte aparecen observaciones de una submuestra de personas en prisión, lo que inflaría artificialmente la prevalencia para la cohorte completa. De las 8,984 personas en la muestra original, 8,609 tienen al menos una respuesta válida para esta variable. Dentro de ese grupo, 16.9 por ciento reportó haber agredido a alguien entre los 18 y los 23 años.
 
-Todas las variables explicativas fueron medidas antes del periodo que queremos predecir. Algunas vienen del levantamiento inicial de 1997 y otras resumen conductas observadas entre los 14 y los 17 años. Esta decisión es importante porque evita usar información contemporánea al resultado. En la parte de contexto incluimos sexo, raza o etnicidad, estructura familiar, escolaridad y empleo de los padres, número de hermanos, razón entre ingreso del hogar y línea de pobreza, edad de la madre al nacimiento y puntaje ASVAB. El ASVAB es una prueba de aptitudes usada en Estados Unidos que mide habilidades en áreas como razonamiento, matemáticas y comprensión verbal, por lo que la usamos como una aproximación a habilidades cognitivas. En la parte de conductas adolescentes incluimos agresión, destrucción de propiedad, robo, venta de drogas, portación de arma, pertenencia a pandillas, consumo de alcohol, tabaco, marihuana y drogas duras, además de arresto o encarcelamiento antes de los 17 años. La Figura 1 del anexo muestra la relación entre edad y agresión en estos datos, con un aumento durante la adolescencia y una caída posterior, como plantea la literatura sobre edad y crimen [@hirschigottfredson1983].
+Todas las variables explicativas se midieron antes del periodo que queremos predecir. Las variables del levantamiento inicial de 1997 son estáticas en la edad. Las conductas observadas entre los 14 y los 17 años se colapsan a indicadores de la forma "alguna vez en la ventana 14-17", lo que mantiene una sola fila por persona y evita usar información contemporánea al resultado. Las variables continuas con relaciones potencialmente no lineales (razón de pobreza, ingreso del hogar 14-17, habilidad cognitiva ASVAB) se discretizan en cuartiles, con el cuartil más alto como referencia. Esto permite leer los coeficientes directamente como cocientes de riesgo respecto al grupo más aventajado, y evita imponer una forma funcional lineal.
 
-Como suele ocurrir en encuestas longitudinales, la base tiene datos faltantes. Esto se debe tanto a la estructura por edad del archivo como a la pérdida de seguimiento de algunas personas. Además, la NLSY97 usa códigos especiales para distinguir respuestas como no sabe, no contestó, entrevista no realizada o pregunta no aplicable. En nuestro procesamiento tratamos esos códigos como valores faltantes, porque no representan una respuesta sustantiva. Para poder estimar los modelos con una matriz completa, imputamos las variables explicativas con su mediana. Esta decisión permite conservar más observaciones, pero también tiene límites. Algunas variables, como el ingreso del hogar o el empleo del padre, tienen menor cobertura que otras, por lo que su importancia debe interpretarse con cuidado.
+Organizamos las variables en siete bloques temáticos cuya teoría se vuelve más proximal al joven a medida que aumenta el número del bloque. El primero contiene variables fijas o casi fijas al nacer (sexo, raza o etnicidad, edad de la madre al nacer, número de hermanos). El segundo refleja el entorno de crianza (estructura familiar en 1997 y educación máxima de los padres). El tercero captura los recursos económicos del hogar (razón de pobreza en 1997 y promedio del ingreso del hogar entre los 14 y los 17 años, ambos en cuartiles). El cuarto es el capital cognitivo medido con el puntaje ASVAB en cuartiles. El quinto agrupa las conductas antisociales tempranas reportadas entre los 14 y los 17 años: agresión, destrucción de propiedad, robo bajo y alto, y venta de drogas. El sexto cubre las conductas paralelas de riesgo y consumo en la misma ventana (alcohol, marihuana, drogas duras, tabaco, portación de arma y pertenencia a pandilla). El séptimo concentra el contacto con el sistema de justicia hasta los 17 años (arresto y encarcelamiento). Tras la expansión de las categóricas y los cuartiles, el modelo completo tiene 35 predictores, manteniendo una razón observaciones por parámetro cercana a 246.
 
 # Diseño empírico general
 
-El diseño empírico es predictivo, no causal. Por eso, no interpretamos los resultados como efectos de una variable sobre la violencia, sino como evidencia sobre qué información ayuda más a anticiparla. La parte central del trabajo consiste en comparar tres modelos que predicen el mismo resultado, la agresión física entre los 18 y los 23 años, pero desde muestras distintas.
+El diseño es asociativo y predictivo. No interpretamos los coeficientes como efectos causales: el orden temporal entre predictores y resultado garantiza que la información medida en 1997 y entre los 14 y los 17 años no esté contaminada por el outcome, pero no descarta la presencia de variables omitidas o relaciones espurias. La pregunta empírica se centra en qué bloques de información son los que más reducen la incertidumbre sobre quién reportará agresión adulta, no en cuál sería el efecto causal de modificar una variable concreta.
 
-El primer modelo es el modelo global. Incluye a todas las personas con información suficiente y responde una pregunta general: qué variables predicen mejor la agresión física posterior. El segundo modelo es el modelo de inicio. En este caso dejamos solamente a quienes no habían reportado agresión física entre los 14 y los 17 años. Lo usamos para estudiar qué variables predicen que una persona empiece a reportar agresión después de la adolescencia. El tercer modelo es el modelo de persistencia. Aquí dejamos solamente a quienes sí habían reportado agresión física entre los 14 y los 17 años. Lo usamos para estudiar qué variables predicen que esa conducta continúe entre los 18 y los 23 años. En los modelos de inicio y persistencia quitamos la agresión temprana como predictor, porque esa variable ya se usa para definir a qué grupo pertenece cada persona.
+## Regresión logística anidada con siete bloques
 
-Escogimos esta separación porque creemos que no basta con saber si la agresión pasada predice la agresión futura. También importa saber si las variables que anticipan el primer reporte de agresión son las mismas que anticipan la continuidad de esa conducta. Esta distinción es útil para política pública. Si el inicio se puede anticipar con variables del entorno, entonces tiene sentido pensar en prevención temprana. Si la persistencia no se puede predecir bien, entonces habría que tener cuidado con modelos que pretendan clasificar a jóvenes como casos de alto riesgo.
+Estimamos siete modelos logísticos $M_1, M_2, \dots, M_7$. El modelo $M_m$ incluye todos los bloques de $1$ a $m$ y, formalmente, especifica
+$$
+\text{logit}\big(P(Y_i = 1)\big) \;=\; \alpha_m + \sum_{b=1}^{m} \mathbf{X}_i^{(b)\top} \boldsymbol{\beta}^{(b)},
+$$
+donde $\mathbf{X}_i^{(b)}$ es el vector de variables del bloque $b$ para la persona $i$ y $\boldsymbol{\beta}^{(b)}$ el vector de coeficientes correspondiente. Estimamos por máxima verosimilitud y reportamos errores estándar robustos a heterocedasticidad tipo Huber-White en el modelo final. Para comparar modelos anidados usamos la prueba de razón de verosimilitudes,
+$$
+\mathrm{LR}_{m \to m+1} \;=\; 2 \big[\,\ell(M_{m+1}) - \ell(M_m)\,\big] \;\sim\; \chi^2_{k},
+$$
+donde $\ell(\cdot)$ es la log-verosimilitud y $k$ es el número de parámetros nuevos del bloque agregado. Bajo la hipótesis nula de que el bloque adicional no aporta información, el estadístico sigue una $\chi^2_k$. Reportamos también el cambio en la deviance, en el AIC y en el pseudo-R$^2$ de Nagelkerke. Esta forma de tabular siete modelos anidados con su prueba de razón de verosimilitudes secuencial es la versión logística del *anova* tradicional [@hosmerlemeshow2013]. La elección de cuartiles para las continuas se justifica por su interpretación directa, su robustez a no linealidades y su consistencia con la práctica habitual en estudios de movilidad y resultados adultos.
 
-Estimamos los modelos con *random forest*, un método de aprendizaje de máquina que combina muchos árboles de decisión [@breiman2001]. La predicción final se obtiene promediando las predicciones de todos los árboles. En términos formales, la probabilidad estimada para una persona con características $x$ es $\hat{p}(x) = \frac{1}{B} \sum_{b=1}^{B} \hat{p}_b(x)$, donde $B$ es el número de árboles y $\hat{p}_b(x)$ es la proporción de casos violentos en la hoja a la que llega esa persona en el árbol $b$. Usamos este método porque permite trabajar con muchas variables al mismo tiempo y porque nos da medidas de importancia de variables, que son centrales para responder nuestra pregunta.
+## Random forest e importancia por permutación
 
-Para medir la importancia de cada variable usamos dos criterios. El primero es la reducción de impureza de Gini. En cada árbol, el algoritmo separa los datos buscando grupos más homogéneos, y el índice de Gini se define como $G = 1 - \sum_{k} p_k^2$, donde $p_k$ representa la proporción de la clase $k$ dentro de un nodo. Una variable es más importante si ayuda más a mejorar esas separaciones. Como esta medida puede favorecer variables con muchos valores posibles [@strobl2007], también usamos importancia por permutación. La idea es que, si una variable importa, mezclar sus valores al azar debería empeorar la predicción. La expresamos como $PI_j = A - \frac{1}{R} \sum_{r=1}^{R} A_{\pi_j^{(r)}}$, donde $A$ es el área bajo la curva ROC original y $A_{\pi_j^{(r)}}$ es el área obtenida después de permutar la variable $j$ en la repetición $r$.
+En paralelo entrenamos un *random forest* con los mismos predictores [@breiman2001]. Usamos $B = 500$ árboles, profundidad máxima de 10, mínimo de 20 observaciones por hoja, $\sqrt{p}$ variables candidatas por nodo y pesos balanceados por la clase minoritaria. Separamos 20 por ciento de los datos como muestra de prueba estratificada y validamos con cinco pliegues sobre la muestra completa.
 
-Para evaluar el desempeño, separamos 20 por ciento de los datos como muestra de prueba y entrenamos el modelo con el 80 por ciento restante. Además, usamos validación cruzada de cinco pliegues. En ambos casos reportamos el área bajo la curva ROC, que puede interpretarse como la probabilidad de que el modelo asigne un riesgo mayor a una persona que sí reportó agresión que a una persona que no la reportó. Como la agresión física entre los 18 y los 23 años es un evento minoritario, usamos pesos inversos a la frecuencia de cada clase para que el modelo no aprenda a favorecer sistemáticamente la categoría más común. Por último, usamos análisis de componentes principales como ejercicio descriptivo para ver si las conductas de riesgo se mueven juntas. No usamos este ejercicio para hacer predicción individual, sino para interpretar si existe una dimensión común detrás de las conductas adolescentes.
+Reportamos el AUC fuera de muestra y, para interpretar el bosque, calculamos importancia por permutación. La versión individual, donde se permuta una sola variable a la vez, sigue la expresión
+$$
+PI_j \;=\; A - \frac{1}{R}\sum_{r=1}^{R} A_{\pi_j^{(r)}},
+$$
+con $A$ el AUC original y $A_{\pi_j^{(r)}}$ el AUC tras permutar la variable $j$ en la repetición $r$, con $R=30$. Esta medida tiene un problema documentado: cuando dos variables son redundantes, permutar solo una deja al modelo con la información en la otra y ambas aparecen como poco importantes [@strobl2007]. Por eso reportamos también la versión por bloque, donde permutamos al mismo tiempo *todas* las variables del bloque $b$:
+$$
+PI_{\text{bloque }b} \;=\; A - \frac{1}{R}\sum_{r=1}^{R} A_{\pi_{(b)}^{(r)}},
+$$
+con $\pi_{(b)}^{(r)}$ una permutación independiente de cada columna del bloque en la misma repetición. Esto recupera el aporte conjunto del bloque y, al usar los mismos siete bloques de la logística anidada, permite comparar directamente los rankings de aporte entre el método paramétrico y el no paramétrico. Reportamos las importancias con su media e intervalos de confianza al 95 por ciento construidos por percentiles de las repeticiones.
+
+## Triangulación entre métodos
+
+La validez del ordenamiento de bloques se evalúa con dos criterios. Primero, las pruebas de razón de verosimilitudes deben ser significativas en los bloques que realmente aporten. Segundo, los rankings derivados del $\Delta R^2_{\text{Nagelkerke}}$ de la logística y del $\Delta\mathrm{AUC}$ por permutación del *random forest* deben coincidir en sus puestos altos. Cuando los dos métodos llegan al mismo bloque dominante, el resultado es robusto a la elección de función funcional. Cuando difieren, hay no linealidad o interacciones que el método paramétrico no captura, y eso es información sustantiva sobre el problema.
 
 # Resultados
 
-El primer modelo que planteamos fue el modelo global. Este modelo usa a toda la muestra disponible y busca predecir si una persona reportó agresión física entre los 18 y los 23 años. Su desempeño fue el más alto de los tres modelos: obtuvo un área bajo la curva de 0.80 en la muestra de prueba y de 0.76 en validación cruzada, como se muestra en la Tabla 1. El resultado principal de este modelo es que la agresión temprana concentra la mayor parte de la información predictiva. En la Tabla 2 y en la Figura 2 del anexo se observa que esta variable es la más importante tanto por reducción de impureza como por permutación. La diferencia descriptiva también es clara: entre quienes reportaron agresión entre los 14 y los 17 años, 37.4 por ciento volvió a reportarla entre los 18 y los 23 años. Entre quienes no habían reportado agresión temprana, la proporción fue de 10.6 por ciento. Después de la agresión temprana aparecen, con menor peso, habilidad cognitiva, ingreso del hogar, venta temprana de drogas, sexo y pertenencia a pandillas.
+## Aporte secuencial de los siete bloques
 
-El segundo modelo fue el modelo de inicio. Este modelo solo incluye a las 6,568 personas que no habían reportado agresión física entre los 14 y los 17 años. La pregunta aquí es distinta: no queremos saber quién repite una conducta, sino quién empieza a reportarla en la adultez joven. El modelo obtuvo un área bajo la curva de 0.71 en la muestra de prueba y de 0.70 en validación cruzada. Esto indica que sí hay información útil para anticipar el inicio de la agresión, aunque la predicción no es perfecta. Las variables con mayor importancia fueron habilidad cognitiva, edad de la madre al nacimiento, pertenencia a pandillas, ingreso del hogar, consumo de alcohol, sexo y razón de pobreza, como se muestra en la Tabla 3 y en la Figura 4 del anexo. En conjunto, estos resultados sugieren que el inicio de la agresión no se relaciona con una sola variable, sino con una combinación de características individuales, entorno familiar y conductas de riesgo.
+La Tabla 1 reporta el resumen de los siete modelos anidados con la prueba de razón de verosimilitudes y el cambio en el pseudo-R$^2$ de Nagelkerke. La estructura del cuadro es la de un *anova* logístico estándar. El primer modelo, que sólo contiene el bloque demográfico, alcanza un pseudo-R$^2$ de 0.045 y deja la deviance en 7,586.8. Al agregar el bloque de familia y capital social, la deviance baja 54.6 puntos con siete grados de libertad ($p<10^{-8}$). El bloque de recursos económicos resta otros 41.3 puntos a la deviance ($p<10^{-6}$). El bloque cognitivo aporta un cambio menor pero todavía significativo (LR$=10.0$, $p=0.019$).
 
-El tercer modelo fue el modelo de persistencia. Este modelo solo incluye a las 2,029 personas que sí habían reportado agresión física entre los 14 y los 17 años. Su objetivo es predecir quién continúa reportando agresión entre los 18 y los 23 años. Aquí el desempeño baja de forma importante: el área bajo la curva fue de 0.58 en la muestra de prueba y de 0.62 en validación cruzada. En términos prácticos, esto significa que el modelo apenas mejora una clasificación hecha casi al azar. Las variables con mayor importancia de Gini fueron razón de pobreza, habilidad cognitiva, ingreso del hogar, edad de la madre, venta temprana de drogas, portación de arma y arresto antes de los 17 años. Sin embargo, como el desempeño general es bajo, estos resultados deben interpretarse con cuidado. Las variables disponibles no permiten distinguir con mucha precisión quién seguirá agrediendo una vez que ya hubo agresión temprana.
+El salto cualitativo ocurre con el quinto bloque, el de conducta antisocial temprana, que reduce la deviance en 645.4 puntos con cinco grados de libertad y eleva el pseudo-R$^2$ de Nagelkerke de 0.065 a 0.181. En una sola entrada, este bloque acumula más cambio en R$^2$ que la suma de los cuatro anteriores. Los bloques de sustancias y de justicia, que entran después, agregan 146.4 y 33.0 puntos de razón de verosimilitudes respectivamente, ambos con $p$ muy bajos. El pseudo-R$^2$ final del modelo M7 es 0.212 y el AIC pasa de 7,602.8 en M1 a 6,728.2 en M7.
 
-La comparación entre los tres modelos es el resultado más importante del trabajo. El modelo global funciona bien porque aprovecha una señal muy fuerte: la agresión temprana. Cuando separamos a la muestra, vemos que el inicio se puede predecir de manera razonable, pero la persistencia es mucho más difícil de anticipar. Esto responde directamente a la pregunta del diseño empírico: los factores que ayudan a identificar a quienes podrían empezar a reportar agresión no producen una predicción igual de clara entre quienes ya habían reportado agresión en la adolescencia.
+Los coeficientes del modelo completo (Tabla 2) son consistentes con el resultado anterior. La agresión temprana es el predictor con mayor magnitud en log-odds (coef $=1.06$, $z=14.3$, $OR=2.90$). Le siguen el consumo temprano de alcohol ($OR=1.91$), el arresto antes de los 17 años ($OR=1.80$), el sexo masculino ($OR=1.65$), la venta temprana de drogas ($OR=1.48$) y la pertenencia a pandilla ($OR=1.45$). Los cuartiles bajos del ingreso del hogar entre los 14 y los 17 años aparecen con coeficientes positivos significativos respecto al cuartil superior, indicando que la desventaja económica preserva una asociación independiente después de controlar por todo lo demás. La razón de pobreza muestra un patrón mixto que probablemente recoja parte de la información ya capturada por el ingreso del hogar.
 
-El análisis de componentes principales aporta una lectura complementaria a los modelos. La Figura 3 muestra que el primer componente explica cerca de 20 por ciento de la varianza y carga positivamente sobre distintas conductas antisociales y de riesgo, como vender drogas, consumir marihuana, destruir propiedad, robar, agredir o portar un arma. Ese componente se correlaciona en 0.30 con la agresión adulta. Para nosotros, esto sugiere que las conductas adolescentes no deben leerse como hechos completamente aislados. Más bien, parecen formar un patrón común, consistente con la idea de conducta problema de @jessor1977 y con la teoría general del crimen de @gottfredsonhirschi1990.
+La Figura 1 del anexo presenta la trayectoria de los coeficientes top a lo largo de los siete modelos anidados. La lectura es informativa: el coeficiente del sexo masculino arranca cerca de $0.83$ en M1 y baja a $0.50$ en M7, lo que indica que parte de la asociación bruta entre sexo y agresión adulta pasa por las conductas tempranas. El coeficiente del arresto antes de los 17 años se mantiene relativamente estable entre M5, M6 y M7, lo que sugiere que captura información que no se reduce a las conductas reportadas por la propia persona.
 
-Los contrastes bivariados de la Tabla 4 son consistentes con la literatura. La tasa de agresión adulta fue mayor entre hombres que entre mujeres, 21.7 frente a 11.9 por ciento. También fue mayor en personas que crecieron en estructuras familiares distintas a dos padres biológicos, lo que coincide con la evidencia revisada por @loeber1986 sobre factores familiares. Aun así, en los modelos predictivos algunas de estas variables quedan por debajo de conductas tempranas más directas. Nuestra interpretación es que parte de la relación entre contexto familiar y violencia posterior puede pasar por lo que la persona vive y hace durante la adolescencia [@sampsonlaub1993].
+## Importancia del random forest, individual y por bloque
+
+El *random forest* obtuvo un AUC de 0.796 en la muestra de prueba y de 0.767 en validación cruzada de cinco pliegues (desviación estándar 0.027). La permutación individual, que se reporta en la Figura 2 del anexo, replica el patrón de los coeficientes: la agresión temprana es la variable más importante con un $\Delta\mathrm{AUC}$ de 0.082, seguida por el consumo temprano de alcohol, el sexo, la pandilla y la venta de drogas, todas con intervalos del 95 por ciento estrictamente positivos.
+
+La Figura 3 del anexo presenta la permutación por bloque, que es el output central de nuestro diseño. El bloque de conducta antisocial temprana acumula un $\Delta\mathrm{AUC}$ de 0.134, casi cuatro veces el del siguiente bloque. El bloque de sustancias y riesgo aparece en segundo lugar con 0.041, y el demográfico en tercero con 0.026. Los bloques de familia, recursos económicos, cognitivo y justicia tienen aportes pequeños o no distinguibles de cero una vez que se permutan junto con los demás predictores del modelo. Esto no significa que esas variables sean irrelevantes en términos absolutos: en la logística anidada sus bloques sí contribuyen a la verosimilitud. Lo que dice la permutación por bloque es que, una vez que el bosque ya tiene la información de la conducta temprana, la señal residual de los bloques distales es pequeña.
+
+## Triangulación entre los dos métodos
+
+La Tabla 3 del anexo compara el ranking de bloques derivado del $\Delta R^2_{\text{Nagelkerke}}$ de la logística con el ranking derivado del $\Delta\mathrm{AUC}$ por permutación del *random forest*. La coincidencia en el puesto principal es completa: el bloque de conducta antisocial temprana domina en ambos métodos. El bloque de sustancias y riesgo aparece en el segundo o tercer lugar en ambos. El bloque demográfico ocupa el segundo lugar en la logística y el tercero en el bosque, una pequeña diferencia atribuible a que el sexo entra como variable única en lugar de bloque amplio. Los bloques restantes oscilan entre los puestos cuatro y siete con magnitudes pequeñas.
+
+La Figura 4 del anexo muestra esta comparación como un diagrama de pendiente, donde cada bloque se conecta con su ranking en cada método. La estabilidad del puesto número uno entre los dos métodos, sumada al hecho de que los bloques con menor aporte también coinciden en estar al fondo, es nuestra evidencia más fuerte de que el ordenamiento es robusto a la elección de modelo y no depende de supuestos lineales.
+
+## Una lectura conjunta
+
+El conjunto de resultados apunta a una conclusión sobre la cual los dos métodos están de acuerdo. La información que más reduce la incertidumbre sobre la agresión adulta es la conducta antisocial reportada por la propia persona entre los 14 y los 17 años. El bloque de sustancias y el contacto temprano con la justicia agregan información adicional, pero más pequeña. Las variables del contexto distal (familia, recursos económicos, capital cognitivo) tienen asociaciones estadísticamente significativas en la logística pero contribuciones marginales al ajuste por encima del bloque conductual. Esto se interpreta de forma natural como evidencia de que la conducta adolescente es un buen marcador resumido de la trayectoria, y que la información distal probablemente pasa, en parte importante, a través de esa conducta antes de manifestarse como agresión adulta.
 
 # Conclusión
 
-Nuestro principal hallazgo es que la agresión temprana es el predictor más fuerte de la agresión física en la adultez joven. Dicho de forma simple, quienes reportaron haber agredido a alguien entre los 14 y los 17 años tuvieron una probabilidad mucho más alta de reportarlo otra vez entre los 18 y los 23. Este resultado coincide con estudios previos sobre la continuidad de conductas antisociales [@moffitt1993; @farrington2003]. Sin embargo, lo más importante del trabajo está en separar el inicio de la persistencia. El inicio de la agresión se puede anticipar con un desempeño razonable a partir de variables observadas en la adolescencia, mientras que la persistencia es mucho más difícil de predecir con la información disponible.
+Nuestro principal hallazgo es que el ordenamiento del aporte de los bloques de información de la adolescencia es estable bajo dos métodos muy distintos. La conducta antisocial temprana, medida entre los 14 y los 17 años, es el bloque con mayor aporte tanto en la regresión logística jerárquica como en la importancia por permutación por bloque del *random forest*. Le siguen las sustancias, el contacto temprano con el sistema de justicia y el sexo. Los bloques distales (familia, recursos económicos, capital cognitivo) conservan asociaciones significativas en la logística, pero su contribución incremental al ajuste, una vez controlado por la conducta, es modesta. Esto coincide con la literatura sobre persistencia de conductas antisociales [@moffitt1993; @farrington2003] y con la síntesis de @lipseyderzon1998 sobre los predictores más fuertes de violencia juvenil.
 
-La implicación de política pública es directa. Parece más útil invertir en prevención temprana que intentar señalar con mucha precisión qué jóvenes seguirán siendo violentos. Si variables como consumo temprano de alcohol, pertenencia a pandillas, habilidad cognitiva, ingreso del hogar y pobreza ayudan a anticipar el inicio, entonces tiene sentido fortalecer intervenciones en edades tempranas y en contextos vulnerables. Esta lectura es consistente con la evidencia de @heckman2006 sobre la importancia de invertir temprano en poblaciones desfavorecidas. Al mismo tiempo, el bajo desempeño del modelo de persistencia nos hace pensar que las herramientas de predicción individual deben usarse con cuidado, porque una predicción débil puede producir errores con consecuencias serias.
+La separación metodológica entre logística anidada y *random forest* nos permite ir más allá del paper original en un punto importante. Reemplazamos la lectura basada exclusivamente en importancia de Gini, que sabemos sesgada hacia variables con más valores posibles, por la importancia por permutación a nivel de variable y a nivel de bloque [@strobl2007]. La versión por bloque resuelve además el problema de variables correlacionadas que se cubren mutuamente y permite comparar directamente con el aporte incremental al pseudo-R$^2$ de la logística. Cuando los dos métodos llegan al mismo bloque dominante, la conclusión sustantiva es más robusta que con cualquiera de los dos métodos por separado.
 
-El trabajo también tiene límites. La agresión está medida por autorreporte y no distingue entre distintos niveles de gravedad. Además, algunas variables tienen cobertura parcial y fueron imputadas con la mediana, lo cual puede reducir o distorsionar su importancia. Por último, la cohorte corresponde a jóvenes nacidos en Estados Unidos entre 1980 y 1984, por lo que cualquier lectura para México debe hacerse con cuidado. Aun con estas limitaciones, el resultado central es claro: prevenir el inicio de la violencia parece una meta más alcanzable que predecir quién continuará agrediendo después.
+La implicación de política pública es directa. Las intervenciones que actúan sobre las conductas observables entre los 14 y los 17 años (programas anti-pandilla, tratamientos por consumo temprano de alcohol, atención temprana al joven con arresto) parecen apuntar al bloque con más información sobre la trayectoria posterior. Esto no significa que los programas de contexto familiar y económico sean inútiles, pero sí que su efecto sobre la violencia probablemente pasa por su efecto sobre las conductas adolescentes. La lectura es consistente con @heckman2006 sobre la importancia de invertir temprano en poblaciones desfavorecidas, y matiza el lugar relativo de las variables distales en la cadena predictiva.
+
+El trabajo tiene límites que conviene reconocer. La agresión está medida por autorreporte y no distingue entre niveles de gravedad. Algunas variables tienen cobertura parcial y se imputaron con la mediana, lo que puede reducir o distorsionar su importancia relativa. El diseño es asociativo, así que las afirmaciones de política pública requieren cautela: que la conducta temprana sea el mejor predictor no implica que intervenir sobre ella tenga un efecto causal de la misma magnitud. Por último, la cohorte corresponde a jóvenes nacidos en Estados Unidos entre 1980 y 1984, por lo que la generalización a otras cohortes o países debe hacerse con cuidado.
 
 # Anexo: tablas y figuras {.appendix}
 
-| Modelo | Muestra | Prevalencia | AUC prueba | AUC validación cruzada |
-|:-------|:-------:|:-----------:|:----------:|:----------------------:|
-| Global (14-17 a 18-23) | 8,609 | 16.9 % | 0.80 | 0.76 (±0.03) |
-| Inicio (sin agresión temprana) | 6,568 | 10.6 % | 0.71 | 0.70 (±0.04) |
-| Persistencia (con agresión temprana) | 2,029 | 37.4 % | 0.58 | 0.62 (±0.04) |
+| Modelo | Bloque agregado | $k$ | LR $\chi^2$ | df | $p$ | $\Delta R^2_{\text{Nag.}}$ | $R^2_{\text{Nag.}}$ | AIC |
+|:-------|:----------------|:---:|:-----------:|:--:|:---:|:-------------------------:|:-------------------:|:---:|
+| M1 | B1 Demográficas | 7 | — | — | — | 0.045 | 0.045 | 7602.8 |
+| M2 | + B2 Familia | 14 | 54.6 | 7 | $<10^{-8}$ | 0.010 | 0.056 | 7562.3 |
+| M3 | + B3 Recursos económicos | 20 | 41.3 | 6 | $<10^{-6}$ | 0.008 | 0.063 | 7533.0 |
+| M4 | + B4 Cognitivo (ASVAB) | 23 | 10.0 | 3 | 0.019 | 0.002 | 0.065 | 7529.0 |
+| M5 | + B5 Conducta antisocial 14-17 | 28 | 645.4 | 5 | $<10^{-130}$ | 0.116 | 0.181 | 6893.6 |
+| M6 | + B6 Sustancias 14-17 | 33 | 146.4 | 5 | $<10^{-29}$ | 0.025 | 0.207 | 6757.2 |
+| M7 | + B7 Justicia 14-17 | 35 | 33.0 | 2 | $<10^{-7}$ | 0.006 | 0.212 | 6728.2 |
 
-: Desempeño de los tres modelos de *random forest*. {#tbl-desempeno}
-
-\newpage
-
-| Variable | Importancia de Gini | Importancia por permutación |
-|:---------|:-------------------:|:---------------------------:|
-| Agresión temprana (14-17) | 0.228 | 0.079 |
-| Habilidad cognitiva (ASVAB) | 0.080 | 0.007 |
-| Ingreso del hogar (14-17) | 0.064 | bajo |
-| Venta de drogas temprana | 0.059 | 0.003 |
-| Razón de pobreza (1997) | 0.055 | bajo |
-| Edad de la madre al nacer | 0.055 | 0.005 |
-| Destrucción de propiedad temprana | 0.053 | 0.003 |
-| Sexo (hombre) | 0.049 | 0.014 |
-| Pandilla temprana | 0.044 | 0.010 |
-| Alcohol temprano | 0.041 | 0.014 |
-
-: Importancia de variables en el modelo global. {#tbl-global}
+: Comparación ANOVA de los siete modelos logísticos anidados. $k$ es el número de parámetros del modelo (sin la constante). LR $\chi^2$ y $p$ corresponden a la prueba de razón de verosimilitudes contra el modelo anterior. $R^2_{\text{Nag.}}$ es el pseudo-R$^2$ de Nagelkerke. {#tbl-anova}
 
 \newpage
 
-| Modelo de inicio | Importancia | | Modelo de persistencia | Importancia |
-|:-----------------|:-----------:|:-:|:-----------------------|:-----------:|
-| Habilidad cognitiva | 0.142 | | Razón de pobreza | 0.116 |
-| Edad de la madre | 0.091 | | Habilidad cognitiva | 0.098 |
-| Pandilla temprana | 0.087 | | Ingreso del hogar | 0.098 |
-| Ingreso del hogar | 0.084 | | Edad de la madre | 0.091 |
-| Alcohol temprano | 0.081 | | Venta de drogas temprana | 0.084 |
-| Sexo (hombre) | 0.079 | | Portación de arma temprana | 0.055 |
-| Razón de pobreza | 0.075 | | Arresto antes de los 17 | 0.046 |
+| Variable | Coef. | EE | $z$ | $p$ | OR |
+|:---------|:-----:|:---:|:---:|:---:|:--:|
+| Agresión temprana (14-17) | 1.065 | 0.074 | 14.33 | $<0.001$ | 2.90 |
+| Sexo (hombre) | 0.498 | 0.067 | 7.39 | $<0.001$ | 1.65 |
+| Alcohol temprano | 0.646 | 0.090 | 7.15 | $<0.001$ | 1.91 |
+| Pandilla temprana | 0.373 | 0.067 | 5.60 | $<0.001$ | 1.45 |
+| Arresto antes de 17 | 0.587 | 0.112 | 5.25 | $<0.001$ | 1.80 |
+| Venta de drogas temprana | 0.391 | 0.096 | 4.05 | $<0.001$ | 1.48 |
+| Ingreso hogar 14-17, Q1 (más bajo) | 0.463 | 0.125 | 3.71 | $<0.001$ | 1.59 |
+| Fumar temprano | 0.280 | 0.076 | 3.70 | $<0.001$ | 1.32 |
+| Ingreso hogar 14-17, Q2 | 0.378 | 0.113 | 3.35 | $<0.001$ | 1.46 |
+| Destrucción de propiedad temprana | 0.256 | 0.080 | 3.21 | 0.001 | 1.29 |
+| Razón de pobreza Q3 | $-$0.329 | 0.110 | $-$2.99 | 0.003 | 0.72 |
+| Ingreso hogar 14-17, Q3 | 0.321 | 0.108 | 2.97 | 0.003 | 1.38 |
 
-: Importancia de Gini en los modelos de inicio y persistencia. {#tbl-inicio-persistencia}
+: Coeficientes del modelo M7 (top 12 por $|z|$). EE robustos a heterocedasticidad. Cuartiles con $Q_4$ (más alto) como referencia. OR = $\exp(\text{coef})$. {#tbl-coefs}
 
 \newpage
 
-| Grupo | Categoría | Tasa de agresión 18-23 |
-|:------|:----------|:----------------------:|
-| Sexo | Hombre | 21.7 % |
-| Sexo | Mujer | 11.9 % |
-| Raza o etnicidad | Afroamericano | 21.5 % |
-| Raza o etnicidad | Hispano | 16.8 % |
-| Raza o etnicidad | Blanco u otro | 14.5 % |
-| Estructura familiar | Dos padres biológicos | 13.5 % |
-| Estructura familiar | Un solo padre | 18.4 % |
-| Estructura familiar | Otra estructura | 22.9 % |
+| Bloque | $\Delta R^2_{\text{Nag.}}$ (logit) | Ranking logit | $\Delta\mathrm{AUC}$ (RF) | Ranking RF |
+|:-------|:----------------------------------:|:-------------:|:------------------------:|:----------:|
+| B5 Conducta antisocial 14-17 | 0.116 | 1 | 0.134 | 1 |
+| B1 Demográficas | 0.045 | 2 | 0.026 | 3 |
+| B6 Sustancias 14-17 | 0.025 | 3 | 0.041 | 2 |
+| B2 Familia | 0.010 | 4 | 0.003 | 5 |
+| B3 Recursos económicos | 0.008 | 5 | 0.001 | 6 |
+| B7 Justicia 14-17 | 0.006 | 6 | 0.005 | 4 |
+| B4 Cognitivo (ASVAB) | 0.002 | 7 | 0.001 | 7 |
 
-: Tasas de agresión adulta por subgrupo. {#tbl-bivariado}
+: Triangulación de rankings entre la logística jerárquica y el random forest. La columna de logit usa el cambio en pseudo-R$^2$ de Nagelkerke al agregar el bloque sobre todos los anteriores. La columna de RF usa la importancia media por permutación del bloque (30 repeticiones) sobre la muestra de prueba. {#tbl-ranking}
+
+\newpage
+
+![Estabilidad de los coeficientes de las variables top del modelo final a lo largo de los siete modelos anidados. Una caída pronunciada al introducir el bloque B5 (conducta antisocial) indica que parte de la asociación bruta de la variable pasa por las conductas tempranas.](../analisis/figuras/jer_coef_stability.png){#fig-stability width=92%}
+
+\newpage
+
+![Importancia por permutación individual del random forest (top 15 variables). El intervalo del 95 por ciento se construye por percentiles de 30 repeticiones. La agresión temprana domina con un margen considerable.](../analisis/figuras/jer_perm_individual.png){#fig-perm-ind width=92%}
+
+\newpage
+
+![Importancia por permutación por bloque del random forest. Cada barra muestra el $\Delta\mathrm{AUC}$ promedio al permutar al mismo tiempo todas las variables del bloque. Los intervalos son percentiles 2.5 y 97.5 de 30 repeticiones.](../analisis/figuras/jer_perm_bloques.png){#fig-perm-blk width=92%}
+
+\newpage
+
+![Triangulación de rankings de bloques entre la logística jerárquica y el random forest. Cada bloque se posiciona en cada método según su aporte. La coincidencia en el primer lugar (conducta antisocial temprana) es la evidencia central del resultado.](../analisis/figuras/jer_ranking_logit_vs_rf.png){#fig-ranking width=92%}
 
 \newpage
 
 ![Curva edad-agresión en la NLSY97. La prevalencia del autorreporte de agresión asciende en la adolescencia media y desciende en la adultez joven, replicando el patrón clásico edad-crimen.](../analisis/figuras/curva_edad_crimen.png){#fig-edad width=85%}
-
-\newpage
-
-![Importancia de variables en el modelo global de *random forest*. La agresión temprana domina sobre todas las demás variables.](../analisis/figuras/pred_gini.png){#fig-gini width=85%}
-
-\newpage
-
-![Análisis de componentes principales de los factores de riesgo medidos entre los 14 y 17 años. El primer componente carga sobre todas las conductas antisociales a la vez, lo que evidencia un factor general de delincuencia.](../analisis/figuras/pred_pca_biplot.png){#fig-pca width=85%}
-
-\newpage
-
-![Importancia de variables en el modelo de inicio. Los predictores son marcadores del contexto social, no señales criminales.](../analisis/figuras/modelo_inicio.png){#fig-inicio width=80%}
-
-\newpage
-
-![Importancia de variables en el modelo de persistencia. La capacidad predictiva es baja y solo asoman, de forma débil, la desventaja socioeconómica y el arraigo delictivo.](../analisis/figuras/modelo_persistencia.png){#fig-persistencia width=80%}
 
 # Referencias {.unnumbered}
 

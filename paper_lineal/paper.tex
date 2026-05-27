@@ -1,0 +1,543 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+\captionsetup{labelfont=bf, font=small}
+\setlength{\parskip}{0.45em}
+\setlength{\parindent}{0pt}
+\floatplacement{figure}{H}
+\floatplacement{table}{H}
+\graphicspath{{figuras/}}
+
+\title{Determinantes individuales y de contexto de la violencia interpersonal en jóvenes estadounidenses: un modelo lineal jerárquico sobre el NLSY97}
+\author{Jerónimo Deli\\Tópicos de Políticas Públicas II\\ITAM, Primavera 2026}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent Este trabajo estudia los determinantes individuales, familiares, cognitivos y conductuales de haber reportado al menos una agresión física entre los 14 y los 23 años. La evidencia proviene del \textit{National Longitudinal Survey of Youth 1997} (NLSY97), enriquecido con variables de justicia penal por el Bureau of Justice Statistics. La estrategia empírica es un \textit{Linear Probability Model} estimado por mínimos cuadrados ordinarios con errores estándar robustos a heterocedasticidad (HC1). Para aislar la contribución relativa de cada dominio se ajusta una secuencia jerárquica de seis modelos en la que se añaden, de manera incremental, bloques de variables demográficas, familiares y socioeconómicas, cognitivas, de conducta delictiva temprana y de sustancias/justicia, hasta una especificación con interacciones sexo$\times$raza. Los modelos se comparan con ANOVA incremental, $R^2$ ajustada, AIC y BIC, y se validan fuera de muestra con una partición 85/15. Los resultados muestran que la conducta delictiva en la adolescencia temprana y el arresto previo a los 18 años absorben la mayor parte del poder predictivo, sin anular las brechas asociadas al sexo, la raza y el contexto familiar.
+\end{abstract}
+
+\newpage
+{\setcounter{tocdepth}{2}\tableofcontents}
+\newpage
+
+% =============================================================
+\section{Introducción al problema}
+% =============================================================
+
+La violencia interpersonal en adolescentes y jóvenes adultos es una de las preocupaciones más persistentes de la política social en Estados Unidos. Más allá del costo humano, las agresiones entre pares tienen consecuencias documentadas sobre el desempeño escolar, la trayectoria laboral, la salud mental y la probabilidad de contacto futuro con el sistema penal. La política pública dispone de un repertorio amplio de intervenciones para enfrentar el problema —prevención escolar, programas de mentoría, terapia cognitivo-conductual, tribunales de drogas juveniles, mediación restaurativa— pero todas comparten una restricción presupuestal estricta y deben dirigirse a quienes más se benefician de ellas. Para diseñarlas y focalizarlas con eficacia es necesario entender qué factores observables \textit{en la adolescencia temprana} predicen una mayor probabilidad de incurrir en agresión física a lo largo del ciclo de vida juvenil, y cuáles de esos factores son redundantes una vez que se controla por los demás.
+
+La pregunta es difícil porque la conducta agresiva no surge de un único origen. Los determinantes plausibles se distribuyen en al menos cinco dominios distintos: características demográficas estables (sexo, raza/etnicidad, edad de la madre al nacer), contexto familiar y socioeconómico (estructura del hogar, educación de los padres, razón ingreso-pobreza), capacidad cognitiva (medida con instrumentos estandarizados como el ASVAB), conductas de riesgo en la adolescencia temprana (vandalismo, robos, pertenencia a pandillas, porte de armas, fugarse de casa) y consumo de sustancias junto con el contacto temprano con el sistema penal (alcohol, tabaco, mariguana, drogas duras y arresto antes de los 18 años). Una buena política pública requiere entender no sólo cuáles de estos dominios importan, sino cuánto importa cada uno \textit{cuando se controla por los demás}.
+
+Para responder esta pregunta usamos el \textit{National Longitudinal Survey of Youth 1997} (NLSY97), una encuesta panel del Bureau of Labor Statistics que sigue desde 1997 a una cohorte representativa de jóvenes estadounidenses nacidos entre 1980 y 1984. El subconjunto utilizado (ICPSR 34562) fue construido por el Bureau of Justice Statistics combinando los reportes anuales de conducta del propio respondente con información administrativa de arrestos, condenas y encarcelamientos. La cohorte fue entrevistada anualmente entre los 14 y los 23 años de edad, lo que ofrece una ventana razonable para observar la trayectoria juvenil completa.
+
+Las preguntas de investigación centrales son:
+\begin{enumerate}
+\item \textbf{¿Qué bloques de información sobre un joven en la adolescencia temprana predicen la probabilidad de haber reportado al menos una agresión física entre los 14 y los 23 años?}
+\item \textbf{¿Cuánto poder explicativo adicional aporta cada dominio (demográfico, familiar y socioeconómico, cognitivo, conductual, de sustancias y justicia) por encima de los anteriores?}
+\item \textbf{¿Persisten las brechas demográficas y de contexto familiar después de controlar por conducta temprana y arresto previo a los 18 años?}
+\item \textbf{¿La asociación entre sexo y agresión cambia según la raza/etnicidad?}
+\end{enumerate}
+
+% =============================================================
+\section{Resumen del análisis estadístico}
+% =============================================================
+
+El flujo del análisis sigue estos pasos:
+\begin{enumerate}
+\item Definición de la variable dependiente \texttt{EVER\_ASSAULT} a partir de los reportes anuales \texttt{ASSAULT\_CY\{n\}}.
+\item Construcción de una muestra analítica con observaciones completas en todas las variables explicativas.
+\item Análisis exploratorio con tablas descriptivas y gráficas.
+\item Pruebas ANOVA univariadas para comparar la prevalencia entre grupos.
+\item Ajuste de seis modelos lineales en complejidad creciente.
+\item Comparación formal con ANOVA incremental, $R^2$ ajustada, AIC y BIC.
+\item Diagnósticos del modelo final: residuos, Q-Q plot, scale-location, leverage y prueba de Breusch-Pagan.
+\item Validación fuera de muestra con partición aleatoria 85\% / 15\%.
+\end{enumerate}
+
+% =============================================================
+\section{Marco teórico}
+% =============================================================
+
+La herramienta principal del proyecto es el modelo lineal jerárquico estimado por mínimos cuadrados ordinarios (OLS). Dado que la variable dependiente es binaria (1 = reportó al menos una agresión entre los 14 y 23 años, 0 = nunca lo reportó), el modelo se interpreta como un \textit{Linear Probability Model} (LPM):
+\[
+P(Y_i = 1 \mid X_i) = \beta_0 + \beta_1 X_{i1} + \beta_2 X_{i2} + \cdots + \beta_k X_{ik} + u_i,
+\]
+donde $Y_i$ es \texttt{EVER\_ASSAULT}, los términos $X$ recogen características observadas del joven y $u_i$ resume factores no observados. Bajo esta especificación cada coeficiente $\beta_j$ se interpreta directamente como el cambio en la probabilidad estimada de agresión asociado a un cambio unitario en la variable explicativa, manteniendo constantes las demás. Esta interpretación es atractiva para política pública porque las magnitudes están en la misma escala que la variable de interés (puntos porcentuales).
+
+El LPM tiene tres ventajas conocidas frente a alternativas no lineales como logit o probit. Primero, los coeficientes son directamente interpretables como efectos marginales, sin necesidad de evaluar derivadas en distintos puntos del espacio de covariables. Segundo, las comparaciones entre modelos anidados pueden realizarse con la maquinaria estándar de OLS: ANOVA incremental, $R^2$, AIC y BIC. Tercero, los errores estándar robustos a heterocedasticidad (HC1) corrigen el principal problema técnico del LPM, que es que la varianza de $u_i$ depende del valor esperado de $Y_i$ y por construcción no es constante. En este trabajo toda la inferencia se hace con errores estándar HC1, calculados a partir de la matriz \textit{sandwich} de White.
+
+Las limitaciones también son conocidas y se discuten más adelante: las probabilidades predichas pueden caer fuera del intervalo $[0,1]$, y la prueba de Breusch-Pagan rechaza formalmente la hipótesis de homocedasticidad. El uso de errores estándar HC1 atiende lo segundo; la primera limitación se asume conscientemente a cambio de la transparencia interpretativa que ofrece el LPM, y se acompaña, en la sección de validación, con métricas de clasificación (\textit{accuracy} y AUC) que no dependen del supuesto de probabilidad acotada.
+
+La organización jerárquica del modelo merece una explicación aparte. En lugar de estimar una sola especificación con todas las variables, se ajusta una secuencia anidada de seis modelos. Cada modelo añade un bloque temático coherente al anterior. Esta estrategia permite responder dos preguntas que un modelo único no puede contestar: \textit{(i)} cuánta varianza explica cada dominio por sí solo, y \textit{(ii)} cuánta varianza adicional aporta un dominio nuevo \textit{una vez que se controla por los anteriores}. Si una variable parece importante en aislamiento y desaparece al añadir un bloque posterior, ese bloque está capturando el mismo mecanismo. La ANOVA incremental cuantifica formalmente este aporte.
+
+El uso de variables dummy es central. Variables categóricas como la raza/etnicidad, la estructura familiar o la educación de los padres se incorporan mediante indicadores binarios que comparan cada categoría con una de referencia. Esto permite estimar diferencias promedio entre grupos sin imponer una estructura lineal artificial sobre lo que son categorías discretas. Las interacciones se construyen multiplicando dos dummies (por ejemplo, \texttt{FEMALE} $\times$ \texttt{RACE\_BLACK}), y su coeficiente captura el cambio en la asociación de una variable cuando la otra está presente.
+
+% =============================================================
+\section{Análisis de datos}
+% =============================================================
+
+\subsection{Descripción de la base}
+
+Los datos provienen del \textit{Recidivism in the National Longitudinal Survey of Youth 1997} (ICPSR 34562, archivo DS0001, $N=8{,}984$ respondentes y 392 variables). El archivo combina información sociodemográfica medida una sola vez en 1997 con seguimientos anuales entre los 14 y los 23 años. Para cada año de vida del respondente se registran indicadores binarios de conducta delictiva (\texttt{ASSAULT\_CY\{n\}}, \texttt{DESTROY\_CY\{n\}}, etc.), de consumo de sustancias y de contacto con el sistema penal. Las variables del NLSY97 utilizan códigos especiales (\texttt{Non-interview}, \texttt{Refused}, \texttt{Don't know}, \texttt{Valid missing}) que en este análisis se tratan como faltantes antes de cualquier cálculo numérico.
+
+La variable dependiente \texttt{EVER\_ASSAULT} se construye colapsando los reportes anuales \texttt{ASSAULT\_CY14} a \texttt{ASSAULT\_CY23}: vale $1$ si el respondente reportó al menos una agresión física intencional en cualquier año observado y $0$ si reportó \emph{No} en todos los años con respuesta válida. Para evitar \textit{data leakage}, las variables de agresión se excluyen completamente del conjunto de predictores; en su lugar se construyen agregados de \textit{otras} conductas delictivas y de sustancias restringidos al tramo \textbf{14--17 años} (adolescencia temprana). Esto garantiza que los predictores son anteriores o contemporáneos al inicio del riesgo medido, no posteriores.
+
+La muestra analítica se obtiene exigiendo información válida en todas las variables que entran a los seis modelos, lo que asegura comparabilidad entre especificaciones. El resultado son \textbf{$N = 3{,}815$ jóvenes}, equivalentes al $42.5\%$ de la muestra original. La principal fuente de atrición proviene de \texttt{POVRATIO97} (27\% de faltantes) y \texttt{ASVAB\_SCORE} (21\% de faltantes); se discute la posible selectividad en la sección de limitaciones.
+
+\subsection{Variables utilizadas}
+
+\begin{table}[H]
+\centering
+\caption{Variables principales del proyecto}
+\label{tab:tabla-variables}
+\small
+\begin{tabular}{p{3.1cm}p{2.4cm}p{6.2cm}p{2.5cm}}
+\toprule
+columna & tipo & definición corta & uso en proyecto \\
+\midrule
+\texttt{EVER\_ASSAULT} & binaria & =1 si reportó $\geq 1$ agresión entre 14 y 23 años & \textbf{Dependiente} \\
+\texttt{FEMALE} & binaria & =1 si sexo = mujer & Demográfico \\
+\texttt{RACE\_BLACK}, \texttt{RACE\_HISPANIC}, \texttt{RACE\_MIXED} & binarias & raza/etnicidad (ref = no-Black/no-Hispanic) & Demográfico \\
+\texttt{BIOMOMAGE} & numérica & edad de la madre al nacer el respondente & Demográfico \\
+\texttt{NUMSIBS} & numérica & número de hermanos en 1997 & Demográfico \\
+\texttt{FAM\_ONE\_PARENT}, \texttt{FAM\_BIO\_STEP}, \texttt{FAM\_OTHER} & binarias & estructura familiar (ref = dos padres biológicos) & Familia/SES \\
+\texttt{PAR\_ED\_HS}, \texttt{PAR\_ED\_SOME\_COL}, \texttt{PAR\_ED\_COL} & binarias & educación máxima de los padres (ref = $<$HS) & Familia/SES \\
+\texttt{POVRATIO97} & numérica & razón ingreso del hogar / línea de pobreza en 1997 & Familia/SES \\
+\texttt{ASVAB\_SCORE} & numérica & percentil ASVAB (habilidad cognitiva) & Cognitivo \\
+\texttt{EARLY\_DESTROY}, \texttt{EARLY\_STEAL\_*}, \texttt{EARLY\_OTHER\_PROP}, \texttt{EARLY\_GANG}, \texttt{EARLY\_GUN}, \texttt{EARLY\_RUNAWAY} & numéricas (conteo) & número de años 14--17 con reporte afirmativo & Conducta pasada \\
+\texttt{EARLY\_SMOKING}, \texttt{EARLY\_ALCOHOL}, \texttt{EARLY\_MARIJUANA}, \texttt{EARLY\_HARD\_DRUGS} & numéricas (conteo) & número de años 14--17 con consumo afirmativo & Justicia/Sustancias \\
+\texttt{EVER\_ARR\_BY17} & binaria & =1 si reportó arresto en cualquier año 14--17 & Justicia/Sustancias \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+La Tabla \ref{tab:tabla-variables} organiza las variables en los cinco bloques temáticos que definen la secuencia jerárquica de modelos. Las variables de conducta y sustancias se construyen como conteos restringidos al tramo 14--17 años: si un respondente reportó pertenencia a una pandilla cuando tenía 14 y 15 años pero no a los 16 ni 17, \texttt{EARLY\_GANG} = 2. Este diseño preserva la intensidad de la exposición y respeta el orden temporal respecto a la variable dependiente, que cubre hasta los 23 años. En particular, los predictores de los bloques de conducta y sustancias \textit{traslapan} con los primeros años de observación de \texttt{EVER\_ASSAULT} (14--17), por lo que los coeficientes deben leerse como asociaciones contemporáneas y no como efectos predictivos puros.
+
+\subsection{Estadísticas descriptivas numéricas}
+
+\begin{table}[H]
+\centering
+\caption{Resumen de variables numéricas en la muestra analítica}
+\label{tab:tabla-numericas}
+\small
+\begin{tabular}{lrrrr}
+\toprule
+variable & n & media & desv. est. & mediana \\
+\midrule
+\texttt{BIOMOMAGE} & 3,815 & 25.70 & 5.26 & 25.00 \\
+\texttt{NUMSIBS} & 3,815 & 1.55 & 1.19 & 1.00 \\
+\texttt{POVRATIO97} & 3,815 & 2.98 & 2.70 & 2.45 \\
+\texttt{ASVAB\_SCORE} & 3,815 & 47.88 & 29.09 & 46.59 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+La Tabla \ref{tab:tabla-numericas} reporta las cuatro variables continuas del modelo. La edad mediana de la madre al nacer el respondente es de 25 años. El número mediano de hermanos es uno. La razón ingreso/pobreza tiene una media de 2.98, lo que indica que un hogar promedio de la muestra tenía un ingreso casi tres veces la línea de pobreza federal en 1997; la mediana (2.45) es menor que la media, consistente con la asimetría hacia la derecha típica de la distribución del ingreso. El puntaje ASVAB tiene media 47.9 y desviación estándar 29.1, lo que confirma que recorre prácticamente todo el rango 0--100.
+
+\subsection{Estadísticas descriptivas categóricas}
+
+\begin{table}[H]
+\centering
+\caption{Distribución de variables categóricas en la muestra analítica}
+\label{tab:tabla-categoricas}
+\small
+\begin{tabular}{llrr}
+\toprule
+bloque & categoría & n & prop. \\
+\midrule
+Sexo & Hombre (ref) & 1,934 & 50.7\% \\
+ & Mujer (\texttt{FEMALE}=1) & 1,881 & 49.3\% \\
+Raza/etnicidad & No-Black/No-Hispanic (ref) & 2,258 & 59.2\% \\
+ & Black & 833 & 21.8\% \\
+ & Hispanic & 692 & 18.1\% \\
+ & Mixed & 32 & 0.8\% \\
+Estructura familiar & Dos padres biológicos (ref) & 2,116 & 55.5\% \\
+ & Un solo padre/madre & 1,153 & 30.2\% \\
+ & Biológico + padrastro/madrastra & 520 & 13.6\% \\
+ & Otra & 26 & 0.7\% \\
+Educación de los padres & Menos de preparatoria (ref) & 540 & 14.2\% \\
+ & Preparatoria & 1,168 & 30.6\% \\
+ & Algo de universidad & 1,071 & 28.1\% \\
+ & Título universitario o más & 1,036 & 27.2\% \\
+\midrule
+\multicolumn{2}{l}{Prevalencia de \texttt{EVER\_ASSAULT}} & 1,161 & 30.4\% \\
+\multicolumn{2}{l}{Arresto reportado antes de los 18 años} & 509 & 13.3\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+La Tabla \ref{tab:tabla-categoricas} muestra que la muestra está balanceada por sexo. La población no-Black/no-Hispanic representa el grupo mayoritario (59.2\%), seguida por Black (21.8\%) e Hispanic (18.1\%). Más de la mitad de los respondentes vivían en hogares con ambos padres biológicos en 1997, mientras que el 30\% vivía con un solo padre. La distribución de la educación de los padres es bastante uniforme entre los tres tramos altos, con sólo 14\% de los padres con menos de preparatoria. El 30.4\% de los respondentes reportó al menos una agresión física entre los 14 y los 23 años (la variable dependiente del estudio), y el 13.3\% había sido arrestado al menos una vez antes de los 18 años.
+
+\subsection{Análisis exploratorio}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.72\linewidth]{01_target_distribution.png}
+\caption{Distribución de la variable dependiente \texttt{EVER\_ASSAULT} en la muestra analítica.}
+\label{fig:target}
+\end{figure}
+
+\emph{Interpretación:} La clase positiva (haber reportado al menos una agresión) cubre el 30.4\% de la muestra; la negativa, el 69.6\%. Hay desbalance moderado pero no extremo: ambos grupos tienen suficiente masa para que el modelo lineal estime coeficientes estables sin necesidad de re-ponderar las observaciones.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\linewidth]{02_prevalence_sex_race.png}
+\caption{Prevalencia de \texttt{EVER\_ASSAULT} por sexo y por raza/etnicidad.}
+\label{fig:prev-sex-race}
+\end{figure}
+
+\emph{Interpretación:} La prevalencia es notablemente mayor entre hombres ($37.6\%$) que entre mujeres ($23.1\%$). Por raza/etnicidad, el grupo Black registra la prevalencia más alta ($40.6\%$), seguido por Mixed ($34.4\%$), Hispanic ($30.6\%$) y, por último, no-Black/no-Hispanic ($26.6\%$). Estas brechas motivan la inclusión de ambas variables en el bloque demográfico.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.78\linewidth]{03_prevalence_by_asvab.png}
+\caption{Prevalencia de \texttt{EVER\_ASSAULT} por decil de puntaje ASVAB.}
+\label{fig:prev-asvab}
+\end{figure}
+
+\emph{Interpretación:} Existe un gradiente monótono descendente de la prevalencia de agresión a medida que aumenta el percentil ASVAB. El decil más bajo presenta una prevalencia cercana al $40\%$, mientras que el decil más alto se ubica por debajo del $20\%$. Esto sugiere que la habilidad cognitiva medida en la adolescencia capta un componente relevante del riesgo.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\linewidth]{04_prevalence_risk_behaviors.png}
+\caption{Prevalencia de \texttt{EVER\_ASSAULT} según conductas de riesgo en adolescencia temprana (14--17 años).}
+\label{fig:prev-risk}
+\end{figure}
+
+\emph{Interpretación:} Las tres conductas reportadas en la figura muestran asociaciones muy fuertes con la agresión observada en el panel completo. Quienes nunca pertenecieron a una pandilla en la adolescencia temprana tienen una prevalencia de agresión cercana al $20\%$; entre quienes sí pertenecieron, la prevalencia supera el $40\%$. El mismo patrón aparece para porte de armas y consumo de drogas duras. Estas asociaciones univariadas anticipan que el bloque de conducta pasada será el de mayor poder explicativo en el modelo multivariado.
+
+% =============================================================
+\section{Pruebas ANOVA}
+% =============================================================
+
+El análisis de varianza (ANOVA) compara la media de una variable continua (en este caso, \texttt{EVER\_ASSAULT}, que toma valores 0 y 1) entre los grupos definidos por una variable categórica. La hipótesis nula sostiene que todas las medias son iguales; la alternativa, que al menos una difiere. El estadístico $F$ compara la varianza entre grupos con la varianza dentro de grupos: un $F$ alto y un valor $p$ pequeño señalan que las diferencias entre grupos son sistemáticas. Estas pruebas se usan como una primera validación: si una variable categórica no muestra diferencias significativas, es poco probable que aporte poder explicativo en una regresión multivariada.
+
+\begin{table}[H]
+\centering
+\caption{Pruebas ANOVA univariadas de \texttt{EVER\_ASSAULT}}
+\label{tab:anova-uni}
+\small
+\begin{tabular}{lrrr}
+\toprule
+factor & $F$ & $p$ & número de grupos \\
+\midrule
+Sexo & 97.30 & $<0.001$ & 2 \\
+Raza/etnicidad & 19.14 & $<0.001$ & 4 \\
+Educación de los padres & 17.92 & $<0.001$ & 4 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Las tres ANOVA univariadas reportadas en la Tabla \ref{tab:anova-uni} rechazan la hipótesis nula de medias iguales con $p<0.001$. La prevalencia de agresión difiere de manera sistemática entre hombres y mujeres, entre grupos raciales y entre tramos de educación de los padres, lo que justifica incluir las tres variables en la especificación multivariada.
+
+% =============================================================
+\section{Ajuste de modelos}
+% =============================================================
+
+\begin{table}[H]
+\centering
+\caption{Guía de lectura de los modelos estimados}
+\label{tab:model-roadmap}
+\small
+\begin{tabular}{lp{4.5cm}p{6cm}p{3.2cm}}
+\toprule
+Modelo & Variables agregadas respecto al anterior & Bloque & Papel en el análisis \\
+\midrule
+Modelo 1 & sexo, raza, edad madre, hermanos & Demográfico & Punto de partida \\
+Modelo 2 & estructura familiar, educación de padres, ratio pobreza & + Familia y SES & Mejora incremental \\
+Modelo 3 & puntaje ASVAB & + Cognitivo & Mejora incremental \\
+Modelo 4 & conducta delictiva 14--17 (vandalismo, robos, pandilla, arma, fuga) & + Conducta pasada & Mejora incremental \\
+Modelo 5 & sustancias 14--17 y arresto antes de los 18 años & + Justicia/Sustancias & \textbf{Modelo base principal} \\
+Modelo 6 & interacciones FEMALE$\times$BLACK y FEMALE$\times$HISPANIC & + Interacción sexo$\times$raza & Extensión final \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+La Tabla \ref{tab:model-roadmap} resume la lógica de construcción. Cada modelo añade un bloque temático coherente al anterior y se interpreta como una hipótesis incremental sobre los determinantes de la agresión juvenil. El Modelo 1 contesta la pregunta: \textit{¿qué tanto explican las características demográficas estables por sí solas?}. El Modelo 2 añade el contexto familiar y socioeconómico medido en 1997. El Modelo 3 introduce la habilidad cognitiva. El Modelo 4 incorpora la conducta delictiva temprana, que es el bloque sustantivo más cercano a la variable dependiente. El Modelo 5 añade el bloque de sustancias y la variable de arresto antes de los 18 años. Finalmente, el Modelo 6 explora si la asociación entre sexo y agresión cambia según la raza/etnicidad.
+
+\subsection{Coeficientes estimados}
+
+\begin{table}[H]
+\centering
+\caption{Coeficientes estimados (LPM, OLS con errores HC1) de los seis modelos}
+\label{tab:coefs}
+\scriptsize
+\begin{tabular}{lcccccc}
+\toprule
+ & M1 & M2 & M3 & M4 & M5 & M6 \\
+\midrule
+(Intercepto) & 0.540*** & 0.479*** & 0.540*** & 0.332*** & 0.268*** & 0.262*** \\
+ & (0.042) & (0.050) & (0.051) & (0.047) & (0.047) & (0.047) \\
+Mujer & -0.151*** & -0.152*** & -0.145*** & -0.087*** & -0.085*** & -0.074*** \\
+ & (0.015) & (0.014) & (0.014) & (0.014) & (0.014) & (0.016) \\
+Raza: Black & 0.130*** & 0.082*** & 0.042* & 0.073*** & 0.106*** & 0.124*** \\
+ & (0.019) & (0.021) & (0.021) & (0.020) & (0.020) & (0.028) \\
+Raza: Hispanic & 0.038+ & 0.002 & -0.019 & -0.018 & -0.006 & 0.003 \\
+ & (0.020) & (0.021) & (0.021) & (0.020) & (0.019) & (0.028) \\
+Raza: Mixed & 0.077 & 0.071 & 0.081 & 0.069 & 0.063 & 0.062 \\
+ & (0.085) & (0.087) & (0.083) & (0.081) & (0.077) & (0.077) \\
+Edad madre & -0.008*** & -0.004** & -0.004* & -0.003+ & -0.003* & -0.003* \\
+ & (0.001) & (0.002) & (0.002) & (0.001) & (0.001) & (0.001) \\
+N.º hermanos & 0.001 & 0.000 & -0.001 & -0.001 & 0.002 & 0.002 \\
+ & (0.006) & (0.007) & (0.007) & (0.006) & (0.006) & (0.006) \\
+Familia: 1 padre &  & 0.102*** & 0.098*** & 0.056*** & 0.041* & 0.040* \\
+ &  & (0.018) & (0.018) & (0.017) & (0.016) & (0.016) \\
+Familia: bio+pad. &  & 0.080*** & 0.068** & 0.037+ & 0.020 & 0.020 \\
+ &  & (0.023) & (0.023) & (0.021) & (0.021) & (0.021) \\
+Familia: otra &  & 0.174+ & 0.148 & 0.166+ & 0.161+ & 0.160+ \\
+ &  & (0.102) & (0.101) & (0.095) & (0.097) & (0.097) \\
+Padres ed.: HS &  & -0.038 & -0.020 & -0.020 & -0.018 & -0.018 \\
+ &  & (0.026) & (0.026) & (0.023) & (0.023) & (0.023) \\
+Padres ed.: SC &  & -0.029 & 0.005 & -0.012 & -0.006 & -0.006 \\
+ &  & (0.026) & (0.027) & (0.024) & (0.024) & (0.024) \\
+Padres ed.: Col &  & -0.084** & -0.029 & -0.039 & -0.027 & -0.027 \\
+ &  & (0.028) & (0.029) & (0.026) & (0.026) & (0.026) \\
+Ratio pobreza &  & -0.005+ & -0.002 & -0.002 & -0.003 & -0.003 \\
+ &  & (0.003) & (0.003) & (0.003) & (0.003) & (0.003) \\
+ASVAB &  &  & -0.0021*** & -0.0016*** & -0.0013*** & -0.0013*** \\
+ &  &  & (0.0003) & (0.0003) & (0.0003) & (0.0003) \\
+Vandalismo (14--17) &  &  &  & 0.117*** & 0.101*** & 0.102*** \\
+ &  &  &  & (0.012) & (0.012) & (0.012) \\
+Robo $<$\$50 (14--17) &  &  &  & 0.040*** & 0.010 & 0.011 \\
+ &  &  &  & (0.012) & (0.012) & (0.012) \\
+Robo $\geq$\$50 (14--17) &  &  &  & 0.041+ & 0.015 & 0.015 \\
+ &  &  &  & (0.021) & (0.021) & (0.021) \\
+Otro c. propiedad &  &  &  & 0.071*** & 0.055** & 0.055** \\
+ &  &  &  & (0.021) & (0.021) & (0.021) \\
+Pandilla (14--17) &  &  &  & 0.076*** & 0.067*** & 0.067*** \\
+ &  &  &  & (0.011) & (0.011) & (0.011) \\
+Portó arma (14--17) &  &  &  & 0.063*** & 0.047** & 0.048** \\
+ &  &  &  & (0.017) & (0.017) & (0.017) \\
+Huyó de casa (14--17) &  &  &  & 0.138*** & 0.091*** & 0.091*** \\
+ &  &  &  & (0.018) & (0.018) & (0.018) \\
+Tabaco (14--17) &  &  &  &  & 0.032*** & 0.032*** \\
+ &  &  &  &  & (0.007) & (0.007) \\
+Alcohol (14--17) &  &  &  &  & 0.008 & 0.008 \\
+ &  &  &  &  & (0.007) & (0.007) \\
+Mariguana (14--17) &  &  &  &  & 0.017 & 0.017 \\
+ &  &  &  &  & (0.012) & (0.012) \\
+Drogas duras (14--17) &  &  &  &  & 0.029 & 0.029 \\
+ &  &  &  &  & (0.019) & (0.020) \\
+Arresto antes de 18 &  &  &  &  & 0.172*** & 0.171*** \\
+ &  &  &  &  & (0.024) & (0.025) \\
+Mujer $\times$ Black &  &  &  &  &  & -0.036 \\
+ &  &  &  &  &  & (0.035) \\
+Mujer $\times$ Hispanic &  &  &  &  &  & -0.017 \\
+ &  &  &  &  &  & (0.034) \\
+\midrule
+$N$ & 3,815 & 3,815 & 3,815 & 3,815 & 3,815 & 3,815 \\
+$R^2$ & 0.049 & 0.066 & 0.078 & 0.235 & 0.265 & 0.265 \\
+$R^2$ ajustada & 0.047 & 0.063 & 0.074 & 0.231 & 0.260 & 0.260 \\
+\bottomrule
+\multicolumn{7}{l}{\rule{0pt}{1em}+ $p<0.1$; * $p<0.05$; ** $p<0.01$; *** $p<0.001$. Errores estándar HC1 entre paréntesis.}
+\end{tabular}
+\end{table}
+
+La Tabla \ref{tab:coefs} reporta los coeficientes de los seis modelos lado a lado. Como cada coeficiente representa un cambio en \textit{probabilidad}, las magnitudes se leen directamente en puntos porcentuales. Hay varios patrones que conviene destacar antes de comparar formalmente el ajuste.
+
+Primero, el coeficiente de \texttt{Mujer} disminuye de $-0.151$ en el Modelo 1 a $-0.085$ en el Modelo 5 (una caída cercana a la mitad), pero permanece estadísticamente significativo. Esto indica que parte de la brecha bruta por sexo se explica por diferencias en conducta temprana, sustancias y contacto con el sistema penal, pero más de la mitad persiste después de controlar por todo lo observable. Una mujer comparable a un hombre en todas las demás dimensiones del modelo final tiene aproximadamente $8.5$ puntos porcentuales menos de probabilidad de haber reportado una agresión.
+
+Segundo, el coeficiente de \texttt{Raza: Black} \textbf{aumenta} entre el Modelo 3 y el Modelo 5, pasando de $0.042$ a $0.106$. Este patrón es importante: al controlar por habilidad cognitiva (Modelo 3) la brecha racial se reduce, pero al controlar por conducta temprana y arresto (Modelos 4--5) la brecha se amplía. Esto significa que, condicional a haber tenido conductas y arrestos similares, los jóvenes Black tienen una probabilidad mayor de reportar agresión que jóvenes no-Black/no-Hispanic comparables. La interpretación es coherente con literatura que sugiere que distintos grupos pueden estar expuestos a tasas distintas de contacto con instituciones formales por el mismo nivel de conducta subyacente.
+
+Tercero, los coeficientes de los bloques de conducta y justicia son grandes y todos en la dirección esperada. Cada año adicional reportando pertenencia a una pandilla en la adolescencia temprana se asocia con $6.7$ puntos porcentuales más de probabilidad de reportar agresión. Cada año reportando huida de casa, con $9.1$ puntos porcentuales. Haber sido arrestado al menos una vez antes de los 18 años se asocia con $17.1$ puntos porcentuales más de probabilidad de reportar agresión, después de controlar por todo lo demás.
+
+Cuarto, las variables de consumo de sustancias muestran un patrón más débil. Sólo el tabaco resulta significativo (3.2 pp adicionales por año reportando consumo). Alcohol, mariguana y drogas duras no son significativos una vez que se controla por las conductas delictivas tempranas, lo que sugiere que parte del efecto bruto de estas sustancias opera a través de la conducta concurrente y no de manera independiente.
+
+Por último, el coeficiente del puntaje ASVAB en el Modelo 5 es $-0.0013$ por punto. Como la variable se mide en percentiles 0--100, mover a un joven del percentil 10 al percentil 90 (es decir, $80$ puntos) se asocia con una reducción esperada de $0.0013 \times 80 = 10.4$ puntos porcentuales en la probabilidad de reportar agresión. Esta magnitud sitúa a la habilidad cognitiva como un predictor cuantitativamente comparable a las brechas demográficas, aunque modesto frente al efecto de la conducta temprana y el arresto previo a los 18 años.
+
+\subsection{Comparación de ajuste}
+
+\begin{table}[H]
+\centering
+\caption{Métricas de ajuste comparadas}
+\label{tab:fit}
+\small
+\begin{tabular}{lrrrr}
+\toprule
+Modelo & $R^2$ & $R^2$ ajustada & AIC & BIC \\
+\midrule
+Modelo 1: Demográfico & 0.049 & 0.047 & 4727.5 & 4771.2 \\
+Modelo 2: + Familia y SES & 0.066 & 0.063 & 4670.3 & 4757.7 \\
+Modelo 3: + Cognitivo & 0.078 & 0.074 & 4625.0 & 4718.7 \\
+Modelo 4: + Conducta pasada & 0.235 & 0.231 & 3925.9 & 4063.3 \\
+\textbf{Modelo 5: + Justicia/Sustancias} & \textbf{0.265} & \textbf{0.260} & \textbf{3783.2} & \textbf{3951.9} \\
+Modelo 6: + Interacción sexo$\times$raza & 0.265 & 0.260 & 3785.9 & 3967.1 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+La Tabla \ref{tab:fit} muestra que la mejora entre el Modelo 1 y el Modelo 5 es muy grande: la $R^2$ ajustada pasa de $0.047$ a $0.260$, un aumento absoluto de $21.3$ puntos. El salto más espectacular ocurre entre el Modelo 3 y el Modelo 4 (del $7.4\%$ al $23.1\%$ de varianza explicada), lo que confirma que el bloque de conducta delictiva temprana es el que carga más peso explicativo. El bloque de justicia/sustancias añade $3.0$ puntos adicionales y mejora todavía el AIC y el BIC.
+
+El Modelo 6 no mejora ni $R^2$ ajustada ni AIC/BIC, y ambos términos de interacción son no significativos. La interpretación es directa: \textit{en estos datos no hay evidencia de que la asociación entre sexo y agresión cambie de manera material según la raza/etnicidad}. Por la regla estándar de parsimonia, el modelo preferido es el \textbf{Modelo 5}, que tiene el AIC más bajo (3783.2) y el BIC más bajo (3951.9) entre todas las especificaciones consideradas.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.78\linewidth]{05_r2_by_model.png}
+\caption{$R^2$ ajustada por modelo. El bloque de conducta delictiva temprana (de M3 a M4) es el que aporta más capacidad explicativa.}
+\label{fig:r2}
+\end{figure}
+
+\subsection{ANOVA incremental}
+
+\begin{table}[H]
+\centering
+\caption{ANOVA incremental entre modelos anidados}
+\label{tab:anova-seq}
+\small
+\begin{tabular}{lcccc}
+\toprule
+Transición & gl numerador & $F$ incremental & $p$-valor & $\Delta R^2$ \\
+\midrule
+M1 $\to$ M2 (+Familia y SES) & 7 & 10.23 & $<0.001$ & 0.018 \\
+M2 $\to$ M3 (+Cognitivo) & 1 & 47.40 & $<0.001$ & 0.012 \\
+M3 $\to$ M4 (+Conducta pasada) & 7 & 111.36 & $<0.001$ & 0.157 \\
+M4 $\to$ M5 (+Justicia/Sustancias) & 5 & 30.95 & $<0.001$ & 0.030 \\
+M5 $\to$ M6 (+Interacción sexo$\times$raza) & 2 & 0.64 & 0.526 & 0.000 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+La ANOVA incremental de la Tabla \ref{tab:anova-seq} cuantifica formalmente el aporte de cada bloque. Las primeras cuatro transiciones rechazan la hipótesis nula de igualdad de modelos con $p<0.001$: cada bloque añade información estadísticamente significativa más allá de los anteriores. La transición M5 $\to$ M6 no rechaza ($p=0.526$), lo que confirma cuantitativamente que la interacción sexo$\times$raza no aporta poder explicativo adicional en esta cohorte. Este es un hallazgo informativo en sí mismo: la pregunta planteada en la introducción tiene respuesta empírica negativa, y la parsimonia recomienda quedarse con el Modelo 5.
+
+% =============================================================
+\section{Especificación del modelo base}
+% =============================================================
+
+A partir de la comparación anterior, tomamos el \texttt{Modelo 5} como modelo principal porque combina el mejor ajuste (AIC = 3783.2, BIC = 3951.9, $R^2$ ajustada = 0.260) con una interpretación económica clara. Su forma funcional es:
+\[
+\begin{aligned}
+P(\text{EVER\_ASSAULT}_i = 1) =\ & \beta_0 + \beta_1 \text{Mujer}_i + \beta_2 \text{Black}_i + \beta_3 \text{Hispanic}_i + \beta_4 \text{Mixed}_i \\
+& + \beta_5 \text{EdadMadre}_i + \beta_6 \text{Hermanos}_i \\
+& + \beta_7 \text{Fam1Padre}_i + \beta_8 \text{FamBioStep}_i + \beta_9 \text{FamOtra}_i \\
+& + \beta_{10} \text{PadresHS}_i + \beta_{11} \text{PadresSC}_i + \beta_{12} \text{PadresCol}_i + \beta_{13} \text{Pobreza}_i \\
+& + \beta_{14} \text{ASVAB}_i + \beta_{15\ldots 21} \text{Conducta14-17}_i + \beta_{22\ldots 25} \text{Sustancias14-17}_i \\
+& + \beta_{26} \text{ArrestoPre18}_i + u_i.
+\end{aligned}
+\]
+
+Los grupos de referencia del Modelo 5 son:
+\begin{itemize}
+\item Sexo: \texttt{Hombre}.
+\item Raza/etnicidad: \texttt{No-Black/No-Hispanic}.
+\item Estructura familiar: \texttt{Dos padres biológicos}.
+\item Educación de los padres: \texttt{Menos de preparatoria}.
+\end{itemize}
+
+% =============================================================
+\section{Validación fuera de muestra (85/15)}
+% =============================================================
+
+Para revisar si el modelo final mantiene su desempeño fuera de la muestra de estimación, se dividió la base analítica en una partición aleatoria estratificada por la variable dependiente, con $85\%$ para entrenamiento y $15\%$ para prueba. La estratificación garantiza que la prevalencia de \texttt{EVER\_ASSAULT} sea aproximadamente igual en ambos conjuntos.
+
+\begin{table}[H]
+\centering
+\caption{Partición entrenamiento--prueba}
+\label{tab:split}
+\small
+\begin{tabular}{lrr}
+\toprule
+conjunto & $n$ & proporción \\
+\midrule
+Entrenamiento & 3,242 & 85.0\% \\
+Prueba & 573 & 15.0\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Desempeño del Modelo 5 en entrenamiento y prueba}
+\label{tab:validation}
+\small
+\begin{tabular}{lrrrrrr}
+\toprule
+métrica & $R^2$ & $R^2$ aj. & RMSE & MAE & Accuracy (0.5) & AUC \\
+\midrule
+Entrenamiento (n=3,242) & 0.256 & 0.250 & 0.397 & 0.322 & 0.774 & 0.807 \\
+Prueba (n=573) & 0.309 & --- & 0.382 & 0.308 & 0.794 & 0.837 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+La Tabla \ref{tab:validation} muestra un desempeño estable. La $R^2$ en prueba ($0.309$) es ligeramente mayor que la $R^2$ en entrenamiento ($0.256$), lo que descarta sobreajuste. El RMSE de prueba ($0.382$) y el MAE ($0.308$) son consistentes con un LPM bien calibrado para una variable binaria con prevalencia $0.304$. El AUC en prueba alcanza $0.837$: clasificando con umbral $0.5$, el modelo predice correctamente el $79.4\%$ de los respondentes del conjunto de prueba.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.72\linewidth]{07_pred_vs_obs_test.png}
+\caption{Probabilidad predicha contra valor observado de \texttt{EVER\_ASSAULT} en el conjunto de prueba (se agrega \textit{jitter} vertical para visualizar densidad).}
+\label{fig:pred-obs}
+\end{figure}
+
+\emph{Interpretación:} Los respondentes que efectivamente reportaron agresión ($Y=1$) tienden a recibir probabilidades predichas más altas que quienes no la reportaron ($Y=0$). La separación no es perfecta (hay solapamiento importante en la región media), lo que es consistente con un AUC de $0.84$: alto pero no cercano a $1$.
+
+% =============================================================
+\section{Diagnóstico}
+% =============================================================
+
+Los diagnósticos de residuos se revisan sobre el Modelo 5 mediante los cuatro gráficos habituales: residuos contra ajustados, Q-Q plot, scale-location y residuos contra leverage. Adicionalmente se reportan el número de observaciones con leverage alto, las observaciones con Cook's distance elevada y la prueba de Breusch-Pagan para heterocedasticidad.
+
+\begin{table}[H]
+\centering
+\caption{Resumen de diagnósticos de residuos del Modelo 5}
+\label{tab:diag}
+\small
+\begin{tabular}{lrrrrr}
+\toprule
+$N$ & Parámetros & Umbral leverage $2p/n$ & Obs. lev. alto & Obs. Cook alto & BP estadístico \\
+\midrule
+3,815 & 27 & 0.0142 & 244 (6.4\%) & 159 (4.2\%) & 297.3 ($p<0.001$) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.92\linewidth]{06_diagnostics_m5.png}
+\caption{Panel diagnóstico del Modelo 5: residuos vs ajustados, Q-Q plot, scale-location y residuos vs leverage.}
+\label{fig:diag}
+\end{figure}
+
+\emph{Interpretación:} El panel de la Figura \ref{fig:diag} muestra el patrón característico de un Linear Probability Model. Los residuos contra ajustados se agrupan en dos bandas paralelas: la banda superior corresponde a observaciones con $Y=1$ (residuo = $1 - \hat{p}$) y la inferior a observaciones con $Y=0$ (residuo = $-\hat{p}$). Esto no indica un problema del modelo sino una característica estructural del LPM: como la variable dependiente sólo toma dos valores, los residuos también lo hacen. El Q-Q plot se desvía de la diagonal en las colas por la misma razón. La prueba de Breusch-Pagan rechaza la homocedasticidad con $p<0.001$, lo cual es esperable: en el LPM la varianza de $u_i$ es $\hat{p}(1-\hat{p})$ y depende explícitamente de las covariables. Por eso toda la inferencia del trabajo se realiza con errores estándar HC1.
+
+En cuanto a leverage e influencia, el tamaño muestral hace que los umbrales mecánicos sean pequeños, por lo que no sorprende que aparezcan algunas observaciones señaladas. Aun así, las proporciones son moderadas: $6.4\%$ supera el umbral de leverage ($2p/n = 0.0142$) y $4.2\%$ supera el criterio de Cook ($4/n$). Existen, por tanto, observaciones potencialmente influyentes, pero no al grado de invalidar el patrón general del ajuste.
+
+% =============================================================
+\section{Conclusión}
+% =============================================================
+
+Los resultados del proyecto muestran que la probabilidad de reportar al menos una agresión física en la juventud no depende de una sola dimensión, sino de la suma estructurada de factores demográficos, familiares, cognitivos y, sobre todo, conductuales. El Modelo 5 alcanza una $R^2$ ajustada de $0.260$ y un AUC fuera de muestra de $0.837$, lo que representa una capacidad predictiva sustantiva para un fenómeno tan heterogéneo. La mejora más importante en ajuste proviene del bloque de conducta delictiva temprana, que por sí solo aumenta la varianza explicada en $15.7$ puntos respecto al modelo cognitivo. El bloque de sustancias y justicia añade $3.0$ puntos adicionales, principalmente a través de la variable de arresto antes de los 18 años, que sigue siendo el predictor individual más fuerte después de la propia historia conductual.
+
+Las brechas demográficas no se anulan al controlar por conducta y arresto. La brecha por sexo se reduce cerca de la mitad pero sigue siendo de $8.5$ puntos porcentuales en el modelo final; la brecha asociada a ser Black, lejos de desaparecer, se \textit{amplía} al condicionar por conducta y arresto, llegando a $10.6$ puntos porcentuales. Este último resultado es uno de los hallazgos más interesantes del trabajo: dos jóvenes con la misma historia conductual, el mismo perfil familiar y socioeconómico, la misma habilidad cognitiva y el mismo arresto previo a los 18 años, pero distinta raza, tienen probabilidades distintas de reportar agresión a lo largo de la juventud, con los jóvenes Black por arriba. La interpretación causal de esta diferencia requiere supuestos adicionales que están fuera del alcance del trabajo, pero es consistente con literatura que documenta exposición diferencial a contacto institucional y a violencia comunitaria.
+
+La interacción entre sexo y raza no resultó significativa en estos datos. La asociación entre ser mujer y reportar agresión es similar entre los grupos raciales considerados, al menos dentro del poder estadístico de la muestra analítica. Este es un hallazgo informativo: no toda heterogeneidad esperada se confirma empíricamente, y reportarlo honestamente es importante para no sobreinterpretar el modelo.
+
+Las implicaciones para política pública son claras y operacionalizables. Si el objetivo es reducir la prevalencia de violencia interpersonal en la juventud, la evidencia de este trabajo sugiere tres recomendaciones concretas. \textit{Primero}, las intervenciones con mayor potencial son las que actúan \textit{durante la adolescencia temprana} (14--17 años) sobre los marcadores conductuales identificados: pertenencia a pandillas, vandalismo, fugas del hogar y porte de armas. Programas como \textit{Functional Family Therapy} o \textit{Multisystemic Therapy}, que combinan trabajo con la familia, supervisión escolar y manejo de pares, abordan precisamente este conjunto de marcadores y han sido evaluados con asignación aleatoria en distintos contextos. \textit{Segundo}, las políticas dirigidas exclusivamente a corregir factores cognitivos (programas escolares de aptitud) o estructurales (transferencias condicionadas a hogares en pobreza) probablemente sean insuficientes por sí solas: la asociación parcial entre ambos factores y la probabilidad de agresión existe pero es pequeña en comparación con la de los marcadores conductuales. Esto no implica que esos programas no deban implementarse —tienen otros beneficios— sino que enfocarlos como herramienta principal de reducción de violencia juvenil sobreestima su efecto. \textit{Tercero}, el arresto antes de los 18 años marca un punto de inflexión particularmente importante: cada arresto adicional en ese tramo se asocia con $17$ puntos porcentuales más de probabilidad de reportar agresión a lo largo de la juventud, después de controlar por todo lo demás. Esto justifica una atención preventiva intensiva en la fase de primer contacto con el sistema penal juvenil, donde intervenciones de \textit{diversión} (\textit{juvenile diversion programs}) pueden interrumpir trayectorias antes de que se consoliden. La brecha racial que persiste después de controlar por conducta y arresto, además, advierte que cualquier política focalizada debe monitorearse explícitamente por grupo demográfico para evitar amplificar inequidades preexistentes en el contacto con instituciones formales.
+
+El ejercicio presenta limitaciones que conviene reconocer. Primero, el análisis es asociacional y no causal: los coeficientes describen relaciones parciales pero no identifican efectos causales estrictos. Segundo, la variable dependiente es autoreportada, con el subreporte característico de las encuestas sobre conducta delictiva. Tercero, la muestra analítica representa el $42.5\%$ de la cohorte original; la atrición proviene principalmente de \texttt{POVRATIO97} y \texttt{ASVAB\_SCORE}, lo que puede introducir cierta selectividad. Cuarto, el LPM es eficiente y transparente pero produce predicciones que pueden caer fuera de $[0,1]$. Como trabajo futuro, valdría la pena replicar el ejercicio con logit y probit para verificar robustez, incorporar pesos muestrales del NLSY97 para reproducir parámetros poblacionales, y explorar la heterogeneidad por cohorte de edad ajustando modelos separados para los tramos 14--17 y 18--25.
+
+% =============================================================
+\section{Referencias}
+% =============================================================
+\begin{itemize}
+\item Bureau of Justice Statistics. \textit{Recidivism in the National Longitudinal Survey of Youth 1997 -- Standalone Data (Rounds 1 to 13)}. ICPSR 34562, v.1, 2014. DOI: 10.3886/ICPSR34562.v1.
+\item Bureau of Labor Statistics. \textit{National Longitudinal Survey of Youth 1997 (NLSY97) Cohort: User's Guide}. U.S. Department of Labor.
+\item White, H. (1980). A heteroskedasticity-consistent covariance matrix estimator and a direct test for heteroskedasticity. \textit{Econometrica}, 48(4), 817--838.
+\item Wooldridge, J. M. (2010). \textit{Econometric Analysis of Cross Section and Panel Data}, 2nd ed., MIT Press.
+\item Material del curso Estadística Aplicada II, ITAM.
+\end{itemize}
+
+\end{document}

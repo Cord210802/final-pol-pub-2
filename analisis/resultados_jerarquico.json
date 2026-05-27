@@ -1,0 +1,702 @@
+{
+  "target": {
+    "n_modelable": 8609,
+    "prevalencia_%": 16.9,
+    "n_pos": 1455,
+    "n_neg": 7154
+  },
+  "bloques": {
+    "B1 Demograficas": [
+      "SEX",
+      "RACE_1",
+      "RACE_2",
+      "RACE_3",
+      "RACE_4",
+      "BIOMOMAGE",
+      "NUMSIBS"
+    ],
+    "B2 Familia": [
+      "FMSTRC_2.0",
+      "FMSTRC_3.0",
+      "FMSTRC_4.0",
+      "FMSTRC_5.0",
+      "RESPARED_2.0",
+      "RESPARED_3.0",
+      "RESPARED_4.0"
+    ],
+    "B3 Recursos economicos": [
+      "POVRATIO_Q1",
+      "POVRATIO_Q2",
+      "POVRATIO_Q3",
+      "HHINC_EARLY_Q1",
+      "HHINC_EARLY_Q2",
+      "HHINC_EARLY_Q3"
+    ],
+    "B4 Cognitivo": [
+      "ASVAB_Q1",
+      "ASVAB_Q2",
+      "ASVAB_Q3"
+    ],
+    "B5 Conducta antisocial 14-17": [
+      "EARLY_ASSAULT",
+      "EARLY_DESTROY",
+      "EARLY_STEAL_LO",
+      "EARLY_STEAL_HI",
+      "EARLY_SELL_DRUGS"
+    ],
+    "B6 Sustancias 14-17": [
+      "EARLY_ALCOHOL",
+      "EARLY_MARIJUANA",
+      "EARLY_HARD_DRUGS",
+      "EARLY_SMOKING",
+      "EARLY_CARR_GUN",
+      "EARLY_GANG"
+    ],
+    "B7 Justicia 14-17": [
+      "ARR_BY17",
+      "INCARC_BY17"
+    ]
+  },
+  "n_features_total": 36,
+  "anova": [
+    {
+      "Modelo": "M1: + B1 Demograficas",
+      "k": 7,
+      "Deviance": 7586.8,
+      "LR_chi2": null,
+      "df_change": null,
+      "p_value": null,
+      "PseudoR2_McFadden": 0.0301,
+      "PseudoR2_Nagelkerke": 0.0452,
+      "AIC": 7602.8,
+      "BIC": 7659.3
+    },
+    {
+      "Modelo": "M2: + B2 Familia",
+      "k": 14,
+      "Deviance": 7532.3,
+      "LR_chi2": 54.56,
+      "df_change": 7,
+      "p_value": 0.0,
+      "PseudoR2_McFadden": 0.0371,
+      "PseudoR2_Nagelkerke": 0.0555,
+      "AIC": 7562.3,
+      "BIC": 7668.2
+    },
+    {
+      "Modelo": "M3: + B3 Recursos economicos",
+      "k": 20,
+      "Deviance": 7491.0,
+      "LR_chi2": 41.3,
+      "df_change": 6,
+      "p_value": 0.0,
+      "PseudoR2_McFadden": 0.0424,
+      "PseudoR2_Nagelkerke": 0.0633,
+      "AIC": 7533.0,
+      "BIC": 7681.3
+    },
+    {
+      "Modelo": "M4: + B4 Cognitivo",
+      "k": 23,
+      "Deviance": 7481.0,
+      "LR_chi2": 9.95,
+      "df_change": 3,
+      "p_value": 0.01898,
+      "PseudoR2_McFadden": 0.0436,
+      "PseudoR2_Nagelkerke": 0.0651,
+      "AIC": 7529.0,
+      "BIC": 7698.5
+    },
+    {
+      "Modelo": "M5: + B5 Conducta antisocial 14-17",
+      "k": 28,
+      "Deviance": 6835.6,
+      "LR_chi2": 645.39,
+      "df_change": 5,
+      "p_value": 0.0,
+      "PseudoR2_McFadden": 0.1261,
+      "PseudoR2_Nagelkerke": 0.1814,
+      "AIC": 6893.6,
+      "BIC": 7098.4
+    },
+    {
+      "Modelo": "M6: + B6 Sustancias 14-17",
+      "k": 33,
+      "Deviance": 6689.2,
+      "LR_chi2": 146.43,
+      "df_change": 5,
+      "p_value": 0.0,
+      "PseudoR2_McFadden": 0.1449,
+      "PseudoR2_Nagelkerke": 0.2066,
+      "AIC": 6757.2,
+      "BIC": 6997.3
+    },
+    {
+      "Modelo": "M7: + B7 Justicia 14-17",
+      "k": 35,
+      "Deviance": 6656.2,
+      "LR_chi2": 32.97,
+      "df_change": 2,
+      "p_value": 0.0,
+      "PseudoR2_McFadden": 0.1491,
+      "PseudoR2_Nagelkerke": 0.2122,
+      "AIC": 6728.2,
+      "BIC": 6982.4
+    }
+  ],
+  "delta_r2_nagelkerke": {
+    "B1 Demograficas": 0.0452,
+    "B2 Familia": 0.0103,
+    "B3 Recursos economicos": 0.0078,
+    "B4 Cognitivo": 0.0018,
+    "B5 Conducta antisocial 14-17": 0.1163,
+    "B6 Sustancias 14-17": 0.0252,
+    "B7 Justicia 14-17": 0.0056
+  },
+  "coefs_M7": {
+    "const": {
+      "coef": -2.3248,
+      "se": 441804.3475,
+      "z": -0.0,
+      "p": 1.0,
+      "or": 0.0978
+    },
+    "SEX": {
+      "coef": 0.4981,
+      "se": 0.0674,
+      "z": 7.3876,
+      "p": 0.0,
+      "or": 1.6455
+    },
+    "RACE_1": {
+      "coef": -0.3577,
+      "se": 518276.6618,
+      "z": -0.0,
+      "p": 1.0,
+      "or": 0.6993
+    },
+    "RACE_2": {
+      "coef": -0.7262,
+      "se": 420108.6279,
+      "z": -0.0,
+      "p": 1.0,
+      "or": 0.4837
+    },
+    "RACE_3": {
+      "coef": -0.4509,
+      "se": 605818.0105,
+      "z": -0.0,
+      "p": 1.0,
+      "or": 0.637
+    },
+    "RACE_4": {
+      "coef": -0.79,
+      "se": 352694.1061,
+      "z": -0.0,
+      "p": 1.0,
+      "or": 0.4538
+    },
+    "BIOMOMAGE": {
+      "coef": -0.0124,
+      "se": 0.0067,
+      "z": -1.8428,
+      "p": 0.0654,
+      "or": 0.9877
+    },
+    "NUMSIBS": {
+      "coef": -0.055,
+      "se": 0.027,
+      "z": -2.039,
+      "p": 0.0414,
+      "or": 0.9464
+    },
+    "FMSTRC_2.0": {
+      "coef": 0.0464,
+      "se": 0.0987,
+      "z": 0.4705,
+      "p": 0.638,
+      "or": 1.0475
+    },
+    "FMSTRC_3.0": {
+      "coef": -0.2581,
+      "se": 0.3159,
+      "z": -0.8168,
+      "p": 0.414,
+      "or": 0.7726
+    },
+    "FMSTRC_4.0": {
+      "coef": 0.0917,
+      "se": 0.0796,
+      "z": 1.1522,
+      "p": 0.2492,
+      "or": 1.096
+    },
+    "FMSTRC_5.0": {
+      "coef": 0.09,
+      "se": 0.1635,
+      "z": 0.5507,
+      "p": 0.5818,
+      "or": 1.0942
+    },
+    "RESPARED_2.0": {
+      "coef": -0.0731,
+      "se": 0.0933,
+      "z": -0.7839,
+      "p": 0.4331,
+      "or": 0.9295
+    },
+    "RESPARED_3.0": {
+      "coef": -0.0611,
+      "se": 0.1013,
+      "z": -0.6026,
+      "p": 0.5468,
+      "or": 0.9408
+    },
+    "RESPARED_4.0": {
+      "coef": -0.2388,
+      "se": 0.1138,
+      "z": -2.0986,
+      "p": 0.0359,
+      "or": 0.7876
+    },
+    "POVRATIO_Q1": {
+      "coef": -0.2835,
+      "se": 0.1236,
+      "z": -2.2939,
+      "p": 0.0218,
+      "or": 0.7531
+    },
+    "POVRATIO_Q2": {
+      "coef": -0.2351,
+      "se": 0.1118,
+      "z": -2.1033,
+      "p": 0.0354,
+      "or": 0.7905
+    },
+    "POVRATIO_Q3": {
+      "coef": -0.3288,
+      "se": 0.1099,
+      "z": -2.9917,
+      "p": 0.0028,
+      "or": 0.7198
+    },
+    "HHINC_EARLY_Q1": {
+      "coef": 0.4632,
+      "se": 0.1247,
+      "z": 3.7128,
+      "p": 0.0002,
+      "or": 1.5891
+    },
+    "HHINC_EARLY_Q2": {
+      "coef": 0.3784,
+      "se": 0.113,
+      "z": 3.3486,
+      "p": 0.0008,
+      "or": 1.46
+    },
+    "HHINC_EARLY_Q3": {
+      "coef": 0.3211,
+      "se": 0.1081,
+      "z": 2.9712,
+      "p": 0.003,
+      "or": 1.3786
+    },
+    "ASVAB_Q1": {
+      "coef": 0.0836,
+      "se": 0.0912,
+      "z": 0.9172,
+      "p": 0.359,
+      "or": 1.0872
+    },
+    "ASVAB_Q2": {
+      "coef": 0.0756,
+      "se": 0.0885,
+      "z": 0.8534,
+      "p": 0.3934,
+      "or": 1.0785
+    },
+    "ASVAB_Q3": {
+      "coef": 0.1348,
+      "se": 0.09,
+      "z": 1.4974,
+      "p": 0.1343,
+      "or": 1.1443
+    },
+    "EARLY_ASSAULT": {
+      "coef": 1.0647,
+      "se": 0.0743,
+      "z": 14.3299,
+      "p": 0.0,
+      "or": 2.8999
+    },
+    "EARLY_DESTROY": {
+      "coef": 0.2555,
+      "se": 0.0795,
+      "z": 3.2125,
+      "p": 0.0013,
+      "or": 1.2911
+    },
+    "EARLY_STEAL_LO": {
+      "coef": 0.0201,
+      "se": 0.0839,
+      "z": 0.2395,
+      "p": 0.8107,
+      "or": 1.0203
+    },
+    "EARLY_STEAL_HI": {
+      "coef": 0.0506,
+      "se": 0.1023,
+      "z": 0.495,
+      "p": 0.6206,
+      "or": 1.052
+    },
+    "EARLY_SELL_DRUGS": {
+      "coef": 0.391,
+      "se": 0.0965,
+      "z": 4.0506,
+      "p": 0.0001,
+      "or": 1.4784
+    },
+    "EARLY_ALCOHOL": {
+      "coef": 0.6461,
+      "se": 0.0903,
+      "z": 7.1532,
+      "p": 0.0,
+      "or": 1.908
+    },
+    "EARLY_MARIJUANA": {
+      "coef": -0.1542,
+      "se": 0.0837,
+      "z": -1.8419,
+      "p": 0.0655,
+      "or": 0.8571
+    },
+    "EARLY_HARD_DRUGS": {
+      "coef": -0.0735,
+      "se": 0.1183,
+      "z": -0.6209,
+      "p": 0.5347,
+      "or": 0.9292
+    },
+    "EARLY_SMOKING": {
+      "coef": 0.2797,
+      "se": 0.0756,
+      "z": 3.7024,
+      "p": 0.0002,
+      "or": 1.3228
+    },
+    "EARLY_CARR_GUN": {
+      "coef": 0.1694,
+      "se": 0.0936,
+      "z": 1.8101,
+      "p": 0.0703,
+      "or": 1.1845
+    },
+    "EARLY_GANG": {
+      "coef": 0.3731,
+      "se": 0.0666,
+      "z": 5.601,
+      "p": 0.0,
+      "or": 1.4522
+    },
+    "ARR_BY17": {
+      "coef": 0.5872,
+      "se": 0.1118,
+      "z": 5.2522,
+      "p": 0.0,
+      "or": 1.7989
+    },
+    "INCARC_BY17": {
+      "coef": 0.3538,
+      "se": 0.4291,
+      "z": 0.8243,
+      "p": 0.4097,
+      "or": 1.4244
+    }
+  },
+  "rf": {
+    "auc_test": 0.7963,
+    "auc_cv_mean": 0.7668,
+    "auc_cv_std": 0.0268
+  },
+  "perm_individual": {
+    "SEX": {
+      "mean": 0.01374,
+      "std": 0.00347,
+      "ci_low": 0.00792,
+      "ci_high": 0.01973
+    },
+    "RACE_1": {
+      "mean": 0.00337,
+      "std": 0.00189,
+      "ci_low": 0.00026,
+      "ci_high": 0.00614
+    },
+    "RACE_2": {
+      "mean": 0.00067,
+      "std": 0.00057,
+      "ci_low": -0.00026,
+      "ci_high": 0.0017
+    },
+    "RACE_3": {
+      "mean": 0.0,
+      "std": 0.0,
+      "ci_low": 0.0,
+      "ci_high": 0.0
+    },
+    "RACE_4": {
+      "mean": 0.00224,
+      "std": 0.00193,
+      "ci_low": -0.0016,
+      "ci_high": 0.00538
+    },
+    "BIOMOMAGE": {
+      "mean": 0.00525,
+      "std": 0.00232,
+      "ci_low": 0.00154,
+      "ci_high": 0.00959
+    },
+    "NUMSIBS": {
+      "mean": 0.00206,
+      "std": 0.00092,
+      "ci_low": 0.00039,
+      "ci_high": 0.00361
+    },
+    "FMSTRC_2.0": {
+      "mean": -1e-05,
+      "std": 0.00026,
+      "ci_low": -0.0005,
+      "ci_high": 0.0005
+    },
+    "FMSTRC_3.0": {
+      "mean": 0.0,
+      "std": 0.0,
+      "ci_low": 0.0,
+      "ci_high": 0.0
+    },
+    "FMSTRC_4.0": {
+      "mean": 0.00073,
+      "std": 0.00104,
+      "ci_low": -0.0012,
+      "ci_high": 0.0023
+    },
+    "FMSTRC_5.0": {
+      "mean": 0.0003,
+      "std": 0.00013,
+      "ci_low": 0.0001,
+      "ci_high": 0.00052
+    },
+    "RESPARED_2.0": {
+      "mean": -0.0007,
+      "std": 0.00035,
+      "ci_low": -0.00121,
+      "ci_high": -0.00015
+    },
+    "RESPARED_3.0": {
+      "mean": 0.0,
+      "std": 0.00033,
+      "ci_low": -0.00057,
+      "ci_high": 0.00062
+    },
+    "RESPARED_4.0": {
+      "mean": 0.00208,
+      "std": 0.00112,
+      "ci_low": 0.0005,
+      "ci_high": 0.00384
+    },
+    "POVRATIO_Q1": {
+      "mean": 3e-05,
+      "std": 0.00032,
+      "ci_low": -0.00055,
+      "ci_high": 0.00062
+    },
+    "POVRATIO_Q2": {
+      "mean": -0.00049,
+      "std": 0.00045,
+      "ci_low": -0.00112,
+      "ci_high": 0.00038
+    },
+    "POVRATIO_Q3": {
+      "mean": 0.00054,
+      "std": 0.0004,
+      "ci_low": -0.00013,
+      "ci_high": 0.0012
+    },
+    "HHINC_EARLY_Q1": {
+      "mean": 0.00079,
+      "std": 0.0006,
+      "ci_low": -0.00014,
+      "ci_high": 0.00205
+    },
+    "HHINC_EARLY_Q2": {
+      "mean": -0.00012,
+      "std": 0.00054,
+      "ci_low": -0.00107,
+      "ci_high": 0.00088
+    },
+    "HHINC_EARLY_Q3": {
+      "mean": 0.00028,
+      "std": 0.0002,
+      "ci_low": -0.00012,
+      "ci_high": 0.00062
+    },
+    "ASVAB_Q1": {
+      "mean": 0.00061,
+      "std": 0.00048,
+      "ci_low": -0.00041,
+      "ci_high": 0.00136
+    },
+    "ASVAB_Q2": {
+      "mean": -0.00044,
+      "std": 0.00035,
+      "ci_low": -0.00103,
+      "ci_high": 0.00015
+    },
+    "ASVAB_Q3": {
+      "mean": 0.00099,
+      "std": 0.00032,
+      "ci_low": 0.00033,
+      "ci_high": 0.00154
+    },
+    "EARLY_ASSAULT": {
+      "mean": 0.08201,
+      "std": 0.00734,
+      "ci_low": 0.06943,
+      "ci_high": 0.09742
+    },
+    "EARLY_DESTROY": {
+      "mean": 0.00329,
+      "std": 0.00227,
+      "ci_low": -0.00029,
+      "ci_high": 0.0075
+    },
+    "EARLY_STEAL_LO": {
+      "mean": -0.0011,
+      "std": 0.00075,
+      "ci_low": -0.00234,
+      "ci_high": 0.0004
+    },
+    "EARLY_STEAL_HI": {
+      "mean": 0.00129,
+      "std": 0.00097,
+      "ci_low": -0.00084,
+      "ci_high": 0.00246
+    },
+    "EARLY_SELL_DRUGS": {
+      "mean": 0.00533,
+      "std": 0.00265,
+      "ci_low": -0.00028,
+      "ci_high": 0.00963
+    },
+    "EARLY_ALCOHOL": {
+      "mean": 0.01392,
+      "std": 0.00414,
+      "ci_low": 0.00738,
+      "ci_high": 0.02234
+    },
+    "EARLY_MARIJUANA": {
+      "mean": 1e-05,
+      "std": 0.00049,
+      "ci_low": -0.00091,
+      "ci_high": 0.00067
+    },
+    "EARLY_HARD_DRUGS": {
+      "mean": -0.0002,
+      "std": 0.00014,
+      "ci_low": -0.00046,
+      "ci_high": -0.0
+    },
+    "EARLY_SMOKING": {
+      "mean": 0.00532,
+      "std": 0.00227,
+      "ci_low": 0.00137,
+      "ci_high": 0.01014
+    },
+    "EARLY_CARR_GUN": {
+      "mean": 0.00161,
+      "std": 0.00132,
+      "ci_low": -0.00081,
+      "ci_high": 0.00355
+    },
+    "EARLY_GANG": {
+      "mean": 0.01302,
+      "std": 0.00286,
+      "ci_low": 0.00784,
+      "ci_high": 0.01759
+    },
+    "ARR_BY17": {
+      "mean": 0.004,
+      "std": 0.00253,
+      "ci_low": -0.00096,
+      "ci_high": 0.00862
+    },
+    "INCARC_BY17": {
+      "mean": 0.0,
+      "std": 0.0,
+      "ci_low": 0.0,
+      "ci_high": 0.0
+    }
+  },
+  "perm_bloques": {
+    "B1 Demograficas": {
+      "mean": 0.02635,
+      "std": 0.00393,
+      "ci_low": 0.02024,
+      "ci_high": 0.03465
+    },
+    "B2 Familia": {
+      "mean": 0.00316,
+      "std": 0.00173,
+      "ci_low": -7e-05,
+      "ci_high": 0.00617
+    },
+    "B3 Recursos economicos": {
+      "mean": 0.00135,
+      "std": 0.00122,
+      "ci_low": -0.00102,
+      "ci_high": 0.00325
+    },
+    "B4 Cognitivo": {
+      "mean": 0.00114,
+      "std": 0.00069,
+      "ci_low": -9e-05,
+      "ci_high": 0.00251
+    },
+    "B5 Conducta antisocial 14-17": {
+      "mean": 0.13397,
+      "std": 0.01398,
+      "ci_low": 0.10988,
+      "ci_high": 0.15807
+    },
+    "B6 Sustancias 14-17": {
+      "mean": 0.04053,
+      "std": 0.00555,
+      "ci_low": 0.03035,
+      "ci_high": 0.05036
+    },
+    "B7 Justicia 14-17": {
+      "mean": 0.00461,
+      "std": 0.002,
+      "ci_low": 7e-05,
+      "ci_high": 0.00818
+    }
+  },
+  "ranking_logit": {
+    "B1 Demograficas": 2,
+    "B2 Familia": 4,
+    "B3 Recursos economicos": 5,
+    "B4 Cognitivo": 7,
+    "B5 Conducta antisocial 14-17": 1,
+    "B6 Sustancias 14-17": 3,
+    "B7 Justicia 14-17": 6
+  },
+  "ranking_rf": {
+    "B1 Demograficas": 3,
+    "B2 Familia": 5,
+    "B3 Recursos economicos": 6,
+    "B4 Cognitivo": 7,
+    "B5 Conducta antisocial 14-17": 1,
+    "B6 Sustancias 14-17": 2,
+    "B7 Justicia 14-17": 4
+  }
+}

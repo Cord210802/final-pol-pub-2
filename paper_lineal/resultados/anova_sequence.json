@@ -1,0 +1,57 @@
+[
+  {
+    "df_diff": 7,
+    "df_resid": 3801,
+    "F": 10.226751691444942,
+    "p": 9.414691248821327e-13,
+    "delta_r2": 0.017586905879673043,
+    "rss_small": 768.410864420907,
+    "rss_big": 754.20629625168,
+    "from": "Modelo 1: Demogr\u00e1fico",
+    "to": "Modelo 2: + Familia y SES"
+  },
+  {
+    "df_diff": 1,
+    "df_resid": 3800,
+    "F": 47.40262280277923,
+    "p": 6.734501845073737e-12,
+    "delta_r2": 0.011504991256746755,
+    "rss_small": 754.20629625168,
+    "rss_big": 744.9139605952014,
+    "from": "Modelo 2: + Familia y SES",
+    "to": "Modelo 3: + Cognitivo"
+  },
+  {
+    "df_diff": 7,
+    "df_resid": 3793,
+    "F": 111.3604243701342,
+    "p": 1.1102230246251565e-16,
+    "delta_r2": 0.1572318552843992,
+    "rss_small": 744.9139605952014,
+    "rss_big": 617.9211500325049,
+    "from": "Modelo 3: + Cognitivo",
+    "to": "Modelo 4: + Conducta pasada"
+  },
+  {
+    "df_diff": 5,
+    "df_resid": 3788,
+    "F": 30.94515764519621,
+    "p": 1.1102230246251565e-16,
+    "delta_r2": 0.030023449938830327,
+    "rss_small": 617.9211500325049,
+    "rss_big": 593.6718509090924,
+    "from": "Modelo 4: + Conducta pasada",
+    "to": "Modelo 5: + Justicia/Sustancias"
+  },
+  {
+    "df_diff": 2,
+    "df_resid": 3786,
+    "F": 0.6417339861654562,
+    "p": 0.5264361456128079,
+    "delta_r2": 0.0002490950428625238,
+    "rss_small": 593.6718509090924,
+    "rss_big": 593.4706621643999,
+    "from": "Modelo 5: + Justicia/Sustancias",
+    "to": "Modelo 6: + Interacci\u00f3n sexo\u00d7raza"
+  }
+]
