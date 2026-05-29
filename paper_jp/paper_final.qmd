@@ -35,12 +35,11 @@ format:
         \usepackage{booktabs}
         \usepackage{array}
         \usepackage{float}
+        \floatplacement{table}{H}
         % --- Tipografía fina (Nikolov: claridad y legibilidad) ---
         \usepackage{microtype}
         \microtypesetup{protrusion=true,final}
         \usepackage{setspace}
-        \usepackage{siunitx}
-        \sisetup{detect-all, input-symbols={()}, group-digits=integer, group-minimum-digits=4}
         \usepackage{caption}
         \captionsetup{font=small,labelfont=bf,labelsep=period,justification=justified,singlelinecheck=false}
         \usepackage{titlesec}
@@ -192,9 +191,7 @@ El trabajo también muestra límites importantes. El resultado depende de autorr
 
 \clearpage
 
-# Anexo: tablas y figuras {.appendix}
-
-\clearpage
+# Anexo: tablas y figuras
 
 \begingroup
 \setstretch{1.0}
@@ -203,9 +200,9 @@ El trabajo también muestra límites importantes. El resultado depende de autorr
 \begin{table}[H]
 \centering
 \caption*{}
-\begin{tabular}{@{}l S[table-format=2.3] S[table-format=2.3] S[table-format=2.2] S[table-format=2.2]@{}}
+\begin{tabular}{@{}l r r r r@{}}
 \toprule
-\textbf{Variable} & {\textbf{Media}} & {\textbf{DE}} & {\textbf{Mín.}} & {\textbf{Máx.}} \\
+\textbf{Variable} & \textbf{Media} & \textbf{DE} & \textbf{Mín.} & \textbf{Máx.} \\
 \midrule
 Agresión adulta ($Y$)        & 0.143  & 0.350  & 0 & 1     \\
 Mujer                        & 0.493  & 0.500  & 0 & 1     \\
@@ -230,9 +227,9 @@ Estadísticos descriptivos de variables seleccionadas en la muestra analítica (
 \begin{table}[H]
 \centering
 \caption*{}
-\begin{tabular}{@{}l l S[table-format=2.0] S[table-format=1.3] S[table-format=4.1] S[table-format=4.1]@{}}
+\begin{tabular}{@{}l l r r r r@{}}
 \toprule
-\textbf{Modelo} & \textbf{Bloque añadido} & {\textbf{Pred.}} & {$\boldsymbol{R^2}$ \textbf{aj.}} & {\textbf{AIC}} & {\textbf{BIC}} \\
+\textbf{Modelo} & \textbf{Bloque añadido} & \textbf{Pred.} & $\boldsymbol{R^2}$ \textbf{aj.} & \textbf{AIC} & \textbf{BIC} \\
 \midrule
 $M_1$ & Demográfico        & 6  & 0.034 & 2641.9 & 2685.5 \\
 $M_2$ & Familia y SES      & 13 & 0.040 & 2625.6 & 2712.8 \\
@@ -245,15 +242,15 @@ $M_5$ & Justicia y sustancias & 26 & \bfseries 0.102 & \bfseries 2389.4 & 2557.5
 Ajuste de los modelos de probabilidad lineal jerárquicos. Todos se estiman sobre la misma muestra analítica ($n = 3{,}737$). El salto mayor de ajuste ocurre al incorporar la conducta pasada ($M_3 \to M_4$).
 :::
 
-\clearpage
+\vspace{1.5em}
 
 ::: {#tbl-anova}
 \begin{table}[H]
 \centering
 \caption*{}
-\begin{tabular}{@{}l l S[table-format=1.4] S[table-format=2.2] c S[table-format=1.3]@{}}
+\begin{tabular}{@{}l l r r c r@{}}
 \toprule
-\textbf{Transición} & \textbf{Bloque} & {$\boldsymbol{\Delta R^2}$} & {$\boldsymbol{F}$} & \textbf{gl} & {$\boldsymbol{p}$} \\
+\textbf{Transición} & \textbf{Bloque} & $\boldsymbol{\Delta R^2}$ & $\boldsymbol{F}$ & \textbf{gl} & $\boldsymbol{p}$ \\
 \midrule
 $M_1 \to M_2$ & Familia y SES        & 0.0078 & 4.33  & 7, 3723 & {$<0.001$} \\
 $M_2 \to M_3$ & Cognitivo            & 0.0011 & 4.13  & 1, 3722 & 0.042 \\
@@ -271,9 +268,9 @@ Pruebas $F$ incrementales entre modelos anidados. La hipótesis nula es que todo
 \begin{table}[H]
 \centering
 \caption*{}
-\begin{tabular}{@{}l S[table-format=-1.3] S[table-format=1.3] S[table-format=1.3] c@{}}
+\begin{tabular}{@{}l r r r c@{}}
 \toprule
-\textbf{Variable} & {\textbf{Coef.}} & {\textbf{EE (HC1)}} & {$\boldsymbol{p}$} & \textbf{IC 95\%} \\
+\textbf{Variable} & \textbf{Coef.} & \textbf{EE (HC1)} & $\boldsymbol{p}$ & \textbf{IC 95\%} \\
 \midrule
 \multicolumn{5}{@{}l}{\textit{Demográfico y familiar}}\\
 Mujer                       & -0.072 & 0.011 & {$<0.001$} & $[-0.094,\ -0.049]$ \\
@@ -302,9 +299,9 @@ Coeficientes seleccionados del modelo final $M_5$, con errores estándar robusto
 \begin{table}[H]
 \centering
 \caption*{}
-\begin{tabular}{@{}l S[table-format=4.3] S[table-format=4.3] S[table-format=1.3]@{}}
+\begin{tabular}{@{}l r r r@{}}
 \toprule
-\textbf{Métrica} & {\textbf{LPM} $\boldsymbol{M_5}$ \textbf{(train)}} & {\textbf{LPM} $\boldsymbol{M_5}$ \textbf{(test)}} & {\textbf{RF (test)}} \\
+\textbf{Métrica} & \textbf{LPM} $\boldsymbol{M_5}$ \textbf{(train)} & \textbf{LPM} $\boldsymbol{M_5}$ \textbf{(test)} & \textbf{RF (test)} \\
 \midrule
 $n$                     & 3176  & 561   & 561 \\
 AUC                     & 0.764 & 0.682 & \bfseries 0.727 \\
@@ -318,15 +315,15 @@ Accuracy (umbral 0.5)   & 0.858 & 0.854 & {---} \\
 Validación fuera de muestra (corte 85/15 estratificado por $Y$). El AUC es la métrica principal porque mide la capacidad de ordenar el riesgo sin depender del umbral de clasificación. El random forest (RF) supera al modelo lineal en AUC de prueba.
 :::
 
-\clearpage
+\vspace{1.5em}
 
 ::: {#tbl-bpi}
 \begin{table}[H]
 \centering
 \caption*{}
-\begin{tabular}{@{}l S[table-format=1.4] S[table-format=1.4] c@{}}
+\begin{tabular}{@{}l r r c@{}}
 \toprule
-\textbf{Bloque} & {\textbf{Caída de AUC}} & {\textbf{DE}} & \textbf{IC 95\%} \\
+\textbf{Bloque} & \textbf{Caída de AUC} & \textbf{DE} & \textbf{IC 95\%} \\
 \midrule
 Conducta pasada       & \bfseries 0.0884 & 0.0216 & $[\phantom{-}0.0437,\ 0.1275]$ \\
 Demográfico           & 0.0577 & 0.0148 & $[\phantom{-}0.0289,\ 0.0861]$ \\
@@ -343,43 +340,85 @@ Importancia por permutación de bloques en el random forest (100 repeticiones, c
 
 \clearpage
 
-![Distribución de la variable dependiente: agresión física autorreportada entre los 18 y los 23 años. El resultado es poco frecuente (14.3\% de los casos), lo cual motiva el uso del AUC y de pesos balanceados por clase en el random forest.](figuras/01_target_distribution.png){#fig-target width=70%}
+\begin{figure}[H]
+\vspace*{8pt}
+\centering
+\includegraphics[width=0.70\linewidth]{figuras/01_target_distribution.png}
+\caption{\label{fig-target}Distribución de la variable dependiente: agresión física autorreportada entre los 18 y los 23 años. El resultado es poco frecuente (14.3\% de los casos), lo cual motiva el uso del AUC y de pesos balanceados por clase en el random forest.}
+\end{figure}
+
+\begin{figure}[H]
+\vspace*{8pt}
+\centering
+{\small Prevalencia de agresión adulta según conductas de riesgo adolescentes}\\[4pt]
+\includegraphics[width=0.95\linewidth]{figuras/04_prevalence_risk_behaviors_notitle.png}
+\caption{\label{fig-prev}Prevalencia de agresión adulta según conductas de riesgo observadas entre los 14 y los 17 años. La probabilidad de agresión adulta es sistemáticamente mayor entre quienes reportaron contacto con pandillas, portación de arma o consumo de drogas duras en la adolescencia.}
+\end{figure}
 
 \clearpage
 
-![Prevalencia de agresión adulta según conductas de riesgo observadas entre los 14 y los 17 años. La probabilidad de agresión adulta es sistemáticamente mayor entre quienes reportaron contacto con pandillas, portación de arma o consumo de drogas duras en la adolescencia.](figuras/04_prevalence_risk_behaviors.png){#fig-prev width=95%}
+\begin{figure}[H]
+\vspace*{8pt}
+\centering
+\includegraphics[width=0.85\linewidth]{figuras/05_r2_by_model.png}
+\caption{\label{fig-r2}$R^2$ ajustada por modelo jerárquico. El ajuste mejora poco con los bloques de fondo (demográfico, familiar, cognitivo) y da un salto al incorporar la conducta pasada.}
+\end{figure}
+
+\begin{figure}[H]
+\vspace*{8pt}
+\centering
+{\small Diagnóstico del modelo lineal final ($M_5$)}\\[4pt]
+\includegraphics[width=0.90\linewidth]{figuras/06_diagnostics_m5_notitle.png}
+\caption{\label{fig-diag}Diagnósticos del modelo lineal final $M_5$: residuales, normalidad y apalancamiento. Como es esperable en un modelo de probabilidad lineal, los residuales muestran heterocedasticidad, lo cual justifica el uso de errores estándar robustos.}
+\end{figure}
 
 \clearpage
 
-![$R^2$ ajustada por modelo jerárquico. El ajuste mejora poco con los bloques de fondo (demográfico, familiar, cognitivo) y da un salto al incorporar la conducta pasada.](figuras/05_r2_by_model.png){#fig-r2 width=85%}
+\begin{figure}[H]
+\vspace*{8pt}
+\centering
+\includegraphics[width=0.85\linewidth]{figuras/07_pred_vs_obs_test.png}
+\caption{\label{fig-pred}Predicciones del modelo lineal $M_5$ contra valores observados en el conjunto de prueba.}
+\end{figure}
+
+\begin{figure}[H]
+\vspace*{8pt}
+\centering
+\includegraphics[width=0.85\linewidth]{figuras/08_coefs_m5_forest.png}
+\caption{\label{fig-coefs}Coeficientes seleccionados del modelo $M_5$ con intervalos de confianza robustos al 95\%. Las conductas adolescentes (pandillas, arma, huida del hogar) y el arresto temprano concentran las asociaciones positivas más fuertes.}
+\end{figure}
 
 \clearpage
 
-![Diagnósticos del modelo lineal final $M_5$: residuales, normalidad y apalancamiento. Como es esperable en un modelo de probabilidad lineal, los residuales muestran heterocedasticidad, lo cual justifica el uso de errores estándar robustos.](figuras/06_diagnostics_m5.png){#fig-diag width=90%}
+\begin{figure}[H]
+\vspace*{8pt}
+\centering
+\includegraphics[width=0.90\linewidth]{figuras_rf/01_block_permutation_importance.png}
+\caption{\label{fig-bpi}Importancia por permutación de bloques en el random forest, medida como caída promedio de AUC al permutar cada bloque.}
+\end{figure}
+
+\begin{figure}[H]
+\vspace*{8pt}
+\centering
+\includegraphics[width=0.75\linewidth]{figuras_rf/02_roc_curve.png}
+\caption{\label{fig-roc}Curva ROC del random forest en el conjunto de prueba (AUC = 0.727).}
+\end{figure}
 
 \clearpage
 
-![Predicciones del modelo lineal $M_5$ contra valores observados en el conjunto de prueba.](figuras/07_pred_vs_obs_test.png){#fig-pred width=85%}
+\begin{figure}[H]
+\vspace*{8pt}
+\centering
+\includegraphics[width=0.90\linewidth]{figuras_rf/03_block_perm_boxplot.png}
+\caption{\label{fig-bpi-box}Distribución de las caídas de AUC por bloque a lo largo de 100 permutaciones. La variabilidad confirma que la conducta pasada es el bloque más informativo de forma robusta.}
+\end{figure}
 
-\clearpage
-
-![Coeficientes seleccionados del modelo $M_5$ con intervalos de confianza robustos al 95\%. Las conductas adolescentes (pandillas, arma, huida del hogar) y el arresto temprano concentran las asociaciones positivas más fuertes.](figuras/08_coefs_m5_forest.png){#fig-coefs width=85%}
-
-\clearpage
-
-![Importancia por permutación de bloques en el random forest, medida como caída promedio de AUC al permutar cada bloque.](figuras_rf/01_block_permutation_importance.png){#fig-bpi width=90%}
-
-\clearpage
-
-![Curva ROC del random forest en el conjunto de prueba (AUC = 0.727).](figuras_rf/02_roc_curve.png){#fig-roc width=75%}
-
-\clearpage
-
-![Distribución de las caídas de AUC por bloque a lo largo de 100 permutaciones. La variabilidad confirma que la conducta pasada es el bloque más informativo de forma robusta.](figuras_rf/03_block_perm_boxplot.png){#fig-bpi-box width=90%}
-
-\clearpage
-
-![Comparación de la importancia relativa por bloque entre el modelo lineal y el random forest. Ambos métodos, pese a sus escalas distintas, coinciden en colocar a la conducta pasada como el bloque más predictivo.](figuras_rf/04_lpm_vs_rf_block_importance.png){#fig-lpm-rf width=90%}
+\begin{figure}[H]
+\vspace*{8pt}
+\centering
+\includegraphics[width=0.90\linewidth]{figuras_rf/04_lpm_vs_rf_block_importance.png}
+\caption{\label{fig-lpm-rf}Comparación de la importancia relativa por bloque entre el modelo lineal y el random forest. Ambos métodos, pese a sus escalas distintas, coinciden en colocar a la conducta pasada como el bloque más predictivo.}
+\end{figure}
 
 \clearpage
 
