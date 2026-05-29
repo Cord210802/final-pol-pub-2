@@ -1,0 +1,389 @@
+---
+title: "Predictores adolescentes de agresión en la adultez joven"
+author:
+  - Jerónimo Deli Larios
+  - Juan Pablo Cordero Mayorga
+  - Erick Eduardo Reyes Rojas
+  - Eduardo Medina Valdés
+date: "2026-05-28"
+bibliography: referencias_jp.bib
+csl: ../paper/apsa.csl
+crossref:
+  fig-title: "Figura"
+  tbl-title: "Tabla"
+  fig-prefix: "Figura"
+  tbl-prefix: "Tabla"
+format:
+  pdf:
+    pdf-engine: xelatex
+    latex-auto-install: false
+    documentclass: article
+    geometry: margin=2.5cm
+    fontsize: 12pt
+    linestretch: 1.5
+    number-sections: true
+    fig-pos: "H"
+    colorlinks: true
+    linkcolor: "black"
+    citecolor: "black"
+    urlcolor: "black"
+    toccolor: "black"
+    include-in-header:
+      text: |
+        \usepackage{fontspec}
+        \IfFontExistsTF{Times New Roman}{\setmainfont{Times New Roman}}{\setmainfont{Liberation Serif}}
+        \usepackage{booktabs}
+        \usepackage{array}
+        \usepackage{float}
+        % --- Tipografía fina (Nikolov: claridad y legibilidad) ---
+        \usepackage{microtype}
+        \microtypesetup{protrusion=true,final}
+        \usepackage{setspace}
+        \usepackage{siunitx}
+        \sisetup{detect-all, input-symbols={()}, group-digits=integer, group-minimum-digits=4}
+        \usepackage{caption}
+        \captionsetup{font=small,labelfont=bf,labelsep=period,justification=justified,singlelinecheck=false}
+        \usepackage{titlesec}
+        % --- Encabezados de sección: monocromáticos, con regla fina ---
+        \titleformat{\section}
+          {\large\bfseries\scshape}{\thesection}{0.6em}{}
+          [\vspace{2pt}\titlerule]
+        \titleformat{\subsection}
+          {\normalsize\bfseries}{\thesubsection}{0.5em}{}
+        \titlespacing*{\section}{0pt}{0pt}{0.9em}
+        \titlespacing*{\subsection}{0pt}{1.0em}{0.5em}
+        % --- Tablas ---
+        \renewcommand{\arraystretch}{1.18}
+        \setlength{\tabcolsep}{8pt}
+        % --- Encabezado de página ---
+        \usepackage{fancyhdr}
+        \pagestyle{fancy}
+        \fancyhf{}
+        \renewcommand{\headrulewidth}{0.4pt}
+        \fancyhead[L]{\footnotesize\itshape Predictores adolescentes de agresión}
+        \fancyhead[R]{\footnotesize\thepage}
+        % --- Cada sección de primer nivel inicia en página nueva ---
+        \newcommand{\sectionbreak}{\clearpage}
+        \widowpenalty=10000
+        \clubpenalty=10000
+        \raggedbottom
+        % --- Espaciado entre párrafos para legibilidad ---
+        \setlength{\parindent}{1.5em}
+        \frenchspacing
+abstract: |
+  Este trabajo estudia qué información observada antes de la adultez predice mejor el autorreporte de agresión física entre los 18 y los 23 años. Usamos el archivo ICPSR 34562, derivado de la NLSY97, y construimos una muestra analítica de 3,737 personas con 26 predictores completos. El diseño es predictivo y asociativo. Primero estimamos modelos de probabilidad lineal jerárquicos con errores robustos, organizados en bloques demográficos, familiares, cognitivos, conductuales, de sustancias y de justicia. Después entrenamos un random forest sobre los mismos predictores y medimos la importancia por permutación de bloques. En ambos enfoques, el bloque de conducta pasada es el que concentra más señal predictiva; después aparecen demografía y justicia/sustancias. La implicación principal es preventiva: las conductas observables en adolescencia son los marcadores más útiles para orientar seguimiento temprano.
+---
+
+# Mérito intelectual del proyecto
+
+La pregunta central de este trabajo es qué variables medidas antes de la adultez ayudan a anticipar si una persona reportará una agresión física entre los 18 y los 23 años. El objetivo no es estimar un efecto causal de una conducta específica, sino ordenar la información disponible por su capacidad para predecir una trayectoria posterior. La pregunta tiene relevancia de política pública porque la prevención de violencia necesita decidir cuándo y con qué información identificar riesgos. Si la información demográfica o familiar fuera suficiente, bastaría con diagnósticos tempranos y relativamente estables. Si, en cambio, la mayor señal aparece en conductas observables durante la adolescencia, los años inmediatamente anteriores a la adultez tendrían más valor para identificar casos con riesgo alto.
+
+Esta pregunta se inserta en una discusión consolidada dentro de la criminología del curso de vida: la estabilidad de la agresión a lo largo del tiempo. La revisión de @piquero2012, publicada en *Aggression and Violent Behavior*, sintetiza la investigación sobre este tema a partir de cuatro revistas especializadas y concluye que la literatura tiende a mostrar patrones de continuidad de la agresión, y en menor medida de discontinuidad. En otras palabras, la conducta agresiva observada en etapas tempranas tiende a persistir hacia etapas posteriores, aunque no en todos los casos. Ese mismo trabajo cierra con un análisis empírico propio sobre el Cambridge Study in Delinquent Development, en el que la agresión calificada por maestros durante la niñez y la adolescencia se vincula con registros oficiales de condena en la adultez media; el resultado es un grado fuerte de continuidad en la conducta agresiva y antisocial, sobre todo entre los jóvenes más agresivos, es decir, los ofensores crónicos.
+
+Nuestra propuesta se apoya directamente en ese marco. Si la agresión es estable, entonces las conductas observables durante la adolescencia deberían contener señal predictiva sobre la agresión adulta por encima de lo que aportan los atributos fijos o de fondo, como el sexo, la raza o el origen familiar. Esa es exactamente la hipótesis que nuestro diseño permite poner a prueba de forma cuantitativa: al comparar bloques de predictores en una misma muestra, podemos medir cuánta señal añade la conducta adolescente frente a la información demográfica, familiar o cognitiva. La revisión de @piquero2012 sugiere, además, dos matices que nuestro diseño puede examinar. El primero son las diferencias por sexo, ya que esa literatura identifica hallazgos particulares sobre la agresión en mujeres; nuestro modelo incluye el sexo como predictor y una extensión con interacciones de sexo por raza. El segundo es la existencia de agresión de inicio adulto (*adult-onset*), es decir, casos sin antecedentes conductuales tempranos claros; la presencia de discontinuidad implica que ningún conjunto de predictores adolescentes debería alcanzar una capacidad predictiva perfecta. Por eso nuestro trabajo no busca clasificar sin error, sino ordenar la información por su valor predictivo. La contribución es traducir la discusión teórica sobre continuidad y discontinuidad a un ejercicio de ciencia de datos para política pública, en el que la pregunta práctica es con qué información, y cuándo, conviene activar seguimiento preventivo.
+
+El trabajo usa únicamente el archivo ICPSR 34562, derivado del National Longitudinal Survey of Youth 1997 [@icpsr34562]. La base contiene variables organizadas por edad. Esta estructura permite separar temporalmente los predictores y el resultado: las conductas variables en el tiempo se restringen a los 14 a 17 años, mientras que la variable dependiente se define con información de los 18 a los 23 años. Esa separación es el elemento más importante del diseño, porque evita que el modelo use como predictor información contemporánea o posterior al resultado.
+
+La contribución empírica del análisis es comparar dos lecturas de la misma pregunta. La primera es un modelo de probabilidad lineal jerárquico, que permite interpretar coeficientes como cambios en probabilidad y evaluar cuánto aumenta la varianza explicada cuando se agrega cada bloque de variables. La segunda es un random forest, usado como herramienta predictiva no lineal [@breiman2001]. Para que el random forest sea interpretable, el análisis calcula importancia por permutación de bloques, siguiendo la lógica documentada en el propio script de análisis: si romper la información conjunta de un bloque deteriora el AUC, ese bloque contiene señal predictiva relevante [@strobl2008; @molnar2022]. La comparación es útil porque ambos modelos usan la misma muestra analítica y los mismos bloques.
+
+# Variables y datos
+
+La base de origen de este proyecto es la National Longitudinal Survey of Youth 1997, conocida como NLSY97. Esta encuesta siguió a una cohorte de 8,984 jóvenes residentes en Estados Unidos nacidos entre 1980 y 1984. La primera ronda se levantó en 1997 y, para el archivo que usamos, la información disponible llega hasta la ronda 13, correspondiente a entrevistas anuales de 1997 a 2009. En esas entrevistas se registraron características familiares, educación, habilidades, consumo de sustancias, contacto con el sistema de justicia y conductas autorreportadas.
+
+Para nuestra pregunta, la utilidad de la NLSY97 está en que varias conductas aparecen medidas por edad. Nuestro interés es saber qué señales disponibles antes de los 18 años ayudan a anticipar agresión física entre los 18 y los 23 años. Como la cohorte nació entre 1980 y 1984, el archivo permite reconstruir una ventana adolescente y una ventana de adultez joven dentro de la misma población. Así podemos construir predictores de los 14 a los 17 años y una variable dependiente posterior sin mezclar los dos periodos. Esta separación es central porque reduce el riesgo de data leakage, es decir, que el modelo use información que en la práctica todavía no estaría disponible al momento de hacer una predicción preventiva.
+
+El archivo específico que usamos es el estudio ICPSR 34562, derivado de la NLSY97 [@icpsr34562]. ICPSR funciona como repositorio y distribuidor de datos para investigación social, y en este caso nos permite trabajar con un archivo ya preparado en formato Stata: `DS0001/34562-0001-Data.dta`. Usamos este archivo porque contiene las variables necesarias para conectar conductas adolescentes con agresión posterior y porque mantiene la organización por edad que necesita nuestro diseño. A partir de ese archivo construimos un conjunto de datos analítico propio. Primero conservamos a las personas con al menos una observación válida de agresión entre los 18 y los 23 años. Después aplicamos eliminación por lista sobre la variable dependiente y los 26 predictores usados en los modelos. La muestra final tiene 3,737 personas.
+
+La variable dependiente principal es `ASSAULT_ADULT`. Toma el valor de uno si la persona reportó haber cometido una agresión en al menos un año de edad entre los 18 y los 23 años, y cero si tiene información válida en esa ventana y no reportó agresión. Esta definición evita usar `EVER_ASSAULT` como resultado, porque esa alternativa combinaría edades adolescentes y adultas. Usarla mezclaría la misma ventana temporal que alimenta los predictores y produciría filtración temporal de información. El resultado es poco frecuente: solo el 14.3 por ciento de la muestra reportó agresión adulta, como muestra la @fig-target. Este desbalance es importante para el diseño, porque cualquier modelo que clasifique a todos como casos negativos alcanzaría una accuracy cercana al 86 por ciento sin contener información útil; por eso el AUC, y no la accuracy, es la métrica central de evaluación.
+
+El flujo completo del análisis es el siguiente: partimos del archivo individual de ICPSR/NLSY97, construimos una muestra con información completa, resumimos las variables observables antes de los 18 años en bloques interpretables, definimos un resultado posterior entre los 18 y los 23 años, y después comparamos qué bloque ayuda más a predecir ese resultado. Esta secuencia es importante porque el lector puede seguir el orden temporal del ejercicio sin confundirlo con una estimación causal: primero observamos características y conductas adolescentes; después medimos agresión adulta; finalmente evaluamos qué información adolescente ordena mejor el riesgo posterior. La @tbl-desc resume algunas variables clave de la muestra analítica para que la escala de los datos sea visible antes de interpretar los modelos. Como anticipo descriptivo del análisis, la @fig-prev muestra que la probabilidad de agresión adulta es sistemáticamente mayor entre quienes ya reportaban conductas de riesgo en la adolescencia: por ejemplo, la prevalencia de agresión adulta pasa de 9.8 a 19.5 por ciento entre quienes tuvieron contacto con pandillas. Esta asociación cruda motiva el análisis multivariado que sigue, donde aislamos la señal de cada bloque manteniendo los demás constantes.
+
+Cada decisión de construcción responde a un problema concreto. Usamos ICPSR/NLSY97 porque es una base longitudinal con variables medidas por edad; sin esa estructura no podríamos separar predictores adolescentes de resultados adultos. Definimos el target entre los 18 y los 23 años porque necesitamos que el resultado ocurra después de los predictores. Restringimos las conductas, sustancias y arresto a los 14-17 años porque ésas son las señales que una institución podría observar antes de la adultez. Trabajamos con una muestra de casos completos porque los modelos jerárquicos deben compararse sobre las mismas personas: si la muestra cambiara entre modelos, un aumento en $R^2$ podría deberse al cambio de muestra y no al bloque agregado.
+
+Los predictores se organizan en cinco bloques. El bloque demográfico incluye sexo, raza o etnicidad, edad de la madre biológica al nacimiento y número de hermanos. El bloque familiar y socioeconómico incluye estructura familiar en 1997, educación parental y razón ingreso-pobreza en 1997. El bloque cognitivo usa `ASVAB_SCORE`. El bloque de conducta pasada resume, entre los 14 y los 17 años, destrucción de propiedad, robo menor a 50 dólares, robo mayor a 50 dólares, otros delitos contra propiedad, presencia o contacto con pandillas, portación de arma y huida del hogar. El bloque de justicia y sustancias incluye consumo de tabaco, alcohol, marihuana, drogas duras y arresto antes de cumplir 18 años. Para la pregunta del proyecto, los bloques conductuales y de justicia/sustancias son los predictores primarios, porque contienen acciones observables antes del resultado adulto; los bloques demográfico, familiar y cognitivo funcionan como información contextual y de control predictivo.
+
+Para convertir la información original en variables numéricas, las respuestas binarias tipo `Yes/No` se recodifican como uno y cero. Los códigos negativos y respuestas no válidas se tratan como faltantes. Las variables categóricas nominales, como raza o etnicidad, estructura familiar y educación parental, se convierten en indicadores binarios con una categoría de referencia omitida. Las conductas medidas por edad se resumen como conteos de años válidos entre cero y cuatro; el arresto antes de los 18 años se define como indicador binario. Esta diferencia también es deliberada: para conductas repetidas, el conteo 0-4 conserva intensidad o persistencia; para arresto, usamos un indicador porque el evento ya resume contacto formal con el sistema de justicia antes de los 18. Esta construcción mantiene la información predictiva previa a la adultez sin incorporar datos contemporáneos o posteriores al resultado. El matiz importante es que la restricción estricta de 14 a 17 años aplica a conductas, sustancias y arresto, mientras que demografía, familia, nivel socioeconómico y ASVAB se usan como características de contexto tempranas o relativamente estables.
+
+# Diseño empírico general
+
+El primer componente del análisis es un modelo de probabilidad lineal, o LPM por sus siglas en inglés. Como la variable dependiente es binaria, una alternativa natural sería estimar regresiones logísticas. Sin embargo, usamos el LPM como modelo principal por tres razones. Primero, sus coeficientes se leen directamente como cambios en la probabilidad del resultado, medidos en puntos porcentuales, sin transformar log-odds ni calcular efectos marginales. Para un lector no especializado, decir que portar un arma se asocia con "4.7 puntos porcentuales más de probabilidad por año reportado" es mucho más transparente que reportar un odds ratio. Segundo, el LPM facilita el análisis jerárquico por bloques: como todos los modelos se estiman por mínimos cuadrados sobre la misma muestra, podemos comparar $R^2$, $R^2$ ajustada, sumas de cuadrados residuales y pruebas F incrementales. Tercero, esas pruebas F permiten contestar una pregunta sustantiva muy clara: si ya conocemos los bloques anteriores, ¿el nuevo bloque agrega información estadísticamente distinguible de cero?
+
+Con regresión logística, esta comparación no desaparece, pero se vuelve menos directa para el público objetivo. En logit se compararían modelos con log-verosimilitud, pruebas de razón de verosimilitud, AIC/BIC o pseudo-$R^2$. Esas métricas son válidas, pero no tienen una lectura tan inmediata como "cuántos puntos de $R^2$ agrega el bloque" o "si el bloque pasa una prueba F incremental". Por eso la decisión no se basa sólo en interpretación de coeficientes; también busca que el diseño por bloques sea fácil de auditar. La regresión logística sería preferible si el objetivo principal fuera estimar probabilidades individuales calibradas, especialmente cerca de cero o uno. Aquí el objetivo es más acotado: ordenar la señal predictiva de bloques adolescentes para una discusión de política pública.
+
+En este modelo, la variable dependiente es binaria: $Y_i=1$ si la persona reportó agresión física entre los 18 y los 23 años, y $Y_i=0$ si no la reportó dentro de esa ventana. Estimamos el LPM por mínimos cuadrados ordinarios y usamos errores estándar robustos HC1, porque con una variable dependiente binaria la varianza del error no es constante; sin esa corrección, las pruebas de significancia serían poco confiables. La principal limitación del LPM es que el valor predicho puede quedar por debajo de cero o por encima de uno, algo que la regresión logística evita por construcción. Por eso, cuando evaluamos accuracy, usamos un umbral de decisión de 0.5: si la predicción es mayor o igual a 0.5, el modelo clasifica a la persona como caso positivo; si es menor a 0.5, la clasifica como caso negativo. Este umbral funciona como un hiperparámetro de evaluación, no como un coeficiente estimado por el modelo.
+
+Para cada persona $i$, el modelo general es
+$$
+Y_i = \alpha_m + \sum_{b=1}^{m} \mathbf{X}_{ib}'\boldsymbol{\beta}_b + \varepsilon_i,
+$$
+donde $Y_i$ es `ASSAULT_ADULT`, $\mathbf{X}_{ib}$ es el vector de variables del bloque $b$, $\boldsymbol{\beta}_b$ es el vector de coeficientes asociado a ese bloque, $\alpha_m$ es la constante del modelo $m$, y $\varepsilon_i$ es el término de error. Todos los modelos se estiman sobre la misma muestra analítica, definida por eliminación por lista en la variable dependiente y en los 26 predictores usados por el modelo completo. Esto permite comparar modelos anidados sin que cambie la composición de la muestra.
+
+Los modelos se incorporan de forma acumulativa:
+$$
+\begin{aligned}
+M_1 &: Y_i = \alpha_1 + \mathbf{X}_{i,D}'\boldsymbol{\beta}_D + \varepsilon_i, \\
+M_2 &: Y_i = \alpha_2 + \mathbf{X}_{i,D}'\boldsymbol{\beta}_D
+                 + \mathbf{X}_{i,F}'\boldsymbol{\beta}_F + \varepsilon_i, \\
+M_3 &: Y_i = \alpha_3 + \mathbf{X}_{i,D}'\boldsymbol{\beta}_D
+                 + \mathbf{X}_{i,F}'\boldsymbol{\beta}_F
+                 + \mathbf{X}_{i,C}'\boldsymbol{\beta}_C + \varepsilon_i, \\
+M_4 &: Y_i = \alpha_4 + \mathbf{X}_{i,D}'\boldsymbol{\beta}_D
+                 + \mathbf{X}_{i,F}'\boldsymbol{\beta}_F
+                 + \mathbf{X}_{i,C}'\boldsymbol{\beta}_C
+                 + \mathbf{X}_{i,B}'\boldsymbol{\beta}_B + \varepsilon_i, \\
+M_5 &: Y_i = \alpha_5 + \mathbf{X}_{i,D}'\boldsymbol{\beta}_D
+                 + \mathbf{X}_{i,F}'\boldsymbol{\beta}_F
+                 + \mathbf{X}_{i,C}'\boldsymbol{\beta}_C
+                 + \mathbf{X}_{i,B}'\boldsymbol{\beta}_B
+                 + \mathbf{X}_{i,J}'\boldsymbol{\beta}_J + \varepsilon_i.
+\end{aligned}
+$$
+En esta notación, $D$ corresponde al bloque demográfico, $F$ al bloque familiar y socioeconómico, $C$ al bloque cognitivo, $B$ al bloque de conducta pasada, y $J$ al bloque de justicia y sustancias. En términos de variables, $M_1$ incluye sexo, raza o etnicidad, edad de la madre biológica y número de hermanos. $M_2$ agrega estructura familiar, educación parental y razón ingreso-pobreza en 1997. $M_3$ agrega el puntaje ASVAB. $M_4$ incorpora los conteos de conducta pasada entre los 14 y los 17 años: destrucción de propiedad, robo menor a 50 dólares, robo mayor a 50 dólares, otros delitos contra propiedad, presencia o contacto con pandillas, portación de arma y huida del hogar. $M_5$ agrega consumo de tabaco, alcohol, marihuana, drogas duras y arresto antes de los 18 años. Este último es el modelo lineal principal porque contiene todos los predictores preadultos definidos en el análisis. No agregamos un modelo final de interacciones porque la pregunta central no es estimar heterogeneidad por subgrupos, sino comparar bloques de información. Incluir sólo algunas interacciones, como sexo por raza/etnicidad, introduciría una decisión adicional difícil de defender dentro de esta historia; incluir todas las interacciones posibles aumentaría el riesgo de sobreajuste y reduciría la interpretabilidad.
+
+Para evaluar si cada bloque añade información predictiva al bloque anterior, se usa una prueba F incremental entre modelos anidados. Para comparar un modelo reducido $r$ contra un modelo amplio $a$, el estadístico es
+$$
+F =
+\frac{(RSS_r - RSS_a)/(df_r - df_a)}
+     {RSS_a/df_a},
+$$
+donde $RSS_r$ y $RSS_a$ son las sumas de cuadrados residuales del modelo reducido y del modelo amplio, respectivamente, y $df_r - df_a$ es el número de predictores añadidos. La hipótesis nula es que todos los coeficientes del bloque agregado son iguales a cero. Además, se reportan $R^2$, $R^2$ ajustada, AIC y BIC. La @tbl-fit resume el ajuste de cada modelo y la @tbl-anova muestra las pruebas F incrementales que justifican la lectura por bloques.
+
+La evaluación fuera de muestra se realiza para $M_5$ porque ése es el modelo lineal principal: contiene todos los predictores definidos antes de la ventana adulta y mantiene la estructura de bloques completa. La muestra se divide en 85 por ciento de entrenamiento y 15 por ciento de prueba, con estratificación por $Y_i$, para conservar una proporción parecida de casos positivos y negativos en ambos conjuntos. El modelo se estima sólo con el conjunto de entrenamiento y luego se predice sobre entrenamiento y prueba. Con esas predicciones se calculan $R^2$, RMSE, MAE, accuracy con umbral 0.5 y AUC. El AUC recibe más peso interpretativo porque resume la capacidad de ordenar correctamente casos positivos y negativos sin depender del umbral de clasificación. La @tbl-validation reporta estas métricas y la @fig-pred muestra visualmente cómo se comportan las predicciones del LPM en prueba.
+
+El segundo componente es un random forest de clasificación entrenado sobre los mismos 26 predictores. Usamos exactamente la misma muestra y el mismo corte 85/15 para que la comparación con $M_5$ no dependa de cambios en los datos. El modelo usa 500 árboles porque un bosque grande estabiliza las predicciones; selección aleatoria de $\sqrt{p}$ variables candidatas en cada división porque es la regla estándar para clasificación y reduce la correlación entre árboles; mínimo de 10 observaciones por hoja para limitar sobreajuste; pesos balanceados por clase porque la agresión adulta es menos frecuente que la no agresión; estimación out-of-bag como diagnóstico adicional; semilla 42 para reproducibilidad; y todos los núcleos disponibles para entrenamiento. La métrica principal vuelve a ser el AUC en la muestra de prueba, reportado en la @tbl-validation y visualizado con la curva ROC de la @fig-roc. El random forest permite relaciones no lineales e interacciones entre predictores sin especificarlas una por una, pero por sí solo es menos transparente que el modelo lineal.
+
+La importancia por permutación de bloques se calcula sobre el conjunto de prueba. Para cada bloque $B_k$, el análisis permuta simultáneamente todas sus columnas, predice de nuevo y calcula la caída en AUC:
+$$
+BPI(B_k) = AUC(f, D) - AUC(f, D^{perm}_{B_k}).
+$$
+El procedimiento se repite 100 veces por bloque. En cada repetición se reordenan conjuntamente las columnas del bloque con el mismo índice aleatorio. Por eso se conserva la estructura interna del bloque, pero se rompe su relación con el resultado y con el resto de los predictores. Se reporta la media de la caída, su desviación estándar y el intervalo empírico de 95 por ciento. Esta medida se interpreta como cuánto pierde el modelo cuando ya no puede usar la información de ese bloque, manteniendo intactos los demás bloques.
+
+# Resultados
+
+Los resultados muestran que la señal predictiva no se distribuye de manera uniforme entre bloques. La @tbl-fit y la @fig-r2 muestran la secuencia completa. En el modelo lineal, el bloque demográfico por sí solo alcanza una $R^2$ ajustada de 0.034. Agregar familia y nivel socioeconómico la eleva a 0.040, y agregar ASVAB apenas la mueve a 0.041. El salto principal ocurre al incorporar conducta pasada: la $R^2$ ajustada sube a 0.096 y el incremento de $R^2$ no ajustada es 0.056. El bloque final de justicia y sustancias aumenta la $R^2$ ajustada a 0.102. Por diseño, $M_5$ es el modelo lineal final: contiene todos los bloques preadultos definidos para el análisis sin agregar términos exploratorios adicionales.
+
+La interpretación práctica de esta secuencia es directa. Los atributos de fondo, como sexo, raza o composición familiar, sí contienen información, pero explican poco del resultado por sí solos. La habilidad cognitiva agrega todavía menos una vez que familia y demografía ya están incluidas. En cambio, cuando entran conductas observables de la adolescencia, el modelo mejora de manera sustantiva. Es decir, para fines de prevención, la información más útil no está en una etiqueta demográfica aislada, sino en patrones de conducta que aparecen antes de la adultez.
+
+La lectura por variables dentro del modelo $M_5$ confirma que no todos los bloques aportan del mismo modo. La @tbl-coefs y la @fig-coefs presentan los coeficientes seleccionados con errores robustos e intervalos de confianza. En el bloque demográfico, ser mujer se asocia con una probabilidad 7.2 puntos porcentuales menor de reportar agresión adulta, manteniendo constantes los demás predictores, mientras que la categoría Black se asocia con 7.0 puntos porcentuales adicionales respecto a la categoría de referencia. En el bloque familiar y socioeconómico, la educación parental de preparatoria tiene un coeficiente negativo de 4.5 puntos, pero la estructura familiar y el ingreso pierden precisión una vez que entran las conductas adolescentes. El bloque cognitivo también se debilita: ASVAB aporta cuando entra solo como tercer bloque, pero su coeficiente deja de ser distinguible de cero en $M_5$.
+
+El bloque de conducta pasada es el más consistente en el modelo lineal. Cada año adicional en que la persona reportó destrucción de propiedad entre los 14 y los 17 años se asocia con 3.6 puntos porcentuales más de probabilidad de agresión adulta. Presencia o contacto con pandillas se asocia con 3.8 puntos por año, portación de arma con 4.7 puntos por año y haber huido del hogar con 5.9 puntos por año. En cambio, los indicadores de robo menor, robo mayor y otros delitos contra propiedad no muestran una señal tan clara en el modelo completo. En el bloque de justicia y sustancias, las variables más importantes son haber sido arrestado antes de los 18 años, con 7.4 puntos porcentuales adicionales, y consumo de marihuana, con 2.2 puntos por año. Tabaco, alcohol y drogas duras no son estadísticamente distinguibles de cero en $M_5$. Esta lectura por variables complementa la prueba por bloques: la @tbl-anova dice que el bloque de conducta agrega señal; la @tbl-coefs muestra cuáles variables dentro de ese bloque sostienen esa señal.
+
+La comparación entre modelos refuerza el mismo patrón, pero muestra un intercambio entre interpretabilidad y desempeño predictivo. La validación fuera de muestra del modelo lineal $M_5$, reportada en la @tbl-validation y diagnosticada en la @fig-diag y la @fig-pred, muestra una capacidad moderada: en entrenamiento, el AUC es 0.764 y el $R^2$ es 0.119; en prueba, con 561 personas, el AUC baja a 0.682 y el $R^2$ a 0.036. La accuracy con umbral de 0.5 es 0.854 en prueba, pero esta métrica es menos informativa que el AUC porque depende de un punto de corte fijo.
+
+El random forest mejora la discriminación fuera de muestra. Su AUC de prueba es 0.727, visible también en la curva ROC de la @fig-roc, con AUC out-of-bag de 0.747 y AUC de entrenamiento de 0.928. La diferencia entre entrenamiento y prueba indica sobreajuste residual, aunque la métrica de prueba sigue por encima del modelo lineal. La importancia por permutación de bloques reproduce el ordenamiento central del análisis lineal. La @tbl-bpi, la @fig-bpi y la @fig-bpi-box muestran que permutar el bloque de conducta pasada reduce el AUC en 0.088 en promedio. El bloque demográfico reduce el AUC en 0.058 y el bloque de justicia y sustancias en 0.030. Familia y nivel socioeconómico tiene una caída media de 0.016, mientras que el bloque cognitivo tiene una caída cercana a cero y un intervalo que cruza cero. El random forest sólo mide importancia por bloque, por lo que las variables individuales más relevantes deben leerse desde el modelo lineal, no desde el procedimiento de permutación.
+
+La comparación entre ambos modelos es útil porque cada uno responde una parte distinta de la pregunta. El LPM dice cuáles variables se asocian con más o menos probabilidad de agresión adulta y en cuántos puntos porcentuales. El random forest pregunta si, al permitir relaciones no lineales e interacciones, el mismo bloque sigue siendo importante para predecir. Como ambos enfoques colocan primero a la conducta pasada, el resultado no depende de una sola especificación estadística. La @fig-lpm-rf resume esta convergencia: aunque las escalas originales son distintas, ambos modelos concentran la mayor importancia relativa en el bloque de conducta. La diferencia es que el random forest mejora el AUC, pero sacrifica interpretabilidad individual; por eso se usa para confirmar el orden de importancia por bloques, no para reemplazar la lectura sustantiva de los coeficientes.
+
+Frente a la literatura, los resultados apoyan el argumento de continuidad de la agresión, pero no lo convierten en una regla determinista. La evidencia de @piquero2012 sugiere que las conductas agresivas y antisociales tempranas tienden a persistir; nuestro análisis encuentra que las conductas adolescentes son precisamente el bloque con mayor poder predictivo. Al mismo tiempo, el AUC moderado contradice una lectura demasiado fuerte de esa continuidad: si el modelo no clasifica perfectamente, entonces hay casos de agresión adulta que no quedan completamente explicados por los antecedentes adolescentes disponibles. Esta parte es consistente con la idea de discontinuidad o agresión de inicio adulto.
+
+La implicación para ciencia de datos aplicada a política pública es que el valor predictivo está concentrado en señales observables durante la adolescencia, no en un solo atributo fijo. Para investigación futura, esto sugiere validar el ordenamiento en otras muestras, revisar calibración, examinar desempeño por subgrupos y diseñar estudios causales que separen predicción de mecanismos. Para la práctica clínica o institucional, la lectura prudente es de tamizaje y priorización de apoyo: presencia o contacto con pandillas, portación de arma, huida del hogar, destrucción de propiedad, consumo de marihuana y arresto temprano pueden activar evaluación profesional y seguimiento preventivo. No deben usarse como diagnóstico automático, sanción anticipada ni perfil rígido de riesgo.
+
+# Conclusión
+
+El hallazgo principal es que la información conductual de la adolescencia es el predictor más fuerte de agresión física reportada en la adultez joven. Esta conclusión aparece tanto en el modelo de probabilidad lineal jerárquico como en el random forest con importancia por permutación de bloques. La robustez entre métodos importa porque el primer modelo es fácil de interpretar, mientras que el segundo permite relaciones no lineales e interacciones sin imponerlas de forma explícita.
+
+Estos resultados respaldan, con datos y métodos distintos, el patrón central de la literatura sobre estabilidad de la agresión. La revisión de @piquero2012 concluye que la conducta agresiva tiende a mostrar continuidad a lo largo del curso de vida y que esa continuidad es más marcada entre los jóvenes más agresivos. Nuestro trabajo llega a una conclusión compatible por una vía cuantitativa diferente: el bloque de conducta adolescente concentra la mayor señal predictiva, muy por encima de los atributos de fondo. En el modelo lineal, agregar la conducta pasada es lo que produce el salto más grande de varianza explicada, de una $R^2$ ajustada cercana a 0.041 a 0.096, mientras que los bloques demográfico, familiar y cognitivo aportan poco. En el random forest, permutar el bloque de conducta pasada es lo que más deteriora la capacidad de discriminación, con una caída de AUC de 0.088, frente a caídas menores en los demás bloques. La continuidad documentada por la literatura aparece aquí como poder predictivo concentrado en las acciones observables de la adolescencia.
+
+Hay también puntos de contacto con los matices que señala esa literatura. La revisión de @piquero2012 destaca diferencias por sexo en las trayectorias de agresión; en nuestro modelo final, ser mujer se asocia con una probabilidad 7.2 puntos porcentuales menor de reportar agresión adulta. Esta diferencia se interpreta como una asociación predictiva promedio dentro de la muestra, no como una explicación completa de trayectorias por subgrupo. Del mismo modo, nuestros resultados no contradicen la existencia de discontinuidad ni de agresión de inicio adulto. El desempeño predictivo es moderado y no perfecto: el AUC fuera de muestra es 0.682 para el modelo lineal y 0.727 para el random forest. Que la conducta adolescente sea el mejor predictor no implica que prediga todos los casos, lo cual es coherente con la idea de que una parte de la agresión adulta no tiene antecedentes conductuales tempranos claros. Así, nuestros hallazgos refuerzan la continuidad como patrón dominante, sin negar la discontinuidad como fenómeno real.
+
+Para política pública, el resultado apunta a la utilidad de sistemas de prevención que observen conductas concretas durante la adolescencia. En particular, presencia o contacto con pandillas, portación de arma, huida del hogar, destrucción de propiedad, consumo de marihuana y arresto temprano aparecen como señales relevantes dentro del modelo final. La política pública no debería leer estos resultados como una justificación para castigos automáticos o perfiles rígidos. Una interpretación más prudente es que esos eventos pueden servir para activar apoyos, seguimiento y programas preventivos antes de que la trayectoria llegue a la adultez.
+
+El trabajo también muestra límites importantes. El resultado depende de autorreportes de agresión, por lo que puede haber subregistro o diferencias en disposición a responder. La muestra analítica se reduce a personas con información completa en todas las variables, lo cual puede afectar la representatividad. Además, el diseño no identifica causalidad. Aun así, la separación temporal entre predictores y resultado, el uso de la misma muestra para ambos métodos y la comparación por bloques hacen que el ordenamiento predictivo sea claro: las variables más próximas a la conducta adolescente explican más que los bloques distales.
+
+\clearpage
+
+# Anexo: tablas y figuras {.appendix}
+
+\clearpage
+
+\begingroup
+\setstretch{1.0}
+
+::: {#tbl-desc}
+\begin{table}[H]
+\centering
+\caption*{}
+\begin{tabular}{@{}l S[table-format=2.3] S[table-format=2.3] S[table-format=2.2] S[table-format=2.2]@{}}
+\toprule
+\textbf{Variable} & {\textbf{Media}} & {\textbf{DE}} & {\textbf{Mín.}} & {\textbf{Máx.}} \\
+\midrule
+Agresión adulta ($Y$)        & 0.143  & 0.350  & 0 & 1     \\
+Mujer                        & 0.493  & 0.500  & 0 & 1     \\
+Raza/etnia: Black            & 0.220  & 0.414  & 0 & 1     \\
+Raza/etnia: Hispanic         & 0.182  & 0.386  & 0 & 1     \\
+Edad madre biológica         & 25.697 & 5.267  & 12 & 52   \\
+Número de hermanos           & 1.556  & 1.190  & 0 & 9     \\
+Razón ingreso-pobreza (1997) & 2.976  & 2.709  & 0 & 16.27 \\
+Puntaje ASVAB                & 47.976 & 29.107 & 0 & 100   \\
+Contacto con pandillas (14--17) & 0.560 & 0.678 & 0 & 4    \\
+Portación de arma (14--17)   & 0.161  & 0.468  & 0 & 4     \\
+Arresto antes de los 18      & 0.134  & 0.340  & 0 & 1     \\
+\bottomrule
+\end{tabular}
+\end{table}
+Estadísticos descriptivos de variables seleccionadas en la muestra analítica ($n = 3{,}737$). Las variables binarias toman valor 0 o 1; las conductas adolescentes son conteos de años válidos entre 0 y 4.
+:::
+
+\clearpage
+
+::: {#tbl-fit}
+\begin{table}[H]
+\centering
+\caption*{}
+\begin{tabular}{@{}l l S[table-format=2.0] S[table-format=1.3] S[table-format=4.1] S[table-format=4.1]@{}}
+\toprule
+\textbf{Modelo} & \textbf{Bloque añadido} & {\textbf{Pred.}} & {$\boldsymbol{R^2}$ \textbf{aj.}} & {\textbf{AIC}} & {\textbf{BIC}} \\
+\midrule
+$M_1$ & Demográfico        & 6  & 0.034 & 2641.9 & 2685.5 \\
+$M_2$ & Familia y SES      & 13 & 0.040 & 2625.6 & 2712.8 \\
+$M_3$ & Cognitivo (ASVAB)  & 14 & 0.041 & 2623.5 & 2716.9 \\
+$M_4$ & Conducta pasada    & 21 & 0.096 & 2411.2 & 2548.1 \\
+$M_5$ & Justicia y sustancias & 26 & \bfseries 0.102 & \bfseries 2389.4 & 2557.5 \\
+\bottomrule
+\end{tabular}
+\end{table}
+Ajuste de los modelos de probabilidad lineal jerárquicos. Todos se estiman sobre la misma muestra analítica ($n = 3{,}737$). El salto mayor de ajuste ocurre al incorporar la conducta pasada ($M_3 \to M_4$).
+:::
+
+\clearpage
+
+::: {#tbl-anova}
+\begin{table}[H]
+\centering
+\caption*{}
+\begin{tabular}{@{}l l S[table-format=1.4] S[table-format=2.2] c S[table-format=1.3]@{}}
+\toprule
+\textbf{Transición} & \textbf{Bloque} & {$\boldsymbol{\Delta R^2}$} & {$\boldsymbol{F}$} & \textbf{gl} & {$\boldsymbol{p}$} \\
+\midrule
+$M_1 \to M_2$ & Familia y SES        & 0.0078 & 4.33  & 7, 3723 & {$<0.001$} \\
+$M_2 \to M_3$ & Cognitivo            & 0.0011 & 4.13  & 1, 3722 & 0.042 \\
+$M_3 \to M_4$ & Conducta pasada      & \bfseries 0.0561 & \bfseries 33.13 & 7, 3715 & {$<0.001$} \\
+$M_4 \to M_5$ & Justicia y sustancias & 0.0076 & 6.34  & 5, 3710 & {$<0.001$} \\
+\bottomrule
+\end{tabular}
+\end{table}
+Pruebas $F$ incrementales entre modelos anidados. La hipótesis nula es que todos los coeficientes del bloque añadido son cero. El bloque de conducta pasada aporta, por mucho, la mayor ganancia de varianza explicada.
+:::
+
+\clearpage
+
+::: {#tbl-coefs}
+\begin{table}[H]
+\centering
+\caption*{}
+\begin{tabular}{@{}l S[table-format=-1.3] S[table-format=1.3] S[table-format=1.3] c@{}}
+\toprule
+\textbf{Variable} & {\textbf{Coef.}} & {\textbf{EE (HC1)}} & {$\boldsymbol{p}$} & \textbf{IC 95\%} \\
+\midrule
+\multicolumn{5}{@{}l}{\textit{Demográfico y familiar}}\\
+Mujer                       & -0.072 & 0.011 & {$<0.001$} & $[-0.094,\ -0.049]$ \\
+Raza/etnia: Black           &  0.070 & 0.017 & {$<0.001$} & $[\phantom{-}0.036,\ \phantom{-}0.104]$ \\
+Número de hermanos          & -0.010 & 0.005 & 0.036 & $[-0.019,\ -0.001]$ \\
+Educ. parental: preparatoria & -0.045 & 0.020 & 0.027 & $[-0.085,\ -0.005]$ \\
+\addlinespace
+\multicolumn{5}{@{}l}{\textit{Conducta pasada (14--17, conteo de años)}}\\
+Destrucción de propiedad    &  0.036 & 0.011 & 0.001 & $[\phantom{-}0.015,\ \phantom{-}0.058]$ \\
+Contacto con pandillas      &  0.038 & 0.009 & {$<0.001$} & $[\phantom{-}0.020,\ \phantom{-}0.056]$ \\
+Portación de arma           &  0.047 & 0.016 & 0.004 & $[\phantom{-}0.015,\ \phantom{-}0.079]$ \\
+Huyó del hogar              &  0.059 & 0.017 & 0.001 & $[\phantom{-}0.025,\ \phantom{-}0.093]$ \\
+\addlinespace
+\multicolumn{5}{@{}l}{\textit{Justicia y sustancias}}\\
+Marihuana (conteo de años)  &  0.022 & 0.010 & 0.029 & $[\phantom{-}0.002,\ \phantom{-}0.043]$ \\
+Arresto antes de los 18     &  0.074 & 0.023 & 0.002 & $[\phantom{-}0.028,\ \phantom{-}0.119]$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+Coeficientes seleccionados del modelo final $M_5$, con errores estándar robustos (HC1). Cada coeficiente es el cambio en la probabilidad de agresión adulta asociado a un aumento de una unidad en el predictor, manteniendo lo demás constante.
+:::
+
+\clearpage
+
+::: {#tbl-validation}
+\begin{table}[H]
+\centering
+\caption*{}
+\begin{tabular}{@{}l S[table-format=4.3] S[table-format=4.3] S[table-format=1.3]@{}}
+\toprule
+\textbf{Métrica} & {\textbf{LPM} $\boldsymbol{M_5}$ \textbf{(train)}} & {\textbf{LPM} $\boldsymbol{M_5}$ \textbf{(test)}} & {\textbf{RF (test)}} \\
+\midrule
+$n$                     & 3176  & 561   & 561 \\
+AUC                     & 0.764 & 0.682 & \bfseries 0.727 \\
+$R^2$                   & 0.119 & 0.036 & {---} \\
+RMSE                    & 0.329 & 0.343 & {---} \\
+MAE                     & 0.219 & 0.225 & {---} \\
+Accuracy (umbral 0.5)   & 0.858 & 0.854 & {---} \\
+\bottomrule
+\end{tabular}
+\end{table}
+Validación fuera de muestra (corte 85/15 estratificado por $Y$). El AUC es la métrica principal porque mide la capacidad de ordenar el riesgo sin depender del umbral de clasificación. El random forest (RF) supera al modelo lineal en AUC de prueba.
+:::
+
+\clearpage
+
+::: {#tbl-bpi}
+\begin{table}[H]
+\centering
+\caption*{}
+\begin{tabular}{@{}l S[table-format=1.4] S[table-format=1.4] c@{}}
+\toprule
+\textbf{Bloque} & {\textbf{Caída de AUC}} & {\textbf{DE}} & \textbf{IC 95\%} \\
+\midrule
+Conducta pasada       & \bfseries 0.0884 & 0.0216 & $[\phantom{-}0.0437,\ 0.1275]$ \\
+Demográfico           & 0.0577 & 0.0148 & $[\phantom{-}0.0289,\ 0.0861]$ \\
+Justicia y sustancias & 0.0302 & 0.0156 & $[\phantom{-}0.0013,\ 0.0589]$ \\
+Familia y SES         & 0.0161 & 0.0079 & $[\phantom{-}0.0009,\ 0.0303]$ \\
+Cognitivo             & 0.0026 & 0.0071 & $[-0.0099,\ 0.0156]$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+Importancia por permutación de bloques en el random forest (100 repeticiones, conjunto de prueba). Una caída mayor de AUC indica que el bloque contenía más información predictiva. El AUC base de prueba es 0.7271. El intervalo del bloque cognitivo cruza cero, es decir, no aporta señal distinguible.
+:::
+
+\endgroup
+
+\clearpage
+
+![Distribución de la variable dependiente: agresión física autorreportada entre los 18 y los 23 años. El resultado es poco frecuente (14.3\% de los casos), lo cual motiva el uso del AUC y de pesos balanceados por clase en el random forest.](figuras/01_target_distribution.png){#fig-target width=70%}
+
+\clearpage
+
+![Prevalencia de agresión adulta según conductas de riesgo observadas entre los 14 y los 17 años. La probabilidad de agresión adulta es sistemáticamente mayor entre quienes reportaron contacto con pandillas, portación de arma o consumo de drogas duras en la adolescencia.](figuras/04_prevalence_risk_behaviors.png){#fig-prev width=95%}
+
+\clearpage
+
+![$R^2$ ajustada por modelo jerárquico. El ajuste mejora poco con los bloques de fondo (demográfico, familiar, cognitivo) y da un salto al incorporar la conducta pasada.](figuras/05_r2_by_model.png){#fig-r2 width=85%}
+
+\clearpage
+
+![Diagnósticos del modelo lineal final $M_5$: residuales, normalidad y apalancamiento. Como es esperable en un modelo de probabilidad lineal, los residuales muestran heterocedasticidad, lo cual justifica el uso de errores estándar robustos.](figuras/06_diagnostics_m5.png){#fig-diag width=90%}
+
+\clearpage
+
+![Predicciones del modelo lineal $M_5$ contra valores observados en el conjunto de prueba.](figuras/07_pred_vs_obs_test.png){#fig-pred width=85%}
+
+\clearpage
+
+![Coeficientes seleccionados del modelo $M_5$ con intervalos de confianza robustos al 95\%. Las conductas adolescentes (pandillas, arma, huida del hogar) y el arresto temprano concentran las asociaciones positivas más fuertes.](figuras/08_coefs_m5_forest.png){#fig-coefs width=85%}
+
+\clearpage
+
+![Importancia por permutación de bloques en el random forest, medida como caída promedio de AUC al permutar cada bloque.](figuras_rf/01_block_permutation_importance.png){#fig-bpi width=90%}
+
+\clearpage
+
+![Curva ROC del random forest en el conjunto de prueba (AUC = 0.727).](figuras_rf/02_roc_curve.png){#fig-roc width=75%}
+
+\clearpage
+
+![Distribución de las caídas de AUC por bloque a lo largo de 100 permutaciones. La variabilidad confirma que la conducta pasada es el bloque más informativo de forma robusta.](figuras_rf/03_block_perm_boxplot.png){#fig-bpi-box width=90%}
+
+\clearpage
+
+![Comparación de la importancia relativa por bloque entre el modelo lineal y el random forest. Ambos métodos, pese a sus escalas distintas, coinciden en colocar a la conducta pasada como el bloque más predictivo.](figuras_rf/04_lpm_vs_rf_block_importance.png){#fig-lpm-rf width=90%}
+
+\clearpage
+
+# Referencias {.unnumbered}
+
+::: {#refs}
+:::
