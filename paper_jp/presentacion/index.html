@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Predictores adolescentes de agresión en la adultez joven · ITAM</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Source Serif 4 (body/display, sober academic) + Archivo (institutional sans labels) -->
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..600;1,8..60,400&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --itam:      #2C6653;   /* verde institucional ITAM (muestreado) */
+      --itam-dark: #1f4d3e;   /* verde profundo */
+      --itam-deep: #163a2f;   /* fondo de portada */
+      --gold:      #c8a24a;   /* dorado/ocre acento — del escudo ITAM */
+      --gold-soft: #d9bd7e;
+      --paper:     #f7f6f3;   /* blanco hueso */
+      --panel:     #eef1ee;   /* panel verdoso muy claro */
+      --ink:       #1c1c1a;   /* texto principal */
+      --ink-soft:  #4a4a45;
+      --ink-faint: #8a8a82;
+      --line:      #d8ddd6;
+    }
+
+    .reveal{
+      font-family:'Source Serif 4', Georgia, serif;
+      font-size:26px; color:var(--ink); font-weight:400;
+    }
+    .reveal .slides{ text-align:left; }
+    .reveal .slides section{ height:720px; overflow:hidden; }
+
+    .backgrounds, .reveal-viewport{ background:var(--paper); }
+
+    /* ---------- typography ---------- */
+    .reveal h1,.reveal h2{
+      font-family:'Source Serif 4', Georgia, serif;
+      color:var(--itam-dark); font-weight:600; letter-spacing:-0.01em;
+      line-height:1.08; margin:0 0 0.4em 0; text-transform:none;
+    }
+    .reveal h1{ font-size:2.0em; color:#fff; }
+    .reveal h2{ font-size:1.42em; }
+    .reveal h3{
+      font-family:'Archivo',sans-serif; font-size:0.98em; font-weight:600;
+      letter-spacing:0.02em; color:var(--itam); margin:0 0 0.4em 0;
+    }
+    .reveal p{ line-height:1.5; color:var(--ink-soft); }
+    .reveal strong{ color:var(--ink); font-weight:600; }
+    .reveal em{ color:var(--itam); font-style:italic; }
+
+    .kicker{
+      font-family:'Archivo',sans-serif; font-size:0.5em; font-weight:600;
+      letter-spacing:0.26em; text-transform:uppercase; color:var(--itam);
+      display:inline-block; margin-bottom:1em;
+    }
+    .meta{ font-family:'Archivo',sans-serif; font-size:0.46em; letter-spacing:0.03em; color:var(--ink-faint); }
+
+    /* Fixed 1280x720 canvas. Reserve 70px top strip for the topbar so it
+       never overlaps content. Content area = 720 - top - bottom. */
+    .pad{ padding:78px 90px 44px; box-sizing:border-box; height:720px; }
+    .pad-tight{ padding:78px 76px 40px; box-sizing:border-box; height:720px; }
+    .stack-center{ display:flex; flex-direction:column; justify-content:center; height:100%; }
+
+    hr.rule{ height:1px; background:var(--line); border:0; margin:0.9em 0; }
+    hr.rule-gold{ height:3px; width:56px; background:var(--gold); border:0; margin:0 0 1.2em 0; }
+
+    .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:3.2em; align-items:center; height:100%; }
+    .grid-fig{ display:grid; grid-template-columns:0.95fr 1.05fr; gap:2.8em; align-items:center; height:100%; }
+    .stack-center .grid2, .stack-center .grid-fig{ height:auto; }
+
+    figure{ margin:0; }
+    figure img{
+      width:100%; height:auto; display:block; background:#fff;
+      border:1px solid var(--line); border-radius:2px;
+      box-shadow:0 16px 34px -20px rgba(22,58,47,0.4);
+    }
+    figcaption{ font-family:'Archivo',sans-serif; font-size:0.4em; line-height:1.45; color:var(--ink-faint); margin-top:0.8em; }
+    .reveal section img{ margin:0; }
+
+    ol.refs{ margin:0.3em 0 0; padding:0; list-style:none; counter-reset:r; }
+    ol.refs li{ position:relative; padding:0 0 0 40px; margin:0 0 13px; counter-increment:r;
+      font-family:'Source Serif 4',serif; font-size:15.5px; line-height:1.42; color:var(--ink-soft); max-width:78ch; }
+    ol.refs li::before{ content:counter(r); position:absolute; left:0; top:0;
+      font-family:'Archivo',sans-serif; font-size:12px; font-weight:600; color:#fff;
+      background:var(--itam); width:23px; height:23px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center; }
+    ol.refs .r-auth{ color:var(--ink); font-weight:600; }
+    ol.refs em{ color:var(--itam); font-style:italic; }
+
+    ul.clean{ list-style:none; margin:0; padding:0; }
+    ul.clean li{ position:relative; padding-left:1.5em; margin:0.7em 0; color:var(--ink-soft); line-height:1.45; }
+    ul.clean li::before{ content:""; position:absolute; left:0; top:0.6em; width:8px; height:8px; background:var(--gold); }
+
+    .stat-row{ display:flex; gap:2.6em; flex-wrap:wrap; }
+    .stat .num{ font-family:'Source Serif 4',serif; font-size:2.4em; font-weight:600; color:var(--itam-dark); line-height:1; }
+    .stat .num .ac{ color:var(--gold); }
+    .stat .lab{ font-family:'Archivo',sans-serif; font-size:0.42em; letter-spacing:0.05em; text-transform:uppercase; color:var(--ink-faint); margin-top:0.6em; max-width:18ch; }
+
+    /* model chain */
+    .chain{ display:flex; }
+    .chain .step{ flex:1; padding:1em 0.9em; border:1px solid var(--line); border-right:none; background:#fff; }
+    .chain .step:last-child{ border-right:1px solid var(--line); }
+    .chain .step.hot{ background:var(--itam); border-color:var(--itam); }
+    .chain .step.hot .sm,.chain .step.hot .sn,.chain .step.hot .sr2{ color:#fff; }
+    .chain .step.hot .sm{ color:var(--gold-soft); }
+    .chain .step .sm{ font-family:'Source Serif 4',serif; font-size:0.82em; font-weight:600; color:var(--itam); }
+    .chain .step .sn{ font-family:'Archivo',sans-serif; font-size:0.44em; color:var(--ink-soft); margin-top:0.3em; line-height:1.3; }
+    .chain .step .sr2{ font-family:'Archivo',sans-serif; font-size:0.42em; color:var(--ink-faint); margin-top:0.5em; letter-spacing:0.03em; }
+
+    /* bars */
+    .barlist{ width:100%; }
+    .barrow{ margin:0.8em 0; }
+    .barrow .blab{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:0.3em; }
+    .barrow .bname{ font-family:'Archivo',sans-serif; font-size:0.52em; font-weight:500; color:var(--ink); }
+    .barrow .bval{ font-family:'Archivo',sans-serif; font-size:0.48em; color:var(--ink-faint); font-variant-numeric:tabular-nums; }
+    .bartrack{ height:10px; background:var(--panel); border-radius:2px; overflow:hidden; }
+    .barfill{ height:100%; background:var(--itam); width:0; transition:width 1s cubic-bezier(.22,.61,.36,1); }
+    .barfill.gold{ background:var(--gold); }
+    .barfill.muted{ background:#b7c0b8; }
+    section.present .barfill{ width:var(--w); }
+
+    /* tables */
+    .reveal table{ font-family:'Archivo',sans-serif; font-size:0.5em; border-collapse:collapse; width:100%; }
+    .reveal table th{ text-align:left; border:none; border-bottom:2px solid var(--itam); padding:0.55em 0.7em; color:var(--itam-dark); font-weight:600; }
+    .reveal table td{ border:none; border-bottom:1px solid var(--line); padding:0.5em 0.7em; color:var(--ink-soft); }
+    .reveal table tr.hot td{ color:var(--ink); font-weight:600; background:rgba(44,102,83,0.07); }
+    .reveal table td.r,.reveal table th.r{ text-align:right; font-variant-numeric:tabular-nums; }
+
+    .eq{ background:var(--panel); border-left:3px solid var(--gold); padding:0.8em 1.2em; border-radius:0 3px 3px 0; margin:0.5em 0; }
+    .reveal .katex{ font-size:0.98em; color:var(--itam-dark); }
+
+    .reveal .slide-number{ font-family:'Archivo',sans-serif; color:var(--ink-faint); background:none; font-size:13px; letter-spacing:0.08em; }
+    .reveal .progress{ color:var(--gold); height:3px; }
+
+    .lead{ font-size:1.1em; color:var(--ink); line-height:1.5; }
+    .src{ font-family:'Archivo',sans-serif; font-size:0.42em; letter-spacing:0.03em; color:var(--ink-faint); margin-top:0.9em; }
+    .vbar{ width:3px; background:var(--gold); align-self:stretch; }
+
+    /* ITAM wordmark */
+    .wordmark{ font-family:'Archivo',sans-serif; font-weight:700; letter-spacing:0.34em; font-size:0.6em; }
+    .topbar{ position:absolute; top:30px; left:90px; right:90px; height:24px;
+             display:flex; justify-content:space-between; align-items:center; z-index:5;
+             border-bottom:1px solid var(--line); padding-bottom:14px; }
+    .pad-tight .topbar, section .topbar{ left:76px; right:76px; }
+    .topbar .wm{ font-family:'Archivo',sans-serif; font-weight:700; letter-spacing:0.3em; font-size:15px; color:var(--itam); }
+    .topbar .pg{ font-family:'Archivo',sans-serif; letter-spacing:0.06em; font-size:13px; color:var(--ink-faint); text-transform:uppercase; }
+
+    /* cover band */
+    .cover-side{ position:absolute; top:0; left:0; height:720px; width:14px; background:var(--gold); z-index:5; }
+    .cover .cover-side{ background:#cfe0d8; }
+
+    /* ---------- portada ---------- */
+    .cover{ position:relative; height:720px; background:var(--itam-deep); overflow:hidden; }
+    /* atmósfera: degradado + textura fina de líneas (solo verdes/grises) */
+    .cover::before{
+      content:""; position:absolute; inset:0;
+      background:
+        radial-gradient(120% 90% at 88% 8%, rgba(255,255,255,0.10), transparent 55%),
+        radial-gradient(90% 80% at 0% 100%, rgba(44,102,83,0.6), transparent 60%),
+        linear-gradient(180deg, #1a4338 0%, #163a2f 60%, #112d25 100%);
+    }
+    .cover::after{
+      content:""; position:absolute; inset:0; opacity:0.5; pointer-events:none;
+      background-image:repeating-linear-gradient(90deg, rgba(255,255,255,0.025) 0 1px, transparent 1px 56px);
+    }
+    .cover-inner{ position:relative; z-index:2; height:100%; display:grid;
+      grid-template-columns:1fr 232px; }
+    .cover-main{ padding:64px 0 60px 96px; display:flex; flex-direction:column; height:100%; }
+    .cover-rail{ border-left:1px solid rgba(255,255,255,0.14); padding:64px 40px 60px 36px;
+      display:flex; flex-direction:column; }
+
+    .cover-top{ display:flex; align-items:center; gap:16px; }
+    .cover-logo{ font-family:'Archivo',sans-serif; font-weight:700; letter-spacing:0.42em;
+      font-size:22px; color:#fff; }
+    .cover-logo-sub{ font-family:'Archivo',sans-serif; font-size:11px; letter-spacing:0.22em;
+      text-transform:uppercase; color:#a7bcb1; border-left:1px solid rgba(255,255,255,0.25);
+      padding-left:16px; line-height:1.5; }
+
+    .cover-center{ margin-top:auto; margin-bottom:auto; }
+    .cover-kicker{ font-family:'Archivo',sans-serif; font-size:13px; font-weight:600;
+      letter-spacing:0.3em; text-transform:uppercase; color:#a7bcb1; margin-bottom:26px; }
+    .cover-title{ font-family:'Source Serif 4',serif; font-weight:600; color:#fff;
+      font-size:56px; line-height:1.04; letter-spacing:-0.015em; max-width:15ch; margin:0; }
+    .cover-title em{ color:#cfe0d8; font-style:italic; }
+    .cover-rule{ height:3px; width:64px; background:#cfe0d8; border:0; margin:34px 0 0; }
+
+    .cover-authors{ display:flex; flex-wrap:wrap; gap:14px 26px; margin-top:34px; }
+    .cover-authors .au{ font-family:'Archivo',sans-serif; font-size:16px; font-weight:500;
+      letter-spacing:0.01em; color:#eef3f0; position:relative; }
+    .cover-authors .au:not(:last-child)::after{
+      content:""; position:absolute; right:-14px; top:12%; height:76%; width:1px;
+      background:rgba(255,255,255,0.22); }
+    .cover-authors-label{ font-family:'Archivo',sans-serif; font-size:11px; font-weight:600; letter-spacing:0.22em;
+      text-transform:uppercase; color:#b9cdc3; margin:34px 0 0; }
+
+    .cover-rail .rl-item{ margin-bottom:26px; }
+    .cover-rail .rl-k{ font-family:'Archivo',sans-serif; font-size:10px; letter-spacing:0.2em;
+      text-transform:uppercase; color:#7f988c; margin-bottom:5px; }
+    .cover-rail .rl-v{ font-family:'Archivo',sans-serif; font-size:14px; color:#e6ece8; line-height:1.4; }
+    .cover-rail .rl-spacer{ margin-top:auto; }
+    .cover-rail .rl-big{ font-family:'Source Serif 4',serif; font-size:46px; font-weight:600;
+      color:#fff; line-height:1; }
+    .cover-rail .rl-big-sub{ font-family:'Archivo',sans-serif; font-size:11px; letter-spacing:0.16em;
+      text-transform:uppercase; color:#7f988c; margin-top:8px; }
+  </style>
+</head>
+<body>
+<div class="reveal">
+  <div class="slides">
+
+    <!-- 1 · PORTADA -->
+    <section data-background-color="#112d25">
+      <div class="cover">
+        <div class="cover-side"></div>
+        <div class="cover-inner">
+          <div class="cover-main">
+            <div class="cover-top">
+              <span class="cover-logo">ITAM</span>
+              <span class="cover-logo-sub">Instituto Tecnológico<br>Autónomo de México</span>
+            </div>
+
+            <div class="cover-center">
+              <div class="cover-kicker">Ciencia de datos para política pública</div>
+              <h1 class="cover-title">Predictores adolescentes de agresión en la <em>adultez joven</em></h1>
+              <hr class="cover-rule">
+              <p class="cover-authors-label">Autores</p>
+              <div class="cover-authors">
+                <span class="au">Jerónimo Deli Larios</span>
+                <span class="au">Juan Pablo Cordero Mayorga</span>
+                <span class="au">Erick Eduardo Reyes Rojas</span>
+                <span class="au">Eduardo Medina Valdés</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="cover-rail">
+            <div class="rl-item">
+              <div class="rl-k">Fecha</div>
+              <div class="rl-v">28 de mayo de 2026</div>
+            </div>
+            <div class="rl-item">
+              <div class="rl-k">Fuente de datos</div>
+              <div class="rl-v">NLSY97 / ICPSR 34562</div>
+            </div>
+            <div class="rl-item">
+              <div class="rl-k">Métodos</div>
+              <div class="rl-v">LPM jerárquico · Random forest</div>
+            </div>
+            <div class="rl-spacer"></div>
+            <div>
+              <div class="rl-big">3,737</div>
+              <div class="rl-big-sub">observaciones · 26 predictores</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2 · PREGUNTA DE INVESTIGACIÓN -->
+    <section>
+      <div class="topbar"><span class="wm">ITAM</span><span class="pg">Pregunta de investigación</span></div>
+      <div class="pad stack-center">
+        <span class="kicker">La pregunta central</span>
+        <h2 style="max-width:21ch;">¿Qué variables medidas <em>antes</em> de la adultez ayudan a anticipar si una persona reportará agresión física entre los 18 y los 23 años?</h2>
+        <hr class="rule">
+        <p class="lead" style="max-width:60ch;">El objetivo no es estimar un efecto causal, sino <strong>ordenar la información disponible por su capacidad para predecir</strong> una trayectoria posterior.</p>
+        <p class="src">Relevancia de política pública: la prevención de violencia necesita decidir <em>cuándo</em> y con <em>qué</em> información identificar riesgos. Si la mayor señal aparece en conductas observables durante la adolescencia, los años previos a la adultez tendrían más valor para identificar casos de riesgo alto.</p>
+      </div>
+    </section>
+
+    <!-- 3 · MARCO / HIPÓTESIS -->
+    <section>
+      <div class="topbar"><span class="wm">ITAM</span><span class="pg">Mérito intelectual</span></div>
+      <div class="pad stack-center">
+        <span class="kicker">Marco · criminología del curso de vida</span>
+        <h2 style="max-width:22ch;">Estabilidad de la agresión a lo largo del tiempo</h2>
+        <hr class="rule">
+        <div style="display:grid; grid-template-columns:auto 1fr; gap:1.8em; align-items:stretch;">
+          <div class="vbar"></div>
+          <div>
+            <p class="lead">La revisión de <strong>Piquero et al. (2012)</strong> concluye que la literatura tiende a mostrar <em>continuidad</em> de la agresión y, en menor medida, discontinuidad: la conducta agresiva temprana tiende a persistir hacia etapas posteriores.</p>
+            <p class="src"><strong>Hipótesis comprobable:</strong> si la agresión es estable, las conductas observables en la adolescencia deberían contener señal predictiva por encima de atributos fijos (sexo, raza, origen familiar). La <em>agresión de inicio adulto</em> implica que ningún predictor adolescente alcanzará una predicción perfecta — por eso el trabajo ordena la información, no clasifica sin error.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 · DATOS Y DISEÑO TEMPORAL -->
+    <section>
+      <div class="topbar"><span class="wm">ITAM</span><span class="pg">Variables y datos</span></div>
+      <div class="pad stack-center">
+        <span class="kicker">Datos · separación temporal</span>
+        <h2>Predictores y resultado en ventanas distintas</h2>
+        <hr class="rule">
+        <div class="chain" style="margin:0.8em 0 1.2em;">
+          <div class="step">
+            <div class="sm">14 – 17</div>
+            <div class="sn">Predictores adolescentes:<br>conducta · sustancias · arresto</div>
+            <div class="sr2">VENTANA OBSERVADA</div>
+          </div>
+          <div class="step hot">
+            <div class="sm">→</div>
+            <div class="sn">Eliminación por lista<br>sobre 26 predictores + Y</div>
+            <div class="sr2">n = 3,737 (casos completos)</div>
+          </div>
+          <div class="step">
+            <div class="sm">18 – 23</div>
+            <div class="sn">Resultado: ASSAULT_ADULT<br>agresión física autorreportada</div>
+            <div class="sr2">VARIABLE DEPENDIENTE</div>
+          </div>
+        </div>
+        <p class="src" style="max-width:64ch;">Base: NLSY97 / archivo ICPSR 34562 (cohorte de 8,984 jóvenes nacidos 1980–1984; rondas 1997–2009). Las variables organizadas por edad permiten separar predictores y resultado, lo que <strong>evita el data leakage</strong>: el modelo nunca usa información contemporánea o posterior al resultado.</p>
+      </div>
+    </section>
+
+    <!-- 5 · TARGET DESBALANCEADO -->
+    <section>
+      <div class="topbar"><span class="wm">ITAM</span><span class="pg">Variables y datos</span></div>
+      <div class="pad-tight">
+        <div class="grid-fig">
+          <div>
+            <span class="kicker">El resultado</span>
+            <h2>Un evento poco frecuente</h2>
+            <hr class="rule-gold">
+            <div class="stat-row" style="gap:2.4em;">
+              <div class="stat"><div class="num"><span class="ac">14.3%</span></div><div class="lab">Reportó agresión adulta</div></div>
+              <div class="stat"><div class="num">≈ 86%</div><div class="lab">Accuracy de clasificar todo como negativo</div></div>
+            </div>
+            <p style="margin-top:1.3em;">Por el desbalance, el <strong>AUC</strong> —y no la accuracy— es la métrica central de evaluación, y el random forest usa <strong>pesos balanceados</strong> por clase.</p>
+          </div>
+          <figure>
+            <img src="assets/01_target_distribution.png" alt="Distribución de la variable dependiente">
+            <figcaption>Figura 1 — Distribución de la agresión física autorreportada (18–23 años).</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6 · CINCO BLOQUES -->
+    <section>
+      <div class="topbar"><span class="wm">ITAM</span><span class="pg">Variables y datos</span></div>
+      <div class="pad stack-center">
+        <span class="kicker">Predictores · cinco bloques</span>
+        <h2>De los atributos de fondo a la conducta observable</h2>
+        <hr class="rule">
+        <div style="display:grid; grid-template-columns:repeat(5,1fr); gap:0.9em; margin-top:0.5em;">
+          <div style="border-top:2px solid var(--ink-faint); padding-top:0.7em;"><h3 style="color:var(--ink-faint);">D · Demográfico</h3><p class="meta" style="line-height:1.5;">Sexo, raza/etnia, edad de la madre biológica, hermanos</p></div>
+          <div style="border-top:2px solid var(--ink-faint); padding-top:0.7em;"><h3 style="color:var(--ink-faint);">F · Familia y SES</h3><p class="meta" style="line-height:1.5;">Estructura familiar (1997), educación parental, ingreso-pobreza</p></div>
+          <div style="border-top:2px solid var(--ink-faint); padding-top:0.7em;"><h3 style="color:var(--ink-faint);">C · Cognitivo</h3><p class="meta" style="line-height:1.5;">Puntaje ASVAB</p></div>
+          <div style="border-top:2px solid var(--itam); padding-top:0.7em;"><h3>B · Conducta pasada</h3><p class="meta" style="line-height:1.5;">Daño a propiedad, robo, otros delitos, pandillas, arma, huida del hogar (14–17)</p></div>
+          <div style="border-top:2px solid var(--itam); padding-top:0.7em;"><h3>J · Justicia y sustancias</h3><p class="meta" style="line-height:1.5;">Tabaco, alcohol, marihuana, drogas duras, arresto antes de los 18</p></div>
+        </div>
+        <p class="src" style="margin-top:1.4em;"><strong>B</strong> y <strong>J</strong> son los predictores <em>primarios</em>: acciones observables antes del resultado adulto. D, F y C funcionan como información contextual y de control predictivo.</p>
+      </div>
+    </section>
+
+    <!-- 7 · DISEÑO EMPÍRICO: DOS MODELOS -->
+    <section>
+      <div class="topbar"><span class="wm">ITAM</span><span class="pg">Diseño empírico</span></div>
+      <div class="pad stack-center">
+        <span class="kicker">Diseño empírico</span>
+        <h2>Dos lecturas de la misma pregunta</h2>
+        <hr class="rule">
+        <div class="grid2" style="height:auto; align-items:start;">
+          <div>
+            <h3>① LPM jerárquico</h3>
+            <p>Modelo de probabilidad lineal (OLS) con errores robustos <strong>HC1</strong>. Coeficientes legibles como cambios en probabilidad. Bloques añadidos de forma acumulativa M₁→M₅ y comparados con <strong>pruebas F incrementales</strong>.</p>
+          </div>
+          <div>
+            <h3>② Random forest</h3>
+            <p>500 árboles, √p variables por división, mínimo 10 obs. por hoja, pesos balanceados, semilla 42. Interpretado por <strong>importancia por permutación de bloques</strong> (100 repeticiones).</p>
+          </div>
+        </div>
+        <div class="eq" style="margin-top:1em;">
+          <span class="katex-src">$$Y_i=\alpha_m+\sum_{b=1}^{m}\mathbf{X}_{ib}'\boldsymbol{\beta}_b+\varepsilon_i \qquad BPI(B_k)=AUC(f,D)-AUC(f,D^{perm}_{B_k})$$</span>
+        </div>
+        <p class="src">Ambos modelos usan la misma muestra analítica y el mismo corte 85/15 estratificado por Y.</p>
+      </div>
+    </section>
+
+    <!-- 8 · R2 JERÁRQUICA -->
+    <section>
+      <div class="topbar"><span class="wm">ITAM</span><span class="pg">Resultados · LPM</span></div>
+      <div class="pad-tight">
+        <div class="grid-fig">
+          <div>
+            <span class="kicker">Resultados · LPM jerárquico</span>
+            <h2>El salto está en la <em>conducta</em></h2>
+            <hr class="rule-gold">
+            <div class="chain" style="margin-bottom:1em;">
+              <div class="step"><div class="sm">M₁</div><div class="sn">Demog.</div><div class="sr2">R²aj 0.034</div></div>
+              <div class="step"><div class="sm">M₂</div><div class="sn">+Familia</div><div class="sr2">0.040</div></div>
+              <div class="step"><div class="sm">M₃</div><div class="sn">+ASVAB</div><div class="sr2">0.041</div></div>
+              <div class="step hot"><div class="sm">M₄</div><div class="sn">+Conducta</div><div class="sr2">0.096</div></div>
+              <div class="step"><div class="sm">M₅</div><div class="sn">+Justicia</div><div class="sr2">0.102</div></div>
+            </div>
+            <p>Los atributos de fondo explican poco. Al incorporar la conducta adolescente, el ajuste da un salto: <strong>ΔR² = 0.056</strong> (F = 33.13; gl 7, 3715; p &lt; 0.001).</p>
+          </div>
+          <figure>
+            <img src="assets/05_r2_by_model.png" alt="R cuadrada ajustada por modelo jerárquico">
+            <figcaption>Figura 3 — R² ajustada por modelo jerárquico (Tabla 2 / Tabla 3 del documento).</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9 · COEFICIENTES M5 -->
+    <section>
+      <div class="topbar"><span class="wm">ITAM</span><span class="pg">Resultados · LPM</span></div>
+      <div class="pad-tight">
+        <div class="grid-fig">
+          <figure>
+            <img src="assets/08_coefs_m5_forest.png" alt="Coeficientes seleccionados del modelo M5">
+            <figcaption>Figura 6 — Coeficientes seleccionados de M₅ con IC 95% robustos (Tabla 4).</figcaption>
+          </figure>
+          <div>
+            <span class="kicker">Coeficientes del modelo M₅</span>
+            <h2>Marcadores conductuales</h2>
+            <hr class="rule-gold">
+            <table>
+              <tr><th>Variable</th><th class="r">Cambio en prob.</th></tr>
+              <tr class="hot"><td>Arresto antes de los 18</td><td class="r">+7.4 pp</td></tr>
+              <tr class="hot"><td>Mujer</td><td class="r">−7.2 pp</td></tr>
+              <tr class="hot"><td>Huyó del hogar (por año)</td><td class="r">+5.9 pp</td></tr>
+              <tr><td>Portación de arma (por año)</td><td class="r">+4.7 pp</td></tr>
+              <tr><td>Contacto con pandillas (por año)</td><td class="r">+3.8 pp</td></tr>
+              <tr><td>Destrucción de propiedad (por año)</td><td class="r">+3.6 pp</td></tr>
+              <tr><td>Marihuana (por año)</td><td class="r">+2.2 pp</td></tr>
+            </table>
+            <p class="src">ASVAB deja de ser distinguible de cero en M₅. Tabaco, alcohol y drogas duras tampoco son significativos.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10 · VALIDACIÓN + ROC -->
+    <section>
+      <div class="topbar"><span class="wm">ITAM</span><span class="pg">Resultados · validación</span></div>
+      <div class="pad-tight">
+        <div class="grid-fig">
+          <div>
+            <span class="kicker">Validación fuera de muestra · 85/15</span>
+            <h2>El RF discrimina mejor</h2>
+            <hr class="rule-gold">
+            <table>
+              <tr><th>Métrica (test)</th><th class="r">LPM M₅</th><th class="r">RF</th></tr>
+              <tr class="hot"><td>AUC</td><td class="r">0.682</td><td class="r">0.727</td></tr>
+              <tr><td>Accuracy (umbral 0.5)</td><td class="r">0.854</td><td class="r">—</td></tr>
+              <tr><td>R²</td><td class="r">0.036</td><td class="r">—</td></tr>
+              <tr><td>AUC (train)</td><td class="r">0.764</td><td class="r">0.928</td></tr>
+              <tr><td>AUC (out-of-bag)</td><td class="r">—</td><td class="r">0.747</td></tr>
+            </table>
+            <p style="margin-top:0.9em;">El RF gana en AUC de prueba pero sacrifica interpretabilidad individual: se usa para <strong>confirmar el orden de bloques</strong>, no para reemplazar los coeficientes.</p>
+          </div>
+          <figure>
+            <img src="assets/rf_02.png" alt="Curva ROC del random forest">
+            <figcaption>Figura 8 — Curva ROC del random forest en test (AUC = 0.727). Tabla 5.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11 · IMPORTANCIA POR BLOQUE -->
+    <section>
+      <div class="topbar"><span class="wm">ITAM</span><span class="pg">Resultados · random forest</span></div>
+      <div class="pad stack-center">
+        <span class="kicker">Importancia por permutación de bloques · RF</span>
+        <h2>La <em>conducta pasada</em> es el predictor más fuerte</h2>
+        <hr class="rule">
+        <div class="barlist" style="margin-top:0.5em;">
+          <div class="barrow"><div class="blab"><span class="bname">Conducta pasada</span><span class="bval">−0.0884 AUC</span></div><div class="bartrack"><div class="barfill gold" style="--w:100%"></div></div></div>
+          <div class="barrow"><div class="blab"><span class="bname">Demográfico</span><span class="bval">−0.0577</span></div><div class="bartrack"><div class="barfill" style="--w:65%"></div></div></div>
+          <div class="barrow"><div class="blab"><span class="bname">Justicia y sustancias</span><span class="bval">−0.0302</span></div><div class="bartrack"><div class="barfill" style="--w:34%"></div></div></div>
+          <div class="barrow"><div class="blab"><span class="bname">Familia y SES</span><span class="bval">−0.0161</span></div><div class="bartrack"><div class="barfill muted" style="--w:18%"></div></div></div>
+          <div class="barrow"><div class="blab"><span class="bname">Cognitivo (ASVAB)</span><span class="bval">−0.0026 · IC cruza cero</span></div><div class="bartrack"><div class="barfill muted" style="--w:3%"></div></div></div>
+        </div>
+        <p class="src" style="margin-top:1.2em;">Caída promedio de AUC al permutar cada bloque (100 repeticiones, conjunto de prueba; AUC base = 0.7271). Tabla 6 / Figura 7.</p>
+      </div>
+    </section>
+
+    <!-- 12 · CONVERGENCIA LPM vs RF -->
+    <section>
+      <div class="topbar"><span class="wm">ITAM</span><span class="pg">Resultados · convergencia</span></div>
+      <div class="pad-tight">
+        <div class="grid-fig">
+          <figure>
+            <img src="assets/rf_04.png" alt="Comparación de importancia por bloque LPM vs RF">
+            <figcaption>Figura 10 — Importancia relativa por bloque: modelo lineal vs. random forest.</figcaption>
+          </figure>
+          <div>
+            <span class="kicker">Convergencia de métodos</span>
+            <h2>Dos caminos, un mismo orden</h2>
+            <hr class="rule-gold">
+            <ul class="clean">
+              <li>El <strong>LPM</strong> dice qué variables se asocian y en cuántos puntos porcentuales.</li>
+              <li>El <strong>RF</strong> pregunta si el bloque sigue importando bajo no linealidad e interacciones.</li>
+              <li>Ambos colocan <em>primero</em> a la conducta pasada → el resultado no depende de una sola especificación estadística.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 13 · CONCLUSIÓN -->
+    <section>
+      <div class="topbar"><span class="wm">ITAM</span><span class="pg">Conclusión</span></div>
+      <div class="pad stack-center">
+        <span class="kicker">Conclusión</span>
+        <h2 style="max-width:24ch;">La conducta de la adolescencia es el predictor más fuerte de agresión adulta</h2>
+        <hr class="rule">
+        <div class="grid2" style="height:auto; align-items:start;">
+          <div>
+            <ul class="clean">
+              <li>Hallazgo robusto entre métodos: LPM jerárquico <strong>y</strong> random forest coinciden.</li>
+              <li>AUC moderado (0.682 / 0.727): no clasifica perfecto, coherente con la <em>discontinuidad</em> y la agresión de inicio adulto.</li>
+              <li>Apoya el patrón de continuidad de Piquero et al. (2012) por una vía cuantitativa distinta.</li>
+            </ul>
+          </div>
+          <div style="border-left:3px solid var(--gold); padding-left:1.5em;">
+            <h3>Para política pública</h3>
+            <p>Pandillas, portación de arma, huida del hogar, destrucción de propiedad, marihuana y arresto temprano pueden <strong>activar tamizaje, apoyos y seguimiento preventivo</strong> — no diagnóstico automático, sanción anticipada ni perfil rígido de riesgo.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 14 · CIERRE -->
+    <section data-background-color="#112d25">
+      <div class="cover">
+        <div class="cover-side"></div>
+        <div class="cover-inner">
+          <div class="cover-main">
+            <div class="cover-top">
+              <span class="cover-logo">ITAM</span>
+              <span class="cover-logo-sub">Instituto Tecnológico<br>Autónomo de México</span>
+            </div>
+
+            <div class="cover-center">
+              <div class="cover-kicker">Predictores adolescentes de agresión</div>
+              <h1 class="cover-title" style="font-size:96px;">Gracias.</h1>
+              <hr class="cover-rule">
+              <p class="cover-authors-label" style="margin-top:30px;">¿Preguntas?</p>
+            </div>
+          </div>
+
+          <div class="cover-rail">
+            <div class="rl-item">
+              <div class="rl-k">Fuente de datos</div>
+              <div class="rl-v">NLSY97 / ICPSR 34562</div>
+            </div>
+            <div class="rl-item">
+              <div class="rl-k">Métodos</div>
+              <div class="rl-v">LPM jerárquico · Random forest</div>
+            </div>
+            <div class="rl-spacer"></div>
+            <div>
+              <div class="rl-big">3,737</div>
+              <div class="rl-big-sub">observaciones · 26 predictores</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 15 · REFERENCIAS -->
+    <section>
+      <div class="topbar"><span class="wm">ITAM</span><span class="pg">Referencias</span></div>
+      <div class="pad">
+        <span class="kicker">Referencias</span>
+        <h2>Fuentes citadas</h2>
+        <hr class="rule">
+        <ol class="refs">
+          <li><span class="r-auth">Piquero, A. R., Carriaga, M. L., Diamond, B., Kazemian, L. y Farrington, D. P.</span> (2012). Stability in Aggression Revisited. <em>Aggression and Violent Behavior</em>, 17(4), 365–372.</li>
+          <li><span class="r-auth">Moffitt, T. E.</span> (1993). Adolescence-Limited and Life-Course-Persistent Antisocial Behavior: A Developmental Taxonomy. <em>Psychological Review</em>, 100(4), 674–701.</li>
+          <li><span class="r-auth">Breiman, L.</span> (2001). Random Forests. <em>Machine Learning</em>, 45(1), 5–32.</li>
+          <li><span class="r-auth">Strobl, C., Boulesteix, A.-L., Kneib, T., Augustin, T. y Zeileis, A.</span> (2008). Conditional Variable Importance for Random Forests. <em>BMC Bioinformatics</em>, 9, 307.</li>
+          <li><span class="r-auth">Molnar, C.</span> (2022). <em>Interpretable Machine Learning</em>. Publicación independiente.</li>
+          <li><span class="r-auth">Public Safety Canada.</span> «Better to Build a Child than Fix an Adult»: A Report on the Predictors of Risk for Youth Who Proceed to the Adult Justice System. National Crime Prevention Centre.</li>
+          <li><span class="r-auth">La Trobe University, Centre for Exercise and Sports Science / CERI.</span> <em>Youth Violence Report</em>.</li>
+          <li><span class="r-auth">United States Department of Justice, Office of Justice Programs, Bureau of Justice Statistics.</span> (2014). <em>Recidivism in the NLSY 1997: Standalone Data, Rounds 1 to 13</em>. ICPSR 34562.</li>
+        </ol>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script>
+    document.querySelectorAll('.katex-src').forEach(function(el){
+      try{
+        var tex = el.textContent.replace(/^\$\$|\$\$$/g,'').trim();
+        katex.render(tex, el, {displayMode:true, throwOnError:false});
+      }catch(e){ console.warn(e); }
+    });
+    Reveal.initialize({
+      hash:true, slideNumber:'c/t', transition:'fade',
+      controls:true, controlsTutorial:false, progress:true,
+      center:false, width:1280, height:720, margin:0.02, pdfMaxPagesPerSlide:1
+    });
+  </script>
+</body>
+</html>
